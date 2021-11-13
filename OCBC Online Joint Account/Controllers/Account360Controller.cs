@@ -15,6 +15,7 @@ using Twilio.Rest.Api.V2010.Account;
 using Twilio.Types;
 using Newtonsoft.Json;
 using RestSharp;
+using System.IO;
 // Test Commit 2.0
 
 namespace OCBC_Joint_Account_Application.Controllers
@@ -308,7 +309,47 @@ namespace OCBC_Joint_Account_Application.Controllers
             };
             
             HttpContext.Session.SetString("ApplyMethod", "Scan");
-            return View(custApplication);
+            return View("Upload", custApplication);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UploadFile(CustApplication custApplication)
+        {
+            if (custApplication.CustProofOfResidence != null && custApplication.CustProofOfResidence.Length > 0)
+            {
+                //try
+                //{
+                string fileExt = Path.GetExtension(custApplication.CustProofOfResidence);
+                string uploadedFile = String.Format("residence_proof", fileExt);
+                string savePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\applicationdocs\\", uploadedFile);
+
+                // Upload the file to server
+                using (var fileSteam = new FileStream(
+                    savePath, FileMode.Create))
+                {
+                    //await custApplicationContext.CustProofOfResidence.CopyToAsync(fileSteam);
+                }
+
+                    //csVM.FileUrl = uploadedFile;
+                    //csVM.FileUploadDateTime = DateTime.Now;
+                    //csContext.UploadFile(csVM);
+                    //ViewData["UploadColor"] = "lime";
+                    //ViewData["UploadMessage"] = "Upload Successful!";
+                //}
+                //catch (IOException)
+                //{
+                //    ViewData["UploadColor"] = "red";
+                //    ViewData["UploadMessage"] = "Upload Failed!";
+                //    return View("JoinCompetition", csVM);
+                //}
+                //catch (Exception ex)
+                //{
+                //    ViewData["UploadMessage"] = ex.Message;
+                //    return View("JoinCompetition", csVM);
+                //}
+            }
+            return View();
         }
 
         public ActionResult JointApplicant()
