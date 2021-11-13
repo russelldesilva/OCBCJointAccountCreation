@@ -20,7 +20,7 @@
 
 
 <!--If user chooses Singaporean (Default option from the radio btn) radio btn, hide the Foreigner details-->
-<form asp-action="UploadFile" enctype="multipart/form-data">
+<form asp-action="Upload" enctype="multipart/form-data">
     <div class="container d-flex">
         <div class="container col-md-8" style="max-width:65%; margin-left:0;">
             <div class="container">
@@ -30,7 +30,7 @@
                             <img class="card-img-top" src="~/image/no-image.png" alt="Card image cap">
                             <h5 class="card-title">Photo Identity (Front)</h5>
                             <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                            <input type="file" asp-for="CustNRICFront" accept="image/png, image/gif, image/jpeg" style="margin-bottom:20px;" /><!--Upload btn-->
+                            <input type="file" asp-for="CustNRICFrontUpload" accept="image/png, image/gif, image/jpeg" style="margin-bottom:20px;" /><!--Upload btn-->
                         </div>
                     </div>
                     <div class="card text-center col-md-6 shadow-sm">
@@ -38,7 +38,7 @@
                             <img class="card-img-top" src="~/image/no-image.png" alt="Card image cap">
                             <h5 class="card-title">Photo Identity (Back)</h5>
                             <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                            <input type="file" asp-for="CustNRICBack" accept="image/png, image/gif, image/jpeg" style="margin-bottom:20px;" /><!--Upload btn-->
+                            <input type="file" asp-for="CustNRICBackUpload" accept="image/png, image/gif, image/jpeg" style="margin-bottom:20px;" /><!--Upload btn-->
                         </div>
                     </div>
                 </div>
@@ -48,7 +48,7 @@
                             <img class="card-img-top" src="~/image/no-image.png" alt="Card image cap">
                             <h5 class="card-title">Residential Address</h5>
                             <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                            <input type="file" asp-for="CustProofOfResidence"  style="margin-bottom:20px;" /><!--Upload btn-->
+                            <input type="file" asp-for="CustProofOfResidenceUpload"  style="margin-bottom:20px;" /><!--Upload btn-->
                         </div>
                     </div>
                 </div>
@@ -60,7 +60,7 @@
             }
         </div>
     </div>
-    <input type="submit" class="btn btn-primary" asp-controller="Account360" asp-action="UploadFile"  value="Next" />
+    <input type="submit" class="btn btn-primary" asp-action="Upload"  value="Next" />
 </form>
 
 

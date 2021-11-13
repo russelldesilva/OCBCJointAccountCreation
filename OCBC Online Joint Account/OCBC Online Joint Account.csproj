@@ -13,4 +13,8 @@
     <PackageReference Include="Twilio" Version="5.68.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\applicationdocs\" />
+  </ItemGroup>
+
 </Project>

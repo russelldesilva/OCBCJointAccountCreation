@@ -29,54 +29,21 @@ namespace OCBC_Joint_Account_Application.Controllers
 
         bool hasScanned = false;
         bool toRedirect = false;
-        bool continueMobile = false;
 
-        
-        public ActionResult ApplyOnline(string? JAC)
+
+        public ActionResult ApplyOnline(int AT, string? JAC)
         {
-            
+
             HttpContext.Session.SetString("PageType", "Account360");
-            
-            //if(JAC != null)
-            //{
-            //    //QR: Reset QR settings
-            //    var resetQR =
-            //        "{\"qr_data\":\"ocbc_jointacc_digital_create\"," +
-            //        "\"custNRIC\":null," +
-            //        "\"hasScanned\":" + hasScanned +"," +
-            //        "\"toRedirect\":" + toRedirect + "," +
-            //        "\"continueMobile\":false," +
-            //        "\"isJointApplicant\":true," +
-            //        "\"id\":0}";
+            ResetQRForJointApplicant(JAC, AT);
 
-            //    var client1 = new RestClient("https://pfdocbcdb-5763.restdb.io/rest/qr-response/618ed5b49402c24f00013e0b");
-            //    var request1 = new RestRequest(Method.PUT);
-            //    request1.AddHeader("cache-control", "no-cache");
-            //    request1.AddHeader("x-apikey", "f3e68097c1a4127f4472d8730dcb3399f2d14");
-            //    request1.AddHeader("content-type", "application/json");
-            //    request1.AddParameter("application/json", resetQR, ParameterType.RequestBody);
-            //    IRestResponse response1 = client1.Execute(request1);
-            //}
-
-            ////QR: Wait for response from iBanking App
-            //var client = new RestClient("https://pfdocbcdb-5763.restdb.io/rest/qr-response/618ed5b49402c24f00013e0b");
-            //var request = new RestRequest(Method.GET);
-            //request.AddHeader("cache-control", "no-cache");
-            //request.AddHeader("x-apikey", "f3e68097c1a4127f4472d8730dcb3399f2d14");
-            //request.AddHeader("content-type", "application/json");
-            //IRestResponse response = client.Execute(request);
-            //QR qr = JsonConvert.DeserializeObject<QR>(response.Content);
-
-            //if (qr.hasScanned == true && qr.toRedirect == true && qr.continueMobile == false)
-            //{
-            //    hasScanned = true;
-            //    toRedirect = true;
-            //    HttpContext.Session.SetString("iBankingLogin", qr.custNRIC);
-            //    return RedirectToAction("JointApplicant", "Account360");
-            //}
+            if (ResponseQR() == true)
+            {
+                return RedirectToAction("JointApplicant", "Account360");
+            }
             return View();
         }
-        
+
 
         public ActionResult Identity()
         {
@@ -314,42 +281,94 @@ namespace OCBC_Joint_Account_Application.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UploadFile(CustApplication custApplication)
+        public async Task<IActionResult> Upload(CustApplication custApplication)
         {
-            if (custApplication.CustProofOfResidence != null && custApplication.CustProofOfResidence.Length > 0)
+            ViewData["SingaporeanSelection"] = singaporean;
+            CustApplication custApplication1 = new CustApplication
             {
-                //try
-                //{
-                string fileExt = Path.GetExtension(custApplication.CustProofOfResidence);
-                string uploadedFile = String.Format("residence_proof", fileExt);
-                string savePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\applicationdocs\\", uploadedFile);
+                Singaporean = singaporean[0]
+            };
 
-                // Upload the file to server
-                using (var fileSteam = new FileStream(
-                    savePath, FileMode.Create))
+            ViewData["UploadMessage"] = "File uploaded successfully.";
+            if (custApplication.CustProofOfResidenceUpload != null && custApplication.CustProofOfResidenceUpload.Length > 0)
+            {
+                try
                 {
-                    //await custApplicationContext.CustProofOfResidence.CopyToAsync(fileSteam);
+                    string fileExt = Path.GetExtension(custApplication.CustProofOfResidenceUpload.FileName);
+                    string uploadedFile = String.Format("residence_proof" + fileExt);
+                    string savePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\applicationdocs\\", uploadedFile);
+                    using (var fileSteam = new FileStream(savePath, FileMode.Create))
+                    {
+                        await custApplication.CustProofOfResidenceUpload.CopyToAsync(fileSteam);
+                    }
+                    ViewData["UploadColor"] = "lime";
+                    ViewData["UploadMessage"] = "Upload Successful!";
                 }
-
-                    //csVM.FileUrl = uploadedFile;
-                    //csVM.FileUploadDateTime = DateTime.Now;
-                    //csContext.UploadFile(csVM);
-                    //ViewData["UploadColor"] = "lime";
-                    //ViewData["UploadMessage"] = "Upload Successful!";
-                //}
-                //catch (IOException)
-                //{
-                //    ViewData["UploadColor"] = "red";
-                //    ViewData["UploadMessage"] = "Upload Failed!";
-                //    return View("JoinCompetition", csVM);
-                //}
-                //catch (Exception ex)
-                //{
-                //    ViewData["UploadMessage"] = ex.Message;
-                //    return View("JoinCompetition", csVM);
-                //}
+                catch (IOException)
+                {
+                    ViewData["UploadColor"] = "red";
+                    ViewData["UploadMessage"] = "Upload Failed!";
+                    return View("Upload", custApplication);
+                }
+                catch (Exception ex)
+                {
+                    ViewData["UploadMessage"] = ex.Message;
+                    return View("Upload", custApplication);
+                }
             }
-            return View();
+            if (custApplication.CustNRICFrontUpload != null && custApplication.CustNRICFrontUpload.Length > 0)
+            {
+                try
+                {
+                    string fileExt = Path.GetExtension(custApplication.CustNRICFrontUpload.FileName);
+                    string uploadedFile = String.Format("nric_front", fileExt);
+                    string savePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\applicationdocs\\", uploadedFile);
+                    using (var fileSteam = new FileStream(savePath, FileMode.Create))
+                    {
+                        await custApplication.CustNRICFrontUpload.CopyToAsync(fileSteam);
+                    }
+                    ViewData["UploadColor"] = "lime";
+                    ViewData["UploadMessage"] = "Upload Successful!";
+                }
+                catch (IOException)
+                {
+                    ViewData["UploadColor"] = "red";
+                    ViewData["UploadMessage"] = "Upload Failed!";
+                    return View("Upload", custApplication);
+                }
+                catch (Exception ex)
+                {
+                    ViewData["UploadMessage"] = ex.Message;
+                    return View("Upload", custApplication);
+                }
+            }
+            if (custApplication.CustNRICBackUpload != null && custApplication.CustNRICBackUpload.Length > 0)
+            {
+                try
+                {
+                    string fileExt = Path.GetExtension(custApplication.CustNRICBackUpload.FileName);
+                    string uploadedFile = String.Format("nric_back", fileExt);
+                    string savePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\applicationdocs\\", uploadedFile);
+                    using (var fileSteam = new FileStream(savePath, FileMode.Create))
+                    {
+                        await custApplication.CustNRICBackUpload.CopyToAsync(fileSteam);
+                    }
+                    ViewData["UploadColor"] = "lime";
+                    ViewData["UploadMessage"] = "Upload Successful!";
+                }
+                catch (IOException)
+                {
+                    ViewData["UploadColor"] = "red";
+                    ViewData["UploadMessage"] = "Upload Failed!";
+                    return View("Upload", custApplication);
+                }
+                catch (Exception ex)
+                {
+                    ViewData["UploadMessage"] = ex.Message;
+                    return View("Upload", custApplication);
+                }
+            }
+            return View("Upload", custApplication);
         }
 
         public ActionResult JointApplicant()
@@ -368,6 +387,7 @@ namespace OCBC_Joint_Account_Application.Controllers
         /**==========================
                     METHODS
         ==========================**/
+
         public void ResetQR()
         {
             //QR: Reset QR settings
@@ -378,9 +398,11 @@ namespace OCBC_Joint_Account_Application.Controllers
                 "\"toRedirect\":false," +
                 "\"continueMobile\":false," +
                 "\"isJointApplicant\":false," +
+                "\"selectedAccountTypeId\":2," +
+                "\"selectedAccountTypeName\":\"360 Account\"," +
                 "\"id\":0}";
 
-            var client = new RestClient("https://pfdocbcdb-5763.restdb.io/rest/qr-response/618de4c99402c24f00010d9b");
+            var client = new RestClient("https://pfdocbcdb-5763.restdb.io/rest/qr-response/618ed5b49402c24f00013e0b");
             var request = new RestRequest(Method.PUT);
             request.AddHeader("cache-control", "no-cache");
             request.AddHeader("x-apikey", "f3e68097c1a4127f4472d8730dcb3399f2d14");
@@ -391,19 +413,10 @@ namespace OCBC_Joint_Account_Application.Controllers
             HttpContext.Session.SetString("PageType", "Account360");
             ViewData["Salutation"] = Salutation;
         }
-        /*
-        [HttpPost]
-        public ActionResult JointApplicant(Account360ViewModel jointApplicant)
-        {
-            jointApplicant.FullName = storedApplicant.CustName;
-            //Send SMS to joint applicant
-            return RedirectToAction("Verify", "Account360");
-        }
-        */
 
-        // Check if user is main applicant
         public void ResetQRForJointApplicant(string JAC, int AT)
         {
+            //QR: Reset QR settings
             if (JAC != null)
             {
                 var resetQR =
