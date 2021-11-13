@@ -27,5 +27,7 @@ namespace OCBC_Joint_Account_Application.Models
         public int YearsInEmployment { get; set; }
         public string Occupation { get; set; }
         public string AnnualIncome { get; set; }
+
+       
     }
 }
