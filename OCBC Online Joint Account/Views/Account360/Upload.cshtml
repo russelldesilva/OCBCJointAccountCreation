@@ -7,3 +7,8 @@
 <h2>Hello</h2>
 <a href="~/Account360/Form"><input type="submit" class="btn ibanking-btn" value="Move to form"></a>
 
+<div class="col-md-4">
+    @{
+        @await Html.PartialAsync("_AccountInfoCard.cshtml");
+    }
+</div>
