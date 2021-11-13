@@ -1,10 +1,8 @@
 ﻿
-@{
-    ViewData["Title"] = "OCBC Internet Banking | 360 Account Online Application";
-}
+@{ ViewData["Title"] = "OCBC Internet Banking | 360 Account Online Application"; }
 
 <meta http-equiv="Refresh" content="1">
-
+<a class="btn ibanking-btn" asp-action="Verify">Go to verify page</a>
 <div class="container-fluid joint-360">
     <h1 class="page-title">Create your account within a few clicks</h1>
     <div class="container-fluid">
@@ -79,7 +77,7 @@
             </div>
             <div class="col-md-3">
                 @*<a class="btn ibanking-btn" type="submit" asp-action="Upload">Continue without MyInfo</a>*@
-                <a href="~/Account360/Upload" ><input type="submit" class="btn ibanking-btn" value="Continue without MyInfo"></a>
+                <a href="~/Account360/Upload"><input type="submit" class="btn ibanking-btn" value="Continue without MyInfo"></a>
             </div>
         </div>
     </div>

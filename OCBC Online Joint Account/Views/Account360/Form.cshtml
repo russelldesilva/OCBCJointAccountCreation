@@ -132,8 +132,7 @@
             </div>
             <div class="col-md-4">
                 @{
-                    @await Html.PartialAsync("_AccountInfoCard.cshtml");
-                }
+                                @await Html.PartialAsync("_AccountInfoCard.cshtml"); }
             </div>
 
             <div class="margin marketing">
@@ -181,5 +180,6 @@
             </div>
         </div>
     </form>
+    <a href="~/Account360/JointApplicant"><input type="submit" class="btn ibanking-btn" value="Move to other applicant"></a>
     <h4 style="color:red">@ViewData["Error"]</h4>
 </div>

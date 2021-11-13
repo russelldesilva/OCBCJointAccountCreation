@@ -28,7 +28,10 @@ namespace OCBC_Joint_Account_Application.Controllers
         [HttpPost]
         public ActionResult Login(SingpassViewModel singpassLogin)
         {
-            foreach(Singpass sp in singpassContext.GetSingpassByNRIC(singpassLogin.NRIC))
+            // Set apply method
+            HttpContext.Session.SetString("ApplyMethod", "Singpass");
+
+            foreach (Singpass sp in singpassContext.GetSingpassByNRIC(singpassLogin.NRIC))
             {
                 if(sp.NRIC == singpassLogin.NRIC)
                 {
