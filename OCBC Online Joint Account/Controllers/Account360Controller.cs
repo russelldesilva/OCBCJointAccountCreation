@@ -35,8 +35,10 @@ namespace OCBC_Joint_Account_Application.Controllers
             {
                 return RedirectToAction("JointApplicant", "Account360");
             }
+            IsMainApplicant(JAC);
             return View();
         }
+        
 
         public ActionResult Identity()
         {
@@ -144,8 +146,13 @@ namespace OCBC_Joint_Account_Application.Controllers
             YearsInEmployment.Add(new SelectListItem { Value = "> 40", Text = "> 40" });
         }
 
-        public async Task<ActionResult> Form()
+        public async Task<ActionResult> Form(string? JAC)
         {
+            IsMainApplicant(JAC);
+            
+
+            ViewData["NewCust"] = true;
+
             HttpContext.Session.SetString("PageType", "Account360");
 
             //Populate CountryOfBirth & Nationality
@@ -218,8 +225,10 @@ namespace OCBC_Joint_Account_Application.Controllers
         }
 
         [HttpPost]
-        public ActionResult Form(Account360ViewModel a360)
-        { 
+        public ActionResult Form(Account360ViewModel a360, string? JAC)
+        {
+            IsMainApplicant(JAC);
+
             storedApplicant.CustNRIC = a360.NRIC;
             storedApplicant.Salutation = a360.Salutation;
             storedApplicant.CustName = a360.FullName;
@@ -254,6 +263,8 @@ namespace OCBC_Joint_Account_Application.Controllers
 
         public ActionResult Upload()
         {
+            ViewData["NewCust"] = true;
+            ViewBag.method = "scan";
             HttpContext.Session.SetString("ApplyMethod", "Scan");
             return View();
         }
@@ -349,6 +360,20 @@ namespace OCBC_Joint_Account_Application.Controllers
                 return true;
             }
             return false;
+        }
+
+        public void IsMainApplicant(string? JAC)
+        {
+            // Main Applicant
+            if (JAC == null)
+            {
+                ViewData["IsMain"] = false;
+            }
+            // Joint Applicant
+            else
+            {
+                ViewData["IsMain"] = false;
+            }
         }
     }
 }
