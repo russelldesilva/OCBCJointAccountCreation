@@ -1,13 +1,19 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using OCBC_Online_Joint_Account.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Http;
+using RestSharp;
+using Newtonsoft.Json;
+using OCBC_Joint_Account_Application.Models;
+using OCBC_Joint_Account_Application.DAL;
 
-namespace OCBC_Online_Joint_Account.Controllers
+
+namespace OCBC_Joint_Account_Application.Controllers
 {
     public class HomeController : Controller
     {
@@ -18,20 +24,17 @@ namespace OCBC_Online_Joint_Account.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
+        public ActionResult Index()
         {
-            return View();
+            HttpContext.Session.SetString("PageType", "OCBC");
+            HttpContext.Session.SetString("Applicant", "");
+
+            return View();      
         }
 
-        public IActionResult Privacy()
+        public ActionResult Privacy()
         {
             return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }

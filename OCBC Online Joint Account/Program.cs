@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace OCBC_Online_Joint_Account
+namespace OCBC_Joint_Account_Application
 {
     public class Program
     {

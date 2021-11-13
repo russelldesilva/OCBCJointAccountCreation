@@ -1,0 +1,275 @@
+.container-fluid{
+    width: 87.5%;
+    padding-right: -40px;
+}
+
+/**Navigation Bar*/
+.navbar-header{
+    background-color: rgb(241, 241, 241);
+    font-size: 14px;
+    font-weight: lighter;
+    height: 30px;
+    padding-top: 3px;
+}
+
+.crest{
+    height: 15px;
+}
+
+.navbar-singpass{
+    padding: 18px 0 18px 0;
+}
+
+.navbar-logo{
+    width: 136px;
+}
+
+.navbar-singpass h1{
+    font-size: 18px;
+    font-weight: 500;
+    color: rgb(32, 30, 37);
+}
+
+.navbar-singpass .service-text{
+    margin-left: 45px;
+}
+
+li{
+    display: inline;
+    margin-left: 5px;
+}
+
+
+/**Content*/
+
+.sp_bg {
+    background-image: url("../image/Singpass/sp_bg.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    padding: 130px 0 150px;
+}
+
+.sp_bg img{
+    margin-top: 10px;
+    height: 60%;
+}
+
+.sp_bg h1{
+    font-size: 35px;
+    font-weight: bold;
+}
+
+.sp_bg h2{
+    font-size: 25px;
+    font-weight: lighter;
+    margin-bottom: 20px;
+}
+
+.sp_bg h3{
+    font-size: 18px;
+    margin-top: 35px;
+}
+
+
+/**Card*/
+
+.card{
+    width: 400px;
+    height: 550px;
+    padding: 10px 10px 10px 10px;
+    border-radius: 10px;
+    border-color: transparent;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.login-method {
+    text-align: center;
+    padding: 0;
+    margin: 0;
+}
+
+
+.login-method input[type="radio"] {
+    opacity: 0.01;
+    z-index: 100;
+    vertical-align: baseline;
+}
+
+
+.login-method input[type="radio"]:checked + label, .Checked + label {
+    color: red;
+    padding-bottom: 10px;
+    border: none;
+    border-bottom: 4px solid;
+    border-color: red;
+    font-weight: 600;
+    outline: none;
+}
+
+
+.login-method label {
+    margin: 0 30px 0 20px;
+    font-size: 18px;
+    background-color: transparent;
+    color: rgb(195, 195, 195);
+    font-weight: 600;
+    border-color: transparent;
+}
+
+.login-method label:hover {
+    color: rgb(189, 3, 3);
+}
+
+
+
+.password-login{
+    padding: 20px 40px;
+}
+
+.password-login h1{
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.password-login .textbox{
+    height: 50px;
+    width: 100%;
+    padding-left: 10px;
+    border-radius: 5px;
+    border-color: rgb(121, 121, 121);
+    color: rgb(121, 121, 121);
+    margin-top: 10px;
+}
+
+.password-login .submit{
+    height: 50px;
+    width: 100%;
+    border-radius: 5px;
+    background-color: red;
+    border-color: transparent;
+    color: rgb(255, 255, 255);
+    margin-top: 20px;
+    font-weight: bold;
+}
+
+.password-login span{
+    color: red;
+    font-weight: bold;
+    font-size: 13px;
+}
+
+.card a{
+    font-size: 14px;
+    text-decoration: none;
+}
+
+.card .align-right{
+    text-align: right
+}
+
+.card .sp-register{
+    height: 50px;
+    width: 100%;
+    border-radius: 5px;
+    background-color: transparent;
+    border-color: rgb(121, 121, 121);
+    color: rgb(121, 121, 121);
+    font-weight: bold;
+}
+
+.card hr{
+    margin: 30px 0 30px 0;
+}
+
+/**Footer*/
+
+footer{
+    margin: -20px 0 -60px 0;
+    color: white;
+    background-color:rgb(68, 68, 68);
+    padding: 30px 0 20px;
+}
+
+footer .navbar-logo{
+    margin-bottom: 20px;
+}
+
+
+footer h1{
+    font-size: 14px;
+}
+
+/**Auth Page*/
+
+.info-box {
+    border-width: 2px;
+    border-style: solid;
+    border-color: rgb(180, 180, 180);
+    border-radius: 5px;
+    border-top: red solid 10px;
+    margin: 20px 0 50px;
+}
+
+.info-box-header {
+    text-align: center;
+    background-color: rgb(223, 223, 223);
+    padding: 20px;
+}
+
+    .info-box-header img {
+        height: 30px;
+    }
+
+.info-box-header-content h1 {
+    text-align: left;
+    font-size: 18px;
+    margin-top: 13px;
+}
+
+.info-box-body {
+    margin: 40px 0 40px 0;
+}
+
+    .info-box-body li {
+        display: block;
+        margin-top: 7px;
+        font-size: 18px;
+        font-weight: 600;
+        color: rgb(68, 68, 68)
+    }
+
+.accept-agreement {
+    text-align: center;
+}
+
+    .accept-agreement h3 {
+        font-size: 17px;
+        color: rgb(68, 68, 68)
+    }
+
+    .accept-agreement span {
+        color: red;
+    }
+
+    .accept-agreement .submit {
+        height: 50px;
+        width: 110px;
+        border-radius: 5px;
+        background-color: red;
+        border-color: transparent;
+        color: rgb(255, 255, 255);
+        margin: 50px 0 50px 150px;
+    }
+
+    .accept-agreement .cancel {
+        height: 50px;
+        width: 110px;
+        border-radius: 5px;
+        background-color: transparent;
+        border-color: rgb(189, 189, 189);
+        color: rgb(119, 119, 119);
+    }
+
+.modal-edit{
+    margin-top: 50px;
+}

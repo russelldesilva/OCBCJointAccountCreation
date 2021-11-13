@@ -1,0 +1,308 @@
+.bg-size {
+    height: 620px;
+    background-size: cover;
+    background-image: url("../image/masthead-bg.png")
+}
+
+.masthead_kv {
+    height: 620px;
+    right: 0;
+    position: absolute;
+}
+
+.container-fluid {
+    width: 77%;
+    padding-right: -40px;
+}
+
+.subcategory h1 {
+    color: black;
+    letter-spacing: 5px;
+    margin-top: 80px;
+    text-transform: uppercase;
+    font-size: 14px;
+}
+
+.subcategory span {
+    margin-top: 20px;
+    font-weight: 100;
+    text-transform: none;
+    letter-spacing: normal;
+    font-size: 59px;
+}
+
+.card {
+    margin-top: 45px;
+    width: 820px;
+    height: 500px;
+    border-color: transparent;
+    border-radius: 5px;
+    padding: 50px 70px 50px 70px;
+    color: rgb(70, 70, 70);
+}
+
+.card, b {
+    font-size: 16px;
+}
+
+.paragraph {
+    margin-left: -8px;
+    margin-top: 20px;
+    font-size: 19px;
+    color: rgb(95, 95, 95);
+    line-height: 30px;
+}
+
+.applyonline-btn {
+    background-image: linear-gradient(to right, rgb(255, 72, 0), red);
+    margin-top: 10px;
+    font-weight: bold;
+    padding: 15px 35px 15px 35px;
+    color: white;
+    font-size: 17px;
+}
+
+.vl {
+    border-right: 3px solid;
+    height: 240px;
+    border-color: rgb(226, 226, 226);
+}
+
+.info-heading {
+    margin-left: 5px;
+}
+
+.paragraph-list {
+    margin-left: 10px;
+    margin-top: 18px;
+    font-size: 19px;
+    color: rgb(95, 95, 95);
+    line-height: 30px;
+}
+
+/**Application Information Table*/
+
+.hl {
+    border-bottom: 3px solid;
+    width: 60px;
+    border-width: 5px;
+    border-color: red;
+    margin-bottom: 10px;
+}
+
+.apply-information {
+    margin-top: 250px;
+}
+
+    .apply-information h2, .applicstatus h2 {
+        color: black;
+        font-weight: bold;
+        letter-spacing: 5px;
+        text-transform: uppercase;
+        font-size: 14px;
+    }
+
+    .apply-information h3 {
+        color: black;
+        font-weight: lighter;
+        font-size: 20px;
+    }
+
+    .apply-information h4 {
+        color: black;
+        font-weight: 500;
+        font-size: 20px;
+        margin-bottom: 25px;
+    }
+
+    .apply-information ul li {
+        color: black;
+        font-weight: 500;
+        font-size: 20px;
+    }
+
+.context hr {
+    margin-top: 40px;
+}
+
+.margintop-50 {
+    margin-top: 50px;
+}
+
+.context b {
+    color: rgb(80, 80, 80);
+    font-weight: bold;
+    letter-spacing: normal;
+    text-transform: none;
+    font-size: 24px;
+}
+
+.result {
+    margin-top: 20px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 1.4s ease;
+}
+
+    .result a {
+        text-decoration: none;
+        font-size: 20px;
+        color: rgb(0, 140, 255);
+    }
+
+    .result p {
+        font-size: 18px;
+    }
+
+.result-link {
+    margin-top: 20px;
+}
+
+
+.faq.active .result {
+    max-height: 300px;
+    animation: fade 1s ease-in-out;
+}
+
+.faq.active svg {
+    transform: rotate(180deg);
+}
+
+svg {
+    transition: transform 0.5s ease-in;
+}
+
+.applicstatus {
+    margin-top: 200px;
+    margin-bottom: 50px;
+}
+
+    .applicstatus h1 {
+        margin-top: 40px;
+        text-transform: uppercase;
+        font-size: 20px;
+    }
+
+.textbox-default {
+    background-color: rgb(209, 209, 209);
+    border-style: none;
+    height: 50px;
+    width: 395px;
+}
+
+.enquire-btn {
+    background-image: linear-gradient(to right, rgb(255, 72, 0), red);
+    margin-top: 20px;
+    font-weight: bold;
+    padding: 10px 70px 10px 70px;
+    color: white;
+    font-size: 17px;
+}
+
+/**Navigation Bar*/
+
+.vl-navbar {
+    margin-top: -10px;
+    border-right: 8px solid;
+    height: 160px;
+    border-color: red;
+}
+
+.navbar-logo {
+    height: 37px;
+}
+
+.navbar-style a {
+    margin-left: 85px;
+    font-size: 17px;
+}
+
+/**Footer*/
+footer{
+    margin-top: 150px;
+    margin-bottom: -150px;
+}
+
+.footer-logo {
+    width: 90%;
+    margin-bottom: 50px;
+}
+
+footer h1 {
+    font-size: 18px;
+    font-weight: bold;
+    color: rgb(32, 32, 32);
+}
+
+footer h2 {
+    font-size: 17px;
+    margin-top: 25px;
+    color: rgb(129, 129, 129);
+    font-weight: lighter;
+}
+
+footer hr {
+    margin: 35px 0 35px 0;
+}
+
+.footer-right {
+    text-align: right;
+}
+
+.icon img {
+    max-height: 60px;
+}
+
+footer li {
+    color: rgb(161, 161, 161);
+    display: inline;
+    margin-right: 20px;
+}
+
+.footer-btm {
+    margin-left: -44px;
+}
+
+/**Modal*/
+
+.modal h1 {
+    font-size: 25px;
+    font-weight: bold;
+    color: rgb(70, 70, 70);
+}
+
+.modal h2 {
+    font-size: 18px;
+    color: rgb(161, 161, 161);
+    font-weight: lighter;
+}
+
+.applynow-btn {
+    background-image: linear-gradient(to right, rgb(255, 72, 0), red);
+    font-weight: bold;
+    padding: 5px 20px 5px 20px;
+    color: white;
+    font-size: 18px;
+}
+
+.modal-content {
+    height: 400px;
+    padding: 0 20px 0 0;
+}
+
+.modal-body {
+    padding: 20px 40px 30px 50px;
+}
+
+.modal hr {
+    margin: 50px 0 50px 0;
+}
+
+.modal-close {
+    background-size: 30px;
+    background-repeat: no-repeat;
+    background-color: transparent;
+    border: none;
+    padding: 8px 18px 8px 18px;
+    margin-top: 20px;
+}
