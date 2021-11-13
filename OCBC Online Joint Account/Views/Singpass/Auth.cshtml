@@ -1,0 +1,49 @@
+﻿
+@{
+    ViewData["Title"] = "Auth";
+}
+
+<link rel="stylesheet" href="~/css/style_singpass.css" />
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-3"></div>
+        <div class="col-md-6 ">
+            <div class="info-box">
+                <div class="info-box-header">
+                    <img src="~/image/Singpass/singpass-logo.svg">
+                    <div class="info-box-header-content">
+                        <h1>Singpass retrieves personal data from relevant government agencies to pre-fill the relevent fields, making digital transaction faster and more convenient.</h1>
+                        <h1><b>This digital service is requesting the following information from Singpass, for the purpose of OCBC 360 Account Application</b></h1>
+                    </div>
+                </div>
+                <div class="info-box-body">
+                    <ul>
+                        <li>> Name</li>
+                        <li>> Hanyu Pinyin Name</li>
+                        <li>> Alias Name</li>
+                        <li>> Hanyu Pinyin Alias Name</li>
+                        <li>> Married Name</li>
+                        <li>> Nationality</li>
+                        <li>> Date of Birth</li>
+                        <li>> Sex</li>
+                        <li>> Race</li>
+                        <li>> Country of Birth</li>
+                        <li>> Registered Address</li>
+                        <li>> Mailing Address</li>
+                        <li>> Email</li>
+                        <li>> Mobile Number</li>
+                        <li>> NRIC/FIN</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="accept-agreement">
+                <h3>Clicking the "I Agree" button permits this digital service to retreive your data based on the <span>Terms of Use</span>.</h3>
+                <form method="post">
+                    <input class="cancel" type="submit" value="Cancel" asp-controller="Account360" asp-action="ApplyOnline">
+                    <input class="submit" type="submit" value="I Agree">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

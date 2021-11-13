@@ -1,0 +1,55 @@
+﻿@model OCBC_Joint_Account_Application.Models.SingpassViewModel
+
+@{
+    ViewData["Title"] = "Singpass login";
+}
+
+<!--Content-->
+<div class="sp_bg">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-9">
+                <div class="row">
+                    <div class="col-md-1">
+                        <img src="~/image/Singpass/icon-sp-mascot.svg">
+                    </div>
+                    <div class="col-md-11">
+                        <h1>Welcome to Singpass</h1>
+                        <h2>Your trusted digital identity</h2>
+                    </div>
+                </div>
+                <h3>Have questions?</h3>
+                <h3>Locate a counter</h3>
+                <h3>Read how-to guides</h3>
+                <h3>Contact us</h3>
+            </div>
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="login-method">
+                        <input class="radio-verify" type="radio" id="QR" name="verify-type" value="Singpass">
+                        <label for="QR">Singpass app</label>
+                        <input class="radio-verify" type="radio" id="Password" name="verify-type" value="Password" checked>
+                        <label for="Password">Password login</label>
+                    </div>
+                    <div class="password-login">
+                        <form method="post" asp-controller="Singpass">
+                            <h1>Log in</h1>
+                            <span>@ViewData["Incorrect"]</span>
+                            <input asp-for="NRIC" class="textbox" type="text" placeholder="Singpass ID" required>
+                            <input asp-for="Password" class="textbox" type="password" placeholder="Password" required>
+                            <input class="submit" type="submit" value="Log In">
+                        </form>
+                    </div>
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-6" id="ButtonDisable_Click"><a href="">Forget Singpass ID</a></div>
+                            <div class="col-md-6 align-right" id="ButtonDisable_Click"><a href="">Reset Password</a></div>
+                        </div>
+                        <hr>
+                        <input class="sp-register" type="submit" value="Register for Singpass" id="ButtonDisable_Click">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

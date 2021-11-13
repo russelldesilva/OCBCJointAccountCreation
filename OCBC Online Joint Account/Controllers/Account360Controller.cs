@@ -30,10 +30,12 @@ namespace OCBC_Joint_Account_Application.Controllers
         bool toRedirect = false;
         bool continueMobile = false;
 
+        
         public ActionResult ApplyOnline(string? JAC)
         {
+            
             HttpContext.Session.SetString("PageType", "Account360");
-
+            /*
             if(JAC != null)
             {
                 //QR: Reset QR settings
@@ -70,9 +72,10 @@ namespace OCBC_Joint_Account_Application.Controllers
                 toRedirect = true;
                 HttpContext.Session.SetString("iBankingLogin", qr.custNRIC);
                 return RedirectToAction("JointApplicant", "Account360");
-            }
+            }*/
             return View();
         }
+        
 
         public ActionResult Identity()
         {

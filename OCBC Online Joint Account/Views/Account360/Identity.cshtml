@@ -1,0 +1,45 @@
+﻿@model OCBC_Joint_Account_Application.Models.Account360ViewModel
+
+@{
+    ViewData["Title"] = "Identity Verification";
+}
+
+@ViewData["A"]
+
+<div class="container-fluid identity-verification">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="completion-bar">
+                <progress value="1" max="4"></progress>
+                <h1 class="text-1"><b>Identity Verification</b></h1>
+                <h1 class="text-2">Main Applicant Information</h1>
+                <h1 class="text-3">Joint-Applicant Information</h1>
+                <h1 class="text-4">Verify Information</h1>
+                <h2 class="circle circle-1"></h2>
+                <h2 class="circle circle-2"></h2>
+                <h2 class="circle circle-3"></h2>
+                <h2 class="circle circle-4"></h2>
+            </div>
+            <h1 class="page-title">Before we proceed, allow us to do a quick verification on your identity.</h1>
+            <h5><b>Verify Via</b></h5>
+            <input class="radio-verify" type="radio" id="SMS-OTP" name="verify-type" value="SMS OTP" checked>
+            <label for="SMS-OTP">SMS OTP</label>
+            <input class="radio-verify" type="radio" id="Voice" name="verify-type" value="VOICE">
+            <label for="Voice">Voice Biometric</label>
+
+            <div class="sms-otp">
+                <form method="post">
+                    <h5>Enter the OTP sent to your registered mobile number </h5>
+                    <input class="textbox" type="text" placeholder="OTP" asp-for="OTP" required>
+                    <input class="resend" type="submit" value="Submit">
+                    <h4>@ViewData["Invalid"]</h4>
+                </form>
+
+                <form method="get">
+                    <h6>If you did not receive your OTP in the next 2 minutes, please click "Resend"</h6>
+                    <input class="resend" type="submit" value="Resend" asp-controller="Account360" asp-action="Identity">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

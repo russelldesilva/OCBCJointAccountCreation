@@ -1,0 +1,86 @@
+﻿
+@{
+    ViewData["Title"] = "OCBC Internet Banking | 360 Account Online Application";
+}
+
+<meta http-equiv="Refresh" content="1">
+
+<div class="container-fluid joint-360">
+    <h1 class="page-title">Create your account within a few clicks</h1>
+    <div class="container-fluid">
+        <div class="vl-360"><h2>For OCBC Customers</h2></div>
+        <div class="row">
+            <div class="col-md-4">
+                <h3>I have a SingPass account</h3>
+            </div>
+            <div class="col-md-5">
+                <h4>Open your account instantly when you apply with Myinfo via Singpass login.</h4>
+            </div>
+            <div class="col-md-3">
+                <a href="~/Singpass/Login"><input type="submit" class="btn myinfo-btn" value="Apply with MyInfo"></a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <h3>I have an Internet Banking with OCBC</h3>
+            </div>
+            <div class="col-md-5">
+                <h4>If you have a current or savings account with us, you can apply instantly via Internet Banking with only a few clicks.</h4>
+            </div>
+            <div class="col-md-3">
+                <input type="submit" class="btn ibanking-btn" value="Apply with Internet Banking">
+            </div>
+        </div>
+
+        <div class="qr">
+            <h1>Alternatively, you can scan the QR code to complete the application</h1>
+            <div class="row">
+                <div class="col-md-6 qr-code">
+                    <img src="~/image/qr.png">
+                </div>
+                <div class="col-md-6">
+                    <h2>1. <a href="https://www.ocbc.com/personal-banking/digital-banking/digital-solutions-and-services">Download the OCBC Digital Banking App</a></h2>
+                    <h2>2. Login to Online Banking</h2>
+                    <h2>3. Click "Scan and Apply"</h2>
+
+                </div>
+            </div>
+        </div>
+
+        <hr class="divider">
+        <div class="vl-360"><h2>For New Customers</h2></div>
+        <div class="row">
+            <div class="col-md-4">
+                <h3>I have a SingPass account</h3>
+            </div>
+            <div class="col-md-5">
+                <h4>Open your account instantly when you apply with Myinfo via Singpass login.</h4>
+            </div>
+            <div class="col-md-3">
+                <input type="submit" class="btn myinfo-btn" value="Apply with MyInfo">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <h3>I do not have a SingPass account</h3>
+            </div>
+            <div class="col-md-5">
+                <h4>Proceed without Myinfo. Please make sure you have all of the necessary documentation.</h4>
+                <h5>For Singaporeans and Permanent Residents:</h5>
+                <h4>NRIC</h4>
+                <hr>
+                <h5>Additional documents</h5>
+                <h5>Include any one of the following documents:</h5>
+                <ul>
+                    <li>Phone bill</li>
+                    <li>Half-yearly CPF statement</li>
+                    <li>Any bank statement</li>
+                </ul>
+            </div>
+            <div class="col-md-3">
+                <a class="btn ibanking-btn" type="submit" asp-action="Upload">Continue without MyInfo</a>
+                @*<a href="~/Account360/Upload" ><input type="submit" class="btn ibanking-btn" value="Continue without MyInfo"></a>*@
+            </div>
+        </div>
+    </div>
+</div>
