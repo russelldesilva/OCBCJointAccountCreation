@@ -359,10 +359,6 @@ namespace OCBC_Joint_Account_Application.Controllers
             return RedirectToAction("Verify", "Account360");
         }
         */
-        public ActionResult Verify()
-        {
-            return View();
-
 
         // Check if user is main applicant
         public void ResetQRForJointApplicant(string JAC, int AT)
