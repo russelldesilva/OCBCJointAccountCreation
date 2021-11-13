@@ -15,7 +15,7 @@ using Twilio.Rest.Api.V2010.Account;
 using Twilio.Types;
 using Newtonsoft.Json;
 using RestSharp;
-
+//Test commit
 
 namespace OCBC_Joint_Account_Application.Controllers
 {
@@ -35,7 +35,7 @@ namespace OCBC_Joint_Account_Application.Controllers
         {
             
             HttpContext.Session.SetString("PageType", "Account360");
-            /*
+            
             if(JAC != null)
             {
                 //QR: Reset QR settings
@@ -48,7 +48,7 @@ namespace OCBC_Joint_Account_Application.Controllers
                     "\"isJointApplicant\":true," +
                     "\"id\":0}";
 
-                var client1 = new RestClient("https://pfdocbcdb-5763.restdb.io/rest/qr-response/618de4c99402c24f00010d9b");
+                var client1 = new RestClient("https://pfdocbcdb-5763.restdb.io/rest/qr-response/618ed5b49402c24f00013e0b");
                 var request1 = new RestRequest(Method.PUT);
                 request1.AddHeader("cache-control", "no-cache");
                 request1.AddHeader("x-apikey", "f3e68097c1a4127f4472d8730dcb3399f2d14");
@@ -58,7 +58,7 @@ namespace OCBC_Joint_Account_Application.Controllers
             }
 
             //QR: Wait for response from iBanking App
-            var client = new RestClient("https://pfdocbcdb-5763.restdb.io/rest/qr-response/618de4c99402c24f00010d9b");
+            var client = new RestClient("https://pfdocbcdb-5763.restdb.io/rest/qr-response/618ed5b49402c24f00013e0b");
             var request = new RestRequest(Method.GET);
             request.AddHeader("cache-control", "no-cache");
             request.AddHeader("x-apikey", "f3e68097c1a4127f4472d8730dcb3399f2d14");
@@ -72,7 +72,7 @@ namespace OCBC_Joint_Account_Application.Controllers
                 toRedirect = true;
                 HttpContext.Session.SetString("iBankingLogin", qr.custNRIC);
                 return RedirectToAction("JointApplicant", "Account360");
-            }*/
+            }
             return View();
         }
         
@@ -214,32 +214,53 @@ namespace OCBC_Joint_Account_Application.Controllers
 
             Account360ViewModel ac360 = new Account360ViewModel();
 
-            ac360.DateOfBirth = DateTime.Today;
-
-            if (HttpContext.Session.GetString("Applicant") != "")
+            // Check for Singpass then run code to pull from singpass
+            if (ViewData["ApplyMethod"].ToString() == "Singpass")
             {
-                foreach (Singpass sp in singpassContext.GetSingpassByNRIC(HttpContext.Session.GetString("Applicant")))
+                ac360.DateOfBirth = DateTime.Today;
+
+                if (HttpContext.Session.GetString("Applicant") != "")
                 {
-                    ac360.FullName = sp.Name;
-                    ac360.NRIC = sp.NRIC;
-                    ac360.DateOfBirth = sp.DoB;
-                    ac360.CountryOfBirth = sp.CountryOfBirth;
-                    ac360.Nationality = sp.Nationality;
-                    if(sp.Gender == "M")
+                    foreach (Singpass sp in singpassContext.GetSingpassByNRIC(HttpContext.Session.GetString("Applicant")))
                     {
-                        ac360.Gender = "Male";
+                        ac360.FullName = sp.Name;
+                        ac360.NRIC = sp.NRIC;
+                        ac360.DateOfBirth = sp.DoB;
+                        ac360.CountryOfBirth = sp.CountryOfBirth;
+                        ac360.Nationality = sp.Nationality;
+                        if (sp.Gender == "M")
+                        {
+                            ac360.Gender = "Male";
+                        }
+                        else
+                        {
+                            ac360.Gender = "Female";
+                        }
+                        ac360.EmailAddress = sp.Email;
+                        ac360.MobileNum = sp.MobileNum;
+                        ac360.Address = sp.RegisteredAddress;
                     }
-                    else
-                    {
-                        ac360.Gender = "Female";
-                    }
-                    ac360.EmailAddress = sp.Email;
-                    ac360.MobileNum = sp.MobileNum;
-                    ac360.Address = sp.RegisteredAddress;
-                }              
+                }
+
+                return View(ac360);
+            }
+            // Else if iBanking run code to pull from iBanking
+            else if (ViewData["ApplyMethod"].ToString() == "iBanking")
+            {
+                return View();
             }
 
-            return View(ac360);
+            // Else if Scan run code to pull from Scan
+            else if (ViewData["ApplyMethod"].ToString() == "Scan")
+            {
+                return View();
+            }
+
+            // Else show some error
+            else
+            {
+                return View();
+            }
         }
 
         [HttpPost]
@@ -279,6 +300,7 @@ namespace OCBC_Joint_Account_Application.Controllers
 
         public ActionResult Upload()
         {
+            HttpContext.Session.SetString("ApplyMethod", "Scan");
             return View();
         }
 
@@ -318,5 +340,7 @@ namespace OCBC_Joint_Account_Application.Controllers
         {
             return View();
         }
+        //test
+        //test2
     }
 }
