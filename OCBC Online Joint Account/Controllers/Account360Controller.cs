@@ -246,19 +246,7 @@ namespace OCBC_Joint_Account_Application.Controllers
             storedApplicant.Occupation = a360.Occupation;
             storedApplicant.Income = a360.AnnualIncome;
 
-            Application mainApplication = new Application()
-            {
-                CustNRIC = storedApplicant.CustNRIC,
-                AccountTypeID = 2,
-                Status = "Pending",
-                CreationDate = DateTime.Today,
-                JointApplicantCode = $"J{DateTime.Today.Day}{DateTime.Today.Month}{storedApplicant.CustNRIC.Substring(5, 3)}"
-            };
-
-            //applicationContext.Add(mainApplication);
-
-            TempData["Code"] = mainApplication.JointApplicantCode;
-            return RedirectToAction("JointApplicant", "Account360", mainApplication);
+            return RedirectToAction("JointApplicant", "Account360");
         }
 
         public ActionResult Upload()
@@ -314,10 +302,33 @@ namespace OCBC_Joint_Account_Application.Controllers
             request.AddParameter("application/json", resetQR, ParameterType.RequestBody);
             IRestResponse response = client.Execute(request);
         }
-
-        public void ResetQRForJointApplicant(string JAC, int AT)
+        [HttpPost]
+        public ActionResult JointApplicant(Account360ViewModel jointApplicant)
         {
             //QR: Reset QR settings
+            //Send SMS to joint applicant
+            Application mainApplication = new Application()
+            {
+                CustNRIC = storedApplicant.CustNRIC,
+                AccountTypeID = 2,
+                Status = "Pending",
+                CreationDate = DateTime.Today,
+                JointApplicantCode = $"J{DateTime.Today.Day}{DateTime.Today.Month}{storedApplicant.CustNRIC.Substring(5, 3)}"
+            };
+
+            //applicationContext.Add(mainApplication);
+
+            return RedirectToAction("Verify", "Account360");
+        }
+        public ActionResult Verify()
+        {
+            return View();
+        }
+
+
+        // Check if user is main applicant
+        public void ResetQRForJointApplicant(string JAC, int AT)
+        {
             if (JAC != null)
             {
                 var resetQR =
