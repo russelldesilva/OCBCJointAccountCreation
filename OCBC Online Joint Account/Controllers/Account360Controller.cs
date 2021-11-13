@@ -254,13 +254,6 @@ namespace OCBC_Joint_Account_Application.Controllers
             return View();
         }
 
-        [HttpPost]
-        public ActionResult JointApplicant(JointApplicantViewModel jointApplicant)
-        {
-            jointApplicant.MainApplicantName = storedApplicant.CustName;
-            //Send SMS to joint applicant
-            return RedirectToAction("Verify", "Account360");
-        }
         public ActionResult Verify()
         {
             return View();
@@ -308,10 +301,6 @@ namespace OCBC_Joint_Account_Application.Controllers
             //applicationContext.Add(mainApplication);
 
             return RedirectToAction("Verify", "Account360");
-        }
-        public ActionResult Verify()
-        {
-            return View();
         }
 
 
