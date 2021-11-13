@@ -216,7 +216,7 @@ namespace OCBC_Joint_Account_Application.Controllers
             Account360ViewModel ac360 = new Account360ViewModel();
 
             // Check for Singpass then run code to pull from singpass
-            if (ViewData["ApplyMethod"].ToString() == "Singpass")
+            if (HttpContext.Session.GetString("ApplyMethod") == "Singpass")
             {
                 ac360.DateOfBirth = DateTime.Today;
 
@@ -246,13 +246,13 @@ namespace OCBC_Joint_Account_Application.Controllers
                 return View(ac360);
             }
             // Else if iBanking run code to pull from iBanking
-            else if (ViewData["ApplyMethod"].ToString() == "iBanking")
+            else if (HttpContext.Session.GetString("ApplyMethod") == "iBanking")
             {
                 return View();
             }
 
             // Else if Scan run code to pull from Scan
-            else if (ViewData["ApplyMethod"].ToString() == "Scan")
+            else if (HttpContext.Session.GetString("ApplyMethod") == "Scan")
             {
                 return View();
             }
@@ -335,7 +335,7 @@ namespace OCBC_Joint_Account_Application.Controllers
             ViewData["Salutation"] = Salutation;
             return View();
         }
-
+        /*
         [HttpPost]
         public ActionResult JointApplicant(JointApplicantViewModel jointApplicant)
         {
@@ -343,6 +343,7 @@ namespace OCBC_Joint_Account_Application.Controllers
             //Send SMS to joint applicant
             return RedirectToAction("Verify", "Account360");
         }
+        */
         public ActionResult Verify()
         {
             return View();
