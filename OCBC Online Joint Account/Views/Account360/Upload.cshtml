@@ -3,6 +3,9 @@
     ViewData["Title"] = "Upload";
 }
 
-<h1>Upload</h1>
-<h2>Hello</h2>
 
+<div class="col-md-4">
+    @{
+        @await Html.PartialAsync("_AccountInfoCard.cshtml");
+    }
+</div>
