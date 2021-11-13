@@ -349,13 +349,12 @@ namespace OCBC_Joint_Account_Application.Controllers
 
             HttpContext.Session.SetString("PageType", "Account360");
             ViewData["Salutation"] = Salutation;
-            return View();
         }
 
         [HttpPost]
-        public ActionResult JointApplicant(JointApplicantViewModel jointApplicant)
+        public ActionResult JointApplicant(Account360ViewModel jointApplicant)
         {
-            jointApplicant.MainApplicantName = storedApplicant.CustName;
+            jointApplicant.FullName = storedApplicant.CustName;
             //Send SMS to joint applicant
             return RedirectToAction("Verify", "Account360");
         }
@@ -406,10 +405,6 @@ namespace OCBC_Joint_Account_Application.Controllers
                 return true;
             }
             return false;
-        }
-        public ActionResult Verify()
-        {
-            return View();
         }
         //test
         //test2
