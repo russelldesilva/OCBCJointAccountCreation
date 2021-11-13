@@ -15,6 +15,7 @@ using Twilio.Rest.Api.V2010.Account;
 using Twilio.Types;
 using Newtonsoft.Json;
 using RestSharp;
+// Test Commit 2.0
 
 namespace OCBC_Joint_Account_Application.Controllers
 {
@@ -27,16 +28,54 @@ namespace OCBC_Joint_Account_Application.Controllers
 
         bool hasScanned = false;
         bool toRedirect = false;
-        public ActionResult ApplyOnline(int AT, string? JAC)
-        {     
+        bool continueMobile = false;
+
+        
+        public ActionResult ApplyOnline(string? JAC)
+        {
+            
             HttpContext.Session.SetString("PageType", "Account360");
-            ResetQRForJointApplicant(JAC, AT);
-            if (ResponseQR() == true)
-            {
-                return RedirectToAction("JointApplicant", "Account360");
-            }
+            
+            //if(JAC != null)
+            //{
+            //    //QR: Reset QR settings
+            //    var resetQR =
+            //        "{\"qr_data\":\"ocbc_jointacc_digital_create\"," +
+            //        "\"custNRIC\":null," +
+            //        "\"hasScanned\":" + hasScanned +"," +
+            //        "\"toRedirect\":" + toRedirect + "," +
+            //        "\"continueMobile\":false," +
+            //        "\"isJointApplicant\":true," +
+            //        "\"id\":0}";
+
+            //    var client1 = new RestClient("https://pfdocbcdb-5763.restdb.io/rest/qr-response/618ed5b49402c24f00013e0b");
+            //    var request1 = new RestRequest(Method.PUT);
+            //    request1.AddHeader("cache-control", "no-cache");
+            //    request1.AddHeader("x-apikey", "f3e68097c1a4127f4472d8730dcb3399f2d14");
+            //    request1.AddHeader("content-type", "application/json");
+            //    request1.AddParameter("application/json", resetQR, ParameterType.RequestBody);
+            //    IRestResponse response1 = client1.Execute(request1);
+            //}
+
+            ////QR: Wait for response from iBanking App
+            //var client = new RestClient("https://pfdocbcdb-5763.restdb.io/rest/qr-response/618ed5b49402c24f00013e0b");
+            //var request = new RestRequest(Method.GET);
+            //request.AddHeader("cache-control", "no-cache");
+            //request.AddHeader("x-apikey", "f3e68097c1a4127f4472d8730dcb3399f2d14");
+            //request.AddHeader("content-type", "application/json");
+            //IRestResponse response = client.Execute(request);
+            //QR qr = JsonConvert.DeserializeObject<QR>(response.Content);
+
+            //if (qr.hasScanned == true && qr.toRedirect == true && qr.continueMobile == false)
+            //{
+            //    hasScanned = true;
+            //    toRedirect = true;
+            //    HttpContext.Session.SetString("iBankingLogin", qr.custNRIC);
+            //    return RedirectToAction("JointApplicant", "Account360");
+            //}
             return View();
         }
+        
 
         public ActionResult Identity()
         {
@@ -97,6 +136,7 @@ namespace OCBC_Joint_Account_Application.Controllers
         private List<SelectListItem> AnnualIncome = new List<SelectListItem>();
         private List<SelectListItem> Occupation = new List<SelectListItem>();
         private List<SelectListItem> YearsInEmployment = new List<SelectListItem>();
+        private List<string> singaporean = new List<string> { "I am a Singaporean Citizen/Permanent Resident", "I am a Foreigner working/studying or residing in Singapore" };
 
         public Account360Controller()
         {
@@ -176,9 +216,10 @@ namespace OCBC_Joint_Account_Application.Controllers
             Account360ViewModel ac360 = new Account360ViewModel();
 
             // Check for Singpass then run code to pull from singpass
-            if (HttpContext.Session.GetString("ApplyMethod") == "Singpass")
+            if (ViewData["ApplyMethod"].ToString() == "Singpass")
             {
                 ac360.DateOfBirth = DateTime.Today;
+
                 if (HttpContext.Session.GetString("Applicant") != "")
                 {
                     foreach (Singpass sp in singpassContext.GetSingpassByNRIC(HttpContext.Session.GetString("Applicant")))
@@ -201,17 +242,23 @@ namespace OCBC_Joint_Account_Application.Controllers
                         ac360.Address = sp.RegisteredAddress;
                     }
                 }
+
                 return View(ac360);
             }
-            else if (HttpContext.Session.GetString("ApplyMethod") == "iBanking") // Else if iBanking run code to pull from iBanking
+            // Else if iBanking run code to pull from iBanking
+            else if (ViewData["ApplyMethod"].ToString() == "iBanking")
             {
                 return View();
             }
-            else if (HttpContext.Session.GetString("ApplyMethod") == "Scan") // Else if Scan run code to pull from Scan
+
+            // Else if Scan run code to pull from Scan
+            else if (ViewData["ApplyMethod"].ToString() == "Scan")
             {
                 return View();
             }
-            else // Else show some error
+
+            // Else show some error
+            else
             {
                 return View();
             }
@@ -237,13 +284,31 @@ namespace OCBC_Joint_Account_Application.Controllers
             storedApplicant.Occupation = a360.Occupation;
             storedApplicant.Income = a360.AnnualIncome;
 
-            return RedirectToAction("JointApplicant", "Account360");
+            Application mainApplication = new Application()
+            {
+                CustNRIC = storedApplicant.CustNRIC,
+                AccountTypeID = 2,
+                Status = "Pending",
+                CreationDate = DateTime.Today,
+                JointApplicantCode = $"J{DateTime.Today.Day}{DateTime.Today.Month}{storedApplicant.CustNRIC.Substring(5, 3)}"
+            };
+
+            //applicationContext.Add(mainApplication);
+
+            TempData["Code"] = mainApplication.JointApplicantCode;
+            return RedirectToAction("JointApplicant", "Account360", mainApplication);
         }
 
         public ActionResult Upload()
         {
+            ViewData["SingaporeanSelection"] = singaporean;
+            CustApplication custApplication = new CustApplication
+            {
+                Singaporean = singaporean[0]
+            };
+            
             HttpContext.Session.SetString("ApplyMethod", "Scan");
-            return View();
+            return View(custApplication);
         }
 
         public ActionResult JointApplicant()
@@ -272,34 +337,26 @@ namespace OCBC_Joint_Account_Application.Controllers
                 "\"toRedirect\":false," +
                 "\"continueMobile\":false," +
                 "\"isJointApplicant\":false," +
-                "\"selectedAccountTypeId\":2," +
-                "\"selectedAccountTypeName\":\"360 Account\"," +
                 "\"id\":0}";
 
-            var client = new RestClient("https://pfdocbcdb-5763.restdb.io/rest/qr-response/618ed5b49402c24f00013e0b");
+            var client = new RestClient("https://pfdocbcdb-5763.restdb.io/rest/qr-response/618de4c99402c24f00010d9b");
             var request = new RestRequest(Method.PUT);
             request.AddHeader("cache-control", "no-cache");
             request.AddHeader("x-apikey", "f3e68097c1a4127f4472d8730dcb3399f2d14");
             request.AddHeader("content-type", "application/json");
             request.AddParameter("application/json", resetQR, ParameterType.RequestBody);
             IRestResponse response = client.Execute(request);
+
+            HttpContext.Session.SetString("PageType", "Account360");
+            ViewData["Salutation"] = Salutation;
+            return View();
         }
+
         [HttpPost]
-        public ActionResult JointApplicant(Account360ViewModel jointApplicant)
+        public ActionResult JointApplicant(JointApplicantViewModel jointApplicant)
         {
-            //QR: Reset QR settings
+            jointApplicant.MainApplicantName = storedApplicant.CustName;
             //Send SMS to joint applicant
-            Application mainApplication = new Application()
-            {
-                CustNRIC = storedApplicant.CustNRIC,
-                AccountTypeID = 2,
-                Status = "Pending",
-                CreationDate = DateTime.Today,
-                JointApplicantCode = $"J{DateTime.Today.Day}{DateTime.Today.Month}{storedApplicant.CustNRIC.Substring(5, 3)}"
-            };
-
-            //applicationContext.Add(mainApplication);
-
             return RedirectToAction("Verify", "Account360");
         }
 
@@ -350,5 +407,11 @@ namespace OCBC_Joint_Account_Application.Controllers
             }
             return false;
         }
+        public ActionResult Verify()
+        {
+            return View();
+        }
+        //test
+        //test2
     }
 }
