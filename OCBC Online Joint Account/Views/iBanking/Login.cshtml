@@ -4,22 +4,46 @@
 }
 
 <div class="bg-login">
-    <div class="container-fluid">
-        <div class="login-building"><img src="~/image/login-building.png" /></div>
-        <div class="row">
-            <div class="ib-logo"><img src="~/image/logo_ocbc.png" /></div>
-        </div>
-        <div class="row">
-            <form method="post">
-                <div class="header-login row">
-                    <div class="col">
-                        <a id="AC-btn">OCBC Access Code</a>
+    <div class="outer-wrap">
+        <div class="inner-wrap">
+            <div class="login-building"><img src="~/image/login-building.png" /></div>
+            <div class="row">
+                <div class="ib-logo"><img src="~/image/logo_ocbc.png" /></div>
+            </div>
+            <div class="row">
+                <form method="post">
+                    <div class="login-form">
+                        <div class="row">
+                            <div class="col button-header button-header-active">
+                                <a id="AC-btn">OCBC Access Code</a>
+                            </div>
+                            <div class="col button-header">
+                                <a id="SL-btn">Singpass Login</a>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="row">
+                                <p class="ss">Secure Site</p>
+                                <h2 class="form-title">Online Banking</h2>
+                            </div>
+                            <div class="row">
+                                <label class="textbox-title" for="access-code">Access Code</label>
+                                <input id="access-code" class="form-textbox" type="text" required>
+                                <label class="textbox-title" for="pin">PIN</label>
+                                <input id="pin" class="form-textbox" type="text" required>
+                            </div>
+                            <div class="row">
+                                <div class="col no-pin">
+                                    <a href="https://internet.ocbc.com/internet-banking/inbregistration/index">No Access Code/PIN? Click here.</a>
+                                </div>
+                                <div class="col">
+                                    <input class="login-btn" type="submit" value="Login" asp-controller="Account360" asp-action="Form">
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col">
-                        <a id="SL-btn">Singpass Login</a>
-                    </div>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
     </div>
 </div>
