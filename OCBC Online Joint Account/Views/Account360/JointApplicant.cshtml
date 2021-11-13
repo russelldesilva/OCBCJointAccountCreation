@@ -2,68 +2,66 @@
 @{
     ViewData["Title"] = "JointApplicant";
 }
-
-@*
-    <div class="container-fluid applicant">
-        <form method="post">
-            <div class="row">
-                <div class="col-md-8">
-                    <div class="completion-bar">
-                        <progress value="3" max="4"></progress>
-                        <h1 class="text-1"><b>Identity Verification</b></h1>
-                        <h1 class="text-2"><b>Main Applicant Information</b></h1>
-                        <h1 class="text-3"><b>Joint-Applicant Information</b></h1>
-                        <h1 class="text-4">Verify Information</h1>
-                        <h2 class="circle circle-1"></h2>
-                        <h2 class="circle circle-2"></h2>
-                        <h2 class="circle circle-3"></h2>
-                        <h2 class="circle circle-4"></h2>
-                    </div>
-                    <h1 class="page-title">Application for Existing OCBC Customers with iBanking Accounts</h1>
+<!--Test comment-->
+<div class="container-fluid applicant">
+    <form method="post">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="completion-bar">
+                    <progress value="3" max="4"></progress>
+                    <h1 class="text-1"><b>Identity Verification</b></h1>
+                    <h1 class="text-2"><b>Main Applicant Information</b></h1>
+                    <h1 class="text-3"><b>Joint-Applicant Information</b></h1>
+                    <h1 class="text-4">Verify Information</h1>
+                    <h2 class="circle circle-1"></h2>
+                    <h2 class="circle circle-2"></h2>
+                    <h2 class="circle circle-3"></h2>
+                    <h2 class="circle circle-4"></h2>
+                </div>
+                <h1 class="page-title">Application for Existing OCBC Customers with iBanking Accounts</h1>
+                <div class="row">
                     <div class="row">
-                        <div class="row">
-                            <div class="margin">
-                                <h3><b>Joint Applicant Personal Information</b></h3>
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <label class="textbox-title">Salutation</label>
-                                        <select asp-for="Salutation" class="form-textbox" asp-items="@ViewData["Salutation"] as List<SelectListItem>" required>
-                                            <option value="" hidden></option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-6 textbox-right">
-                                        <label class="textbox-title">Full Name (as in NRIC)</label>
-                                        <input asp-for="JointApplicantName" class="form-textbox" type="text" required>
-                                    </div>
+                        <div class="margin">
+                            <h3><b>Joint Applicant Personal Information</b></h3>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label class="textbox-title">Salutation</label>
+                                    <select asp-for="SalutationJoint" class="form-textbox" asp-items="@ViewData["Salutation"] as List<SelectListItem>" required>
+                                        <option value="" hidden></option>
+                                    </select>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="margin">
-                                <h3><b>Contact Information</b></h3>
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <label class="textbox-title">Email Address</label>
-                                        <input asp-for="Email" class="form-textbox" type="text" required>
-                                    </div>
-                                    <div class="col-md-6 textbox-right">
-                                        <label class="textbox-title">Contact Number</label>
-                                        <input asp-for="ContactNo" class="form-textbox" type="text" required>
-                                    </div>
+                                <div class="col-md-6 textbox-right">
+                                    <label class="textbox-title">Full Name (as in NRIC)</label>
+                                    <input asp-for="JointApplicantName" class="form-textbox" type="text" required>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-4">
-                    @{
-                        @await Html.PartialAsync("_AccountInfoCard.cshtml");
-                    }
-                </div>
-                <div class="margin">
-                    <input class="resend" type="submit" value="Next" asp-controller="Account360" asp-action="JointApplicant">
+                    <div class="row">
+                        <div class="margin">
+                            <h3><b>Contact Information</b></h3>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label class="textbox-title">Email Address</label>
+                                    <input asp-for="Email" class="form-textbox" type="text" required>
+                                </div>
+                                <div class="col-md-6 textbox-right">
+                                    <label class="textbox-title">Contact Number</label>
+                                    <input asp-for="ContactNo" class="form-textbox" type="text" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </form>
-    </div>
-*@
+            <div class="col-md-4">
+                @{
+                    @await Html.PartialAsync("_AccountInfoCard.cshtml");
+                }
+            </div>
+            <div class="margin">
+                <input class="resend" type="submit" value="Next" asp-controller="Account360" asp-action="JointApplicant">
+            </div>
+        </div>
+    </form>
+</div>

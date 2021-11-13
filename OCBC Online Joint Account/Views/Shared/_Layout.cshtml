@@ -20,6 +20,10 @@
         {
             <link rel="stylesheet" href="~/css/style_account360.css" />
         }
+        else if (Context.Session.GetString("PageType") == "iBanking")
+        {
+            <link rel="stylesheet" href="~/css/style_iblogin.css" />
+        }
     }
 </head>
 <body>

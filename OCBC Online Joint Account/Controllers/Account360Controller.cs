@@ -313,6 +313,22 @@ namespace OCBC_Joint_Account_Application.Controllers
 
         public ActionResult JointApplicant()
         {
+            HttpContext.Session.SetString("PageType", "Account360");
+            ViewData["Salutation"] = Salutation;
+            ResetQR();
+            return View();
+        }
+
+        public ActionResult Verify()
+        {
+            return View();
+        }
+
+        /**==========================
+                    METHODS
+        ==========================**/
+        public void ResetQR()
+        {
             //QR: Reset QR settings
             var resetQR =
                 "{\"qr_data\":\"ocbc_jointacc_digital_create\"," +
@@ -333,13 +349,12 @@ namespace OCBC_Joint_Account_Application.Controllers
 
             HttpContext.Session.SetString("PageType", "Account360");
             ViewData["Salutation"] = Salutation;
-            return View();
         }
         /*
         [HttpPost]
-        public ActionResult JointApplicant(JointApplicantViewModel jointApplicant)
+        public ActionResult JointApplicant(Account360ViewModel jointApplicant)
         {
-            jointApplicant.MainApplicantName = storedApplicant.CustName;
+            jointApplicant.FullName = storedApplicant.CustName;
             //Send SMS to joint applicant
             return RedirectToAction("Verify", "Account360");
         }
@@ -347,6 +362,53 @@ namespace OCBC_Joint_Account_Application.Controllers
         public ActionResult Verify()
         {
             return View();
+
+
+        // Check if user is main applicant
+        public void ResetQRForJointApplicant(string JAC, int AT)
+        {
+            if (JAC != null)
+            {
+                var resetQR =
+                    "{\"qr_data\":\"ocbc_jointacc_digital_create\"," +
+                    "\"custNRIC\":null," +
+                    "\"hasScanned\":" + hasScanned + "," +
+                    "\"toRedirect\":" + toRedirect + "," +
+                    "\"continueMobile\":false," +
+                    "\"isJointApplicant\":true," +
+                    "\"selectedAccountTypeId\":" + AT + "," +
+                    "\"selectedAccountTypeName\":\"360 Account\"," +
+                    "\"id\":0}";
+
+                var client1 = new RestClient("https://pfdocbcdb-5763.restdb.io/rest/qr-response/618ed5b49402c24f00013e0b");
+                var request1 = new RestRequest(Method.PUT);
+                request1.AddHeader("cache-control", "no-cache");
+                request1.AddHeader("x-apikey", "f3e68097c1a4127f4472d8730dcb3399f2d14");
+                request1.AddHeader("content-type", "application/json");
+                request1.AddParameter("application/json", resetQR, ParameterType.RequestBody);
+                IRestResponse response1 = client1.Execute(request1);
+            }
+        }
+
+        public bool ResponseQR()
+        {
+            //QR: Wait for response from iBanking App
+            var client = new RestClient("https://pfdocbcdb-5763.restdb.io/rest/qr-response/618ed5b49402c24f00013e0b");
+            var request = new RestRequest(Method.GET);
+            request.AddHeader("cache-control", "no-cache");
+            request.AddHeader("x-apikey", "f3e68097c1a4127f4472d8730dcb3399f2d14");
+            request.AddHeader("content-type", "application/json");
+            IRestResponse response = client.Execute(request);
+            QR qr = JsonConvert.DeserializeObject<QR>(response.Content);
+
+            if (qr.hasScanned == true && qr.toRedirect == true && qr.continueMobile == false)
+            {
+                hasScanned = true;
+                toRedirect = true;
+                HttpContext.Session.SetString("iBankingLogin", qr.custNRIC);
+                return true;
+            }
+            return false;
         }
         //test
         //test2

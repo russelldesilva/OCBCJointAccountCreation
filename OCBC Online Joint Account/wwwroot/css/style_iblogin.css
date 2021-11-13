@@ -1,0 +1,23 @@
+﻿body, html {
+    height: 100%;
+    margin: 0;
+}
+.bg-login {
+    height: 100%;
+    background-size: cover;
+    background-image: url("../image/login-bg.png");
+    min-width: 100%;
+    width: auto;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+.login-building img {
+    position: fixed;
+    right: 0;
+    /*max-height:1024px;*/
+    min-width:100%;
+    width:auto;
+    height:100%;
+}
