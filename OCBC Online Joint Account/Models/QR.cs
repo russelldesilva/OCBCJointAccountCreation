@@ -15,5 +15,7 @@ namespace OCBC_Joint_Account_Application.Models
         public int id { get; set; }
         public string qr_data { get; set; }
         public bool isJointApplicant { get; set; }
+        public string mainApplicantName { get; set; }
+        public int custId { get; set; }
     }
 }

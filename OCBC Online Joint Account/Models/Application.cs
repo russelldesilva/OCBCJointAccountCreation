@@ -13,6 +13,6 @@ namespace OCBC_Joint_Account_Application.Models
         public string Status { get; set; }
         public DateTime CreationDate { get; set; }
         public string JointApplicantCode { get; set; }
-        public int JointApplicantID { get; set; }
+        public int? JointApplicantID { get; set; }
     }
 }
