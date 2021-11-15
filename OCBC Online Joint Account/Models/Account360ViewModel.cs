@@ -28,6 +28,7 @@ namespace OCBC_Joint_Account_Application.Models
         public string Occupation { get; set; }
         public string AnnualIncome { get; set; }
 
+        // Joint Applicant data
         public string SalutationJoint { get; set; }
         public string JointApplicantName { get; set; }
         public string Email { get; set; }
