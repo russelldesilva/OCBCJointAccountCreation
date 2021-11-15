@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 using RestSharp;
 using System.IO;
 using System.Threading;
+using System.Text;
 
 namespace OCBC_Joint_Account_Application.Controllers
 {
@@ -329,7 +330,7 @@ namespace OCBC_Joint_Account_Application.Controllers
                 try
                 {
                     string fileExt = Path.GetExtension(custApplication.CustNRICFrontUpload.FileName);
-                    string uploadedFile = String.Format("nric_front", fileExt);
+                    string uploadedFile = String.Format("nric_front" + fileExt);
                     string savePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\applicationdocs\\", uploadedFile);
                     using (var fileSteam = new FileStream(savePath, FileMode.Create))
                     {
@@ -355,7 +356,7 @@ namespace OCBC_Joint_Account_Application.Controllers
                 try
                 {
                     string fileExt = Path.GetExtension(custApplication.CustNRICBackUpload.FileName);
-                    string uploadedFile = String.Format("nric_back", fileExt);
+                    string uploadedFile = String.Format("nric_back" + fileExt);
                     string savePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\applicationdocs\\", uploadedFile);
                     using (var fileSteam = new FileStream(savePath, FileMode.Create))
                     {
@@ -376,6 +377,54 @@ namespace OCBC_Joint_Account_Application.Controllers
                     return View("Upload", custApplication);
                 }
             }
+
+            // NRIC Front OCR API - DO NOT DELETE. COMMENTING OUT TO REDUCE API CALL USAGE.
+            //var client = new RestClient("https://app.nanonets.com/api/v2/OCR/Model/3de1189e-0087-4b80-8954-813aa4b0aaac/LabelFile/");
+            //var request = new RestRequest(Method.POST);
+            //request.AddHeader("authorization", "Basic " + Convert.ToBase64String(Encoding.Default.GetBytes("_9xwEpzEdi3gevc7Oy-SucehAswdtRFG:")));
+            //request.AddHeader("accept", "Multipart/form-data");
+            //request.AddFile("file", ".\\wwwroot\\applicationdocs\\nric_front.jpg");
+            //IRestResponse response = client.Execute(request);
+
+            //OCBC_Online_Joint_Account.Models.ClientOCR clientOCR = new OCBC_Online_Joint_Account.Models.ClientOCR();
+
+
+            //Dictionary <string, object> obj = (Dictionary<string, object>)OCBC_Online_Joint_Account.Models.JSONHelper.Deserialize(response.Content);
+            //foreach (var item in obj.Keys)
+            //{
+            //    if (item == "result")
+            //    {
+            //        List<object> results = (List<object>)obj[item];
+            //        Dictionary<string, object> predictions = (Dictionary<string, object>)results[0];
+            //        List<object> prediction = (List<object>) predictions["prediction"];
+            //        foreach (var p in prediction)
+            //        {
+            //            Dictionary<string, object> pvalue = (Dictionary<string, object>)p;
+            //            var label = (string)pvalue["label"];
+            //            var ocr_text = (string)pvalue["ocr_text"];
+            //            //Console.WriteLine("Label: " + label);
+            //            if (label == "NRIC")
+            //            {
+            //                clientOCR.NRIC = ocr_text;
+            //            }
+            //            else if (label == "Name")
+            //            {
+            //                clientOCR.Name = ocr_text;
+            //            }
+            //            else if (label == "Sex")
+            //            {
+            //                clientOCR.Gender = ocr_text;
+            //            }
+            //            else if (label == "Date_of_Birth")
+            //            {
+            //                clientOCR.Date_of_Birth = ocr_text;
+            //            }
+            //            //Console.WriteLine("Value: " + ocr_text);
+            //            // return clientOCR object to Form.cshtml to parse the data from the OCR read
+            //        }
+            //    }
+            //}
+
             return View("Upload", custApplication);
         }
 
