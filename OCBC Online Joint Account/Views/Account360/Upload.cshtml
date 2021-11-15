@@ -48,7 +48,7 @@
                             <img class="card-img-top" src="~/image/no-image.png" alt="Card image cap">
                             <h5 class="card-title">Residential Address</h5>
                             <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                            <input type="file" asp-for="CustProofOfResidenceUpload"  style="margin-bottom:20px;" /><!--Upload btn-->
+                            <input type="file" asp-for="CustProofOfResidenceUpload" style="margin-bottom:20px;" /><!--Upload btn-->
                         </div>
                     </div>
                 </div>
@@ -60,7 +60,17 @@
             }
         </div>
     </div>
-    <input type="submit" class="btn btn-primary" asp-action="Upload"  value="Next" />
+    <div class="form-group form-check-inline">
+        @foreach (var item in ViewData["SingaporeanSelection"] as List<string>)
+        {
+            <label class="col-form-label">
+                <input asp-for="Singaporean" type="radio" value="@item" class="form-check-input" />
+                <span style="font-weight:normal; padding-right:20px">@item</span>
+            </label>
+        }
+    </div>
+    <br />
+    <input type="submit" class="btn btn-primary" asp-action="Upload" value="Next" style="background-color:red;"/>
 </form>
 
 
@@ -113,12 +123,4 @@
     </div>
 </div>-->
 <!-- Radio button -->
-<div class="form-group form-check-inline">
-    @foreach (var item in ViewData["SingaporeanSelection"] as List<string>)
-    {
-        <label class="col-form-label">
-            <input asp-for="Singaporean" type="radio" value="@item" class="form-check-input" />
-            <span style="font-weight:normal; padding-right:20px">@item</span>
-        </label>
-    }
-</div>
+
