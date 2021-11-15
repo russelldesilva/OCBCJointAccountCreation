@@ -238,6 +238,7 @@ namespace OCBC_Joint_Account_Application.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Form(Account360ViewModel a360)
         { 
             storedApplicant.CustNRIC = a360.NRIC;
@@ -246,7 +247,7 @@ namespace OCBC_Joint_Account_Application.Controllers
             storedApplicant.Email = a360.EmailAddress;
             storedApplicant.ContactNo = a360.MobileNum;
             storedApplicant.Gender = a360.Gender;
-            storedApplicant.MaritialStatus = null;
+            storedApplicant.MaritialStatus = a360.MaritialStatus;
             storedApplicant.iBUsername = null;
             storedApplicant.iBPin = null;
             storedApplicant.Address = a360.Address;
@@ -265,8 +266,6 @@ namespace OCBC_Joint_Account_Application.Controllers
                 CreationDate = DateTime.Today,
                 JointApplicantCode = $"J{DateTime.Today.Day}{DateTime.Today.Month}{storedApplicant.CustNRIC.Substring(5, 3)}"
             };
-
-            //applicationContext.Add(mainApplication);
 
             TempData["Code"] = mainApplication.JointApplicantCode;
             return RedirectToAction("JointApplicant", "Account360", mainApplication);
@@ -381,10 +380,22 @@ namespace OCBC_Joint_Account_Application.Controllers
 
         public ActionResult JointApplicant()
         {
+            checkJAC(HttpContext.Session.GetString("JAC"));
             HttpContext.Session.SetString("PageType", "Account360");
             ResetQR();
             ViewData["Salutation"] = Salutation;
             return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult JointApplicant(Account360ViewModel a360)
+        {
+            storedApplicant.Salutation = a360.SalutationJoint;
+            storedApplicant.CustName = a360.JointApplicantName;
+            storedApplicant.Email = a360.Email;
+            storedApplicant.ContactNo = a360.ContactNo;
+            return RedirectToAction("Verify", "Account360");
         }
 
         public ActionResult Verify()
