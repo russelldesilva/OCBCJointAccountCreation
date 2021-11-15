@@ -3,6 +3,8 @@
     ViewData["Title"] = "Verify";
 }
 
-<h1>Verify</h1>
+@{
+    @await Html.PartialAsync("_ProgressBar.cshtml");
+}
 <h2>Code: @TempData["Code"]</h2>
 

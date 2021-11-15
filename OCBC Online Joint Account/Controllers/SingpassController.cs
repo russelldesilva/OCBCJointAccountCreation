@@ -28,9 +28,6 @@ namespace OCBC_Joint_Account_Application.Controllers
         [HttpPost]
         public ActionResult Login(SingpassViewModel singpassLogin)
         {
-            // Set apply method
-            HttpContext.Session.SetString("ApplyMethod", "Singpass");
-
             foreach (Singpass sp in singpassContext.GetSingpassByNRIC(singpassLogin.NRIC))
             {
                 if(sp.NRIC == singpassLogin.NRIC)
@@ -52,6 +49,8 @@ namespace OCBC_Joint_Account_Application.Controllers
         [HttpPost]
         public ActionResult Auth(Singpass sp)
         {
+            // Set apply method
+            HttpContext.Session.SetString("ApplyMethod", "Singpass");
             return RedirectToAction("Identity", "Account360");
         }
     }

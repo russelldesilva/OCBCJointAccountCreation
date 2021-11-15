@@ -209,7 +209,6 @@ namespace OCBC_Joint_Account_Application.Controllers
                         ac360.Address = sp.RegisteredAddress;
                     }
                 }
-
                 return View(ac360);
             }
             // Else if iBanking run code to pull from iBanking
@@ -268,13 +267,14 @@ namespace OCBC_Joint_Account_Application.Controllers
 
         public ActionResult Upload()
         {
+            HttpContext.Session.SetString("ApplyMethod", "Scan");
             ViewData["SingaporeanSelection"] = singaporean;
+
             CustApplication custApplication = new CustApplication
             {
                 Singaporean = singaporean[0]
             };
             
-            HttpContext.Session.SetString("ApplyMethod", "Scan");
             return View("Upload", custApplication);
         }
 
@@ -403,7 +403,7 @@ namespace OCBC_Joint_Account_Application.Controllers
                 "\"mainApplicantNRIC\":null," +
                 "\"id\":0}";
 
-            var client = new RestClient("https://pfdocbcdb-5763.restdb.io/rest/qr-response/618ed5b49402c24f00013e0b");
+            var client = new RestClient("https://pfdocbcdb-5763.restdb.io/rest/qr-response/6191214a9402c24f00017a99");
             var request = new RestRequest(Method.PUT);
             request.AddHeader("cache-control", "no-cache");
             request.AddHeader("x-apikey", "f3e68097c1a4127f4472d8730dcb3399f2d14");
@@ -441,7 +441,7 @@ namespace OCBC_Joint_Account_Application.Controllers
                 "\"mainApplicantNRIC\":\"" + NRIC + "\"," +
                 "\"id\":0}";
 
-            var client1 = new RestClient("https://pfdocbcdb-5763.restdb.io/rest/qr-response/618ed5b49402c24f00013e0b");
+            var client1 = new RestClient("https://pfdocbcdb-5763.restdb.io/rest/qr-response/6191214a9402c24f00017a99");
             var request1 = new RestRequest(Method.PUT);
             request1.AddHeader("cache-control", "no-cache");
             request1.AddHeader("x-apikey", "f3e68097c1a4127f4472d8730dcb3399f2d14");
@@ -453,7 +453,7 @@ namespace OCBC_Joint_Account_Application.Controllers
         public bool ResponseQR()
         {
             //QR: Wait for response from iBanking App
-            var client = new RestClient("https://pfdocbcdb-5763.restdb.io/rest/qr-response/618ed5b49402c24f00013e0b");
+            var client = new RestClient("https://pfdocbcdb-5763.restdb.io/rest/qr-response/6191214a9402c24f00017a99");
             var request = new RestRequest(Method.GET);
             request.AddHeader("cache-control", "no-cache");
             request.AddHeader("x-apikey", "f3e68097c1a4127f4472d8730dcb3399f2d14");
@@ -465,6 +465,7 @@ namespace OCBC_Joint_Account_Application.Controllers
             {
                 if(qr.custNRIC != null)
                 {
+                    HttpContext.Session.SetString("ApplyMethod", "QR");
                     HttpContext.Session.SetString("iBankingLogin", qr.custNRIC);
                 }
                 return true;

@@ -1,28 +1,27 @@
 ﻿@model OCBC_Joint_Account_Application.Models.CustApplication
 
-@{
-    ViewData["Title"] = "Upload";
-}
+@{ ViewData["Title"] = "Upload"; }
 
 <a href="~/Account360/Form"><input type="submit" class="btn ibanking-btn" value="Move to form"></a>
 
-@*<div class="completion-bar">
-    <progress value="1" max="4"></progress>
-    <h1 class="text-1"><b>Upload Documents</b></h1>
-    <h1 class="text-2"><b>Main Applicant Information</b></h1>
-    <h1 class="text-3">Joint-Applicant Information</h1>
-    <h1 class="text-4">Verify Information</h1>
-    <h2 class="circle circle-1"></h2>
-    <h2 class="circle circle-2"></h2>
-    <h2 class="circle circle-3"></h2>
-    <h2 class="circle circle-4"></h2>
-</div>*@
-
+<div class="container-fluid" style="margin-top: 100px;">
+    <div class="completion-bar">
+        <progress value="1" max="4"></progress>
+        <h1 class="text-1"><b>Upload Document</b></h1>
+        <h1 class="text-2">Main Applicant Information</h1>
+        <h1 class="text-3">Joint-Applicant Information</h1>
+        <h1 class="text-4">Verify Information</h1>
+        <h2 class="circle circle-1"></h2>
+        <h2 class="circle circle-2"></h2>
+        <h2 class="circle circle-3"></h2>
+        <h2 class="circle circle-4"></h2>
+    </div>
+</div>
 
 <!--If user chooses Singaporean (Default option from the radio btn) radio btn, hide the Foreigner details-->
 <form asp-action="Upload" enctype="multipart/form-data">
     <div class="container d-flex">
-        <div class="container col-md-8" style="max-width:65%; margin-left:0;">
+        <div class="container col-md-8" style="max-width:65%; margin-left:0; margin-top: 150px">
             <div class="container">
                 <div class="row">
                     <div class="card text-center col-md-6 shadow-sm">
@@ -48,7 +47,7 @@
                             <img class="card-img-top" src="~/image/no-image.png" alt="Card image cap">
                             <h5 class="card-title">Residential Address</h5>
                             <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                            <input type="file" asp-for="CustProofOfResidenceUpload"  style="margin-bottom:20px;" /><!--Upload btn-->
+                            <input type="file" asp-for="CustProofOfResidenceUpload" style="margin-bottom:20px;" /><!--Upload btn-->
                         </div>
                     </div>
                 </div>
@@ -56,11 +55,10 @@
         </div>
         <div class="container col-md-4">
             @{
-                @await Html.PartialAsync("_AccountInfoCard.cshtml");
-            }
+                @await Html.PartialAsync("_AccountInfoCard.cshtml"); }
         </div>
     </div>
-    <input type="submit" class="btn btn-primary" asp-action="Upload"  value="Next" />
+    <input type="submit" class="btn btn-primary" asp-action="Upload" value="Next" />
 </form>
 
 
@@ -75,7 +73,7 @@
                 <h5 class="card-title">Passport</h5>
                 <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
                 <a href="#" class="btn btn-primary">Upload</a>-->
- <!--Upload btn-->
+<!--Upload btn-->
 <!--</div>
 </div>
 <div class="card text-center col-md-6">
@@ -98,7 +96,7 @@
                 <h5 class="card-title">Foreign Pass (Front)</h5>
                 <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
                 <a href="#" class="btn btn-primary">Upload</a>-->
- <!--Upload btn-->
+<!--Upload btn-->
 <!--</div>
 </div>
 <div class="card text-center col-md-6">
@@ -119,6 +117,5 @@
         <label class="col-form-label">
             <input asp-for="Singaporean" type="radio" value="@item" class="form-check-input" />
             <span style="font-weight:normal; padding-right:20px">@item</span>
-        </label>
-    }
+        </label>}
 </div>
