@@ -30,11 +30,15 @@ namespace OCBC_Joint_Account_Application.Controllers
         public ActionResult ApplyOnline(int? AT, string? JAC)
         {
             HttpContext.Session.SetString("PageType", "Account360");
+     
             if (JAC != null)
             {
+                HttpContext.Session.SetString("JAC", JAC);
                 InsertQRForJointApplicant(AT, JAC);
                 return RedirectToAction("ApplyOnline", "Account360");
             }
+
+            checkJAC(HttpContext.Session.GetString("JAC"));
 
             if (ResponseQR() == true)
             {
@@ -51,6 +55,7 @@ namespace OCBC_Joint_Account_Application.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
+            checkJAC(HttpContext.Session.GetString("JAC"));
             HttpContext.Session.SetString("PageType", "Account360");
 
             //Get Mobile Number
@@ -84,6 +89,7 @@ namespace OCBC_Joint_Account_Application.Controllers
         [HttpPost]
         public ActionResult Identity(Account360ViewModel a360)
         {
+            checkJAC(HttpContext.Session.GetString("JAC"));
             HttpContext.Session.SetString("PageType", "Account360");
 
             if (a360.OTP == HttpContext.Session.GetInt32("OTP"))
@@ -153,6 +159,7 @@ namespace OCBC_Joint_Account_Application.Controllers
 
         public async Task<ActionResult> Form()
         {
+            checkJAC(HttpContext.Session.GetString("JAC"));
             HttpContext.Session.SetString("PageType", "Account360");
 
             //Populate CountryOfBirth & Nationality
@@ -267,6 +274,7 @@ namespace OCBC_Joint_Account_Application.Controllers
 
         public ActionResult Upload()
         {
+            checkJAC(HttpContext.Session.GetString("JAC"));
             HttpContext.Session.SetString("ApplyMethod", "Scan");
             ViewData["SingaporeanSelection"] = singaporean;
 
@@ -282,6 +290,7 @@ namespace OCBC_Joint_Account_Application.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Upload(CustApplication custApplication)
         {
+            checkJAC(HttpContext.Session.GetString("JAC"));
             ViewData["SingaporeanSelection"] = singaporean;
             CustApplication custApplication1 = new CustApplication
             {
@@ -380,12 +389,27 @@ namespace OCBC_Joint_Account_Application.Controllers
 
         public ActionResult Verify()
         {
+            checkJAC(HttpContext.Session.GetString("JAC"));
             return View();
         }
 
         /**==========================
                     METHODS
         ==========================**/
+        public void checkJAC(string JAC)
+        {
+            if(HttpContext.Session.GetString("JAC") != null)
+            {
+                foreach (Application a in applicationContext.GetApplicationByJointApplicantionCode(JAC))
+                {
+                    foreach (Customer c in customerContext.GetCustomerByNRIC(a.CustNRIC))
+                    {
+                        ViewData["MainSalutation"] = c.Salutation;
+                        ViewData["MainName"] = c.CustName;
+                    }
+                }
+            }
+        }
 
         public void ResetQR()
         {

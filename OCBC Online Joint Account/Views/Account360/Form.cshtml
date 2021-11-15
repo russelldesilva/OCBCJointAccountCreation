@@ -4,35 +4,45 @@
     ViewData["Title"] = "Main Applicant";
 }
 
+@if (Context.Session.GetString("JAC") != null)
+{
+    <div class="container-fluid">
+        <div class="vl-360 joint-account-notification">
+            <h4>Continuation of Joint-Account <br /> application with </h4>
+            <h3>@ViewData["MainSalutation"] @ViewData["MainName"]</h3>
+        </div>
+    </div>
+}
+
 <div class="container-fluid applicant">
     <form method="post">
         <div class="row">
             <div class="col-md-8">
                 <div class="completion-bar">
-                     @if(Context.Session.GetString("ApplyMethod") == "Singpass")
-                        {
-                            <progress value="2" max="4"></progress>
-                            <h1 class="text-1"><b>Identity Verification</b></h1>
-                            <h1 class="text-2"><b>Main Applicant Information</b></h1>
-                            <h1 class="text-3">Joint-Applicant Information</h1>
-                            <h1 class="text-4">Verify Information</h1>
-                            <h2 class="circle circle-1"></h2>
-                            <h2 class="circle circle-2"></h2>
-                            <h2 class="circle circle-3"></h2>
-                            <h2 class="circle circle-4"></h2>
-                        }
-                        else if (Context.Session.GetString("ApplyMethod") == "Scan")
-                        {
-                            <progress value="2" max="4"></progress>
-                            <h1 class="text-1"><b>Upload Documents</b></h1>
-                            <h1 class="text-2"><b>Main Applicant Information</b></h1>
-                            <h1 class="text-3">Joint-Applicant Information</h1>
-                            <h1 class="text-4">Verify Information</h1>
-                            <h2 class="circle circle-1"></h2>
-                            <h2 class="circle circle-2"></h2>
-                            <h2 class="circle circle-3"></h2>
-                            <h2 class="circle circle-4"></h2>
-                         }
+                    @if (Context.Session.GetString("ApplyMethod") == "Singpass")
+                    {
+                        <progress value="2" max="4"></progress>
+                        <h1 class="text-1"><b>Identity Verification</b></h1>
+                        <h1 class="text-2"><b>Main Applicant Information</b></h1>
+                        <h1 class="text-3">Joint-Applicant Information</h1>
+                        <h1 class="text-4">Verify Information</h1>
+                        <h2 class="circle circle-1"></h2>
+                        <h2 class="circle circle-2"></h2>
+                        <h2 class="circle circle-3"></h2>
+                        <h2 class="circle circle-4"></h2>
+                    }
+                    else if (Context.Session.GetString("ApplyMethod") == "Scan")
+                    {
+                        <progress value="2" max="4"></progress>
+                        <h1 class="text-1"><b>Upload Documents</b></h1>
+                        <h1 class="text-2"><b>Main Applicant Information</b></h1>
+                        <h1 class="text-3">Joint-Applicant Information</h1>
+                        <h1 class="text-4">Verify Information</h1>
+                        <h2 class="circle circle-1"></h2>
+                        <h2 class="circle circle-2"></h2>
+                        <h2 class="circle circle-3"></h2>
+                        <h2 class="circle circle-4"></h2>
+                    }
                 </div>
 
                 <h1 class="page-title">Application for New Applicants</h1>
@@ -145,7 +155,7 @@
             </div>
             <div class="col-md-4">
                 @{
-                                @await Html.PartialAsync("_AccountInfoCard.cshtml"); }
+                    @await Html.PartialAsync("_AccountInfoCard.cshtml"); }
             </div>
 
             <div class="margin marketing">

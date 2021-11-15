@@ -4,7 +4,17 @@
 
 <a href="~/Account360/Form"><input type="submit" class="btn ibanking-btn" value="Move to form"></a>
 
-<div class="container-fluid" style="margin-top: 100px;">
+@if (Context.Session.GetString("JAC") != null)
+{
+    <div class="container-fluid">
+        <div class="vl-360 joint-account-notification">
+            <h4>Continuation of Joint-Account <br /> application with </h4>
+            <h3>@ViewData["MainSalutation"] @ViewData["MainName"]</h3>
+        </div>
+    </div>
+}
+
+<div class="container-fluid" style="margin-top: 150px;">
     <div class="completion-bar">
         <progress value="1" max="4"></progress>
         <h1 class="text-1"><b>Upload Document</b></h1>
@@ -58,7 +68,8 @@
                 @await Html.PartialAsync("_AccountInfoCard.cshtml"); }
         </div>
     </div>
-    <input type="submit" class="btn btn-primary" asp-action="Upload" value="Next" />
+<input type="submit" class="btn btn-primary" asp-action="Upload" value="Next" />
+
 </form>
 
 
