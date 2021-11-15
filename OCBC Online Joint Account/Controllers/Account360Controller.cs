@@ -16,7 +16,7 @@ using Twilio.Types;
 using Newtonsoft.Json;
 using RestSharp;
 using System.IO;
-// Test Commit 2.0
+using System.Threading;
 
 namespace OCBC_Joint_Account_Application.Controllers
 {
@@ -27,23 +27,26 @@ namespace OCBC_Joint_Account_Application.Controllers
         private ApplicationDAL applicationContext = new ApplicationDAL();
         Customer storedApplicant = new Customer();
 
-        bool hasScanned = false;
-        bool toRedirect = false;
-
-
-        public ActionResult ApplyOnline(int AT, string? JAC)
+        public ActionResult ApplyOnline(int? AT, string? JAC)
         {
-
             HttpContext.Session.SetString("PageType", "Account360");
-            ResetQRForJointApplicant(JAC, AT);
+     
+            if (JAC != null)
+            {
+                HttpContext.Session.SetString("JAC", JAC);
+                InsertQRForJointApplicant(AT, JAC);
+                return RedirectToAction("ApplyOnline", "Account360");
+            }
+
+            checkJAC(HttpContext.Session.GetString("JAC"));
 
             if (ResponseQR() == true)
             {
                 return RedirectToAction("JointApplicant", "Account360");
             }
-            return View();
+           
+            return View();     
         }
-
 
         public ActionResult Identity()
         {
@@ -52,6 +55,7 @@ namespace OCBC_Joint_Account_Application.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
+            checkJAC(HttpContext.Session.GetString("JAC"));
             HttpContext.Session.SetString("PageType", "Account360");
 
             //Get Mobile Number
@@ -85,6 +89,7 @@ namespace OCBC_Joint_Account_Application.Controllers
         [HttpPost]
         public ActionResult Identity(Account360ViewModel a360)
         {
+            checkJAC(HttpContext.Session.GetString("JAC"));
             HttpContext.Session.SetString("PageType", "Account360");
 
             if (a360.OTP == HttpContext.Session.GetInt32("OTP"))
@@ -154,6 +159,7 @@ namespace OCBC_Joint_Account_Application.Controllers
 
         public async Task<ActionResult> Form()
         {
+            checkJAC(HttpContext.Session.GetString("JAC"));
             HttpContext.Session.SetString("PageType", "Account360");
 
             //Populate CountryOfBirth & Nationality
@@ -210,7 +216,6 @@ namespace OCBC_Joint_Account_Application.Controllers
                         ac360.Address = sp.RegisteredAddress;
                     }
                 }
-
                 return View(ac360);
             }
             // Else if iBanking run code to pull from iBanking
@@ -269,13 +274,15 @@ namespace OCBC_Joint_Account_Application.Controllers
 
         public ActionResult Upload()
         {
+            checkJAC(HttpContext.Session.GetString("JAC"));
+            HttpContext.Session.SetString("ApplyMethod", "Scan");
             ViewData["SingaporeanSelection"] = singaporean;
+
             CustApplication custApplication = new CustApplication
             {
                 Singaporean = singaporean[0]
             };
             
-            HttpContext.Session.SetString("ApplyMethod", "Scan");
             return View("Upload", custApplication);
         }
 
@@ -283,6 +290,7 @@ namespace OCBC_Joint_Account_Application.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Upload(CustApplication custApplication)
         {
+            checkJAC(HttpContext.Session.GetString("JAC"));
             ViewData["SingaporeanSelection"] = singaporean;
             CustApplication custApplication1 = new CustApplication
             {
@@ -374,19 +382,34 @@ namespace OCBC_Joint_Account_Application.Controllers
         public ActionResult JointApplicant()
         {
             HttpContext.Session.SetString("PageType", "Account360");
-            ViewData["Salutation"] = Salutation;
             ResetQR();
+            ViewData["Salutation"] = Salutation;
             return View();
         }
 
         public ActionResult Verify()
         {
+            checkJAC(HttpContext.Session.GetString("JAC"));
             return View();
         }
 
         /**==========================
                     METHODS
         ==========================**/
+        public void checkJAC(string JAC)
+        {
+            if(HttpContext.Session.GetString("JAC") != null)
+            {
+                foreach (Application a in applicationContext.GetApplicationByJointApplicantionCode(JAC))
+                {
+                    foreach (Customer c in customerContext.GetCustomerByNRIC(a.CustNRIC))
+                    {
+                        ViewData["MainSalutation"] = c.Salutation;
+                        ViewData["MainName"] = c.CustName;
+                    }
+                }
+            }
+        }
 
         public void ResetQR()
         {
@@ -400,50 +423,61 @@ namespace OCBC_Joint_Account_Application.Controllers
                 "\"isJointApplicant\":false," +
                 "\"selectedAccountTypeId\":2," +
                 "\"selectedAccountTypeName\":\"360 Account\"," +
+                "\"mainApplicantName\":null," +
+                "\"mainApplicantNRIC\":null," +
                 "\"id\":0}";
 
-            var client = new RestClient("https://pfdocbcdb-5763.restdb.io/rest/qr-response/618ed5b49402c24f00013e0b");
+            var client = new RestClient("https://pfdocbcdb-5763.restdb.io/rest/qr-response/6191214a9402c24f00017a99");
             var request = new RestRequest(Method.PUT);
             request.AddHeader("cache-control", "no-cache");
             request.AddHeader("x-apikey", "f3e68097c1a4127f4472d8730dcb3399f2d14");
             request.AddHeader("content-type", "application/json");
             request.AddParameter("application/json", resetQR, ParameterType.RequestBody);
             IRestResponse response = client.Execute(request);
-
-            HttpContext.Session.SetString("PageType", "Account360");
-            ViewData["Salutation"] = Salutation;
         }
 
-        public void ResetQRForJointApplicant(string JAC, int AT)
+        public void InsertQRForJointApplicant(int? AT, string JAC)
         {
             //QR: Reset QR settings
-            if (JAC != null)
-            {
-                var resetQR =
-                    "{\"qr_data\":\"ocbc_jointacc_digital_create\"," +
-                    "\"custNRIC\":null," +
-                    "\"hasScanned\":" + hasScanned + "," +
-                    "\"toRedirect\":" + toRedirect + "," +
-                    "\"continueMobile\":false," +
-                    "\"isJointApplicant\":true," +
-                    "\"selectedAccountTypeId\":" + AT + "," +
-                    "\"selectedAccountTypeName\":\"360 Account\"," +
-                    "\"id\":0}";
 
-                var client1 = new RestClient("https://pfdocbcdb-5763.restdb.io/rest/qr-response/618ed5b49402c24f00013e0b");
-                var request1 = new RestRequest(Method.PUT);
-                request1.AddHeader("cache-control", "no-cache");
-                request1.AddHeader("x-apikey", "f3e68097c1a4127f4472d8730dcb3399f2d14");
-                request1.AddHeader("content-type", "application/json");
-                request1.AddParameter("application/json", resetQR, ParameterType.RequestBody);
-                IRestResponse response1 = client1.Execute(request1);
+            string Name = "";
+            string NRIC = "";
+
+            foreach (Application a in applicationContext.GetApplicationByJointApplicantionCode(JAC))
+            {
+                foreach (Customer c in customerContext.GetCustomerByNRIC(a.CustNRIC))
+                {
+                    Name = c.CustName;
+                    NRIC = a.CustNRIC;                
+                }           
             }
+
+            var resetQR =
+                "{\"qr_data\":\"ocbc_jointacc_digital_create\"," +
+                "\"custNRIC\":null," +
+                "\"hasScanned\":false," +
+                "\"toRedirect\":false," +
+                "\"continueMobile\":false," +
+                "\"isJointApplicant\":true," +
+                "\"selectedAccountTypeId\":" + AT + "," +
+                "\"selectedAccountTypeName\":\"360 Account\"," +
+                "\"mainApplicantName\":\"" + Name + "\"," +
+                "\"mainApplicantNRIC\":\"" + NRIC + "\"," +
+                "\"id\":0}";
+
+            var client1 = new RestClient("https://pfdocbcdb-5763.restdb.io/rest/qr-response/6191214a9402c24f00017a99");
+            var request1 = new RestRequest(Method.PUT);
+            request1.AddHeader("cache-control", "no-cache");
+            request1.AddHeader("x-apikey", "f3e68097c1a4127f4472d8730dcb3399f2d14");
+            request1.AddHeader("content-type", "application/json");
+            request1.AddParameter("application/json", resetQR, ParameterType.RequestBody);
+            IRestResponse response = client1.Execute(request1);       
         }
 
         public bool ResponseQR()
         {
             //QR: Wait for response from iBanking App
-            var client = new RestClient("https://pfdocbcdb-5763.restdb.io/rest/qr-response/618ed5b49402c24f00013e0b");
+            var client = new RestClient("https://pfdocbcdb-5763.restdb.io/rest/qr-response/6191214a9402c24f00017a99");
             var request = new RestRequest(Method.GET);
             request.AddHeader("cache-control", "no-cache");
             request.AddHeader("x-apikey", "f3e68097c1a4127f4472d8730dcb3399f2d14");
@@ -453,14 +487,15 @@ namespace OCBC_Joint_Account_Application.Controllers
 
             if (qr.hasScanned == true && qr.toRedirect == true && qr.continueMobile == false)
             {
-                hasScanned = true;
-                toRedirect = true;
-                HttpContext.Session.SetString("iBankingLogin", qr.custNRIC);
+                if(qr.custNRIC != null)
+                {
+                    HttpContext.Session.SetString("ApplyMethod", "QR");
+                    HttpContext.Session.SetString("iBankingLogin", qr.custNRIC);
+                }
                 return true;
             }
             return false;
         }
-        //test
-        //test2
     }
 }
+

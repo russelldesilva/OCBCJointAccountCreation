@@ -1,8 +1,19 @@
 ﻿
 @{ ViewData["Title"] = "OCBC Internet Banking | 360 Account Online Application"; }
 
-<meta http-equiv="Refresh" content="1">
 <a class="btn ibanking-btn" asp-action="Verify">Go to verify page</a>
+
+<meta http-equiv="Refresh" content="1">
+@if (Context.Session.GetString("JAC") != null)
+{
+    <div class="container-fluid">
+        <div class="vl-360 joint-account-notification">
+            <h4>Continuation of Joint-Account <br /> application with </h4>
+            <h3>@ViewData["MainSalutation"] @ViewData["MainName"]</h3>
+        </div>
+    </div>
+}
+
 <div class="container-fluid joint-360">
     <h1 class="page-title">Create your account within a few clicks</h1>
     <div class="container-fluid">

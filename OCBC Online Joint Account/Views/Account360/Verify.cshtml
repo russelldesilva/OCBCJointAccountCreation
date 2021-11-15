@@ -1,8 +1,52 @@
 ﻿
-@{
-    ViewData["Title"] = "Verify";
+@{ ViewData["Title"] = "Verify"; }
+
+
+@if (Context.Session.GetString("JAC") != null)
+{
+    <div class="container-fluid">
+        <div class="vl-360 joint-account-notification">
+            <h4>Continuation of Joint-Account <br /> application with </h4>
+            <h3>@ViewData["MainSalutation"] @ViewData["MainName"]</h3>
+        </div>
+    </div>
 }
 
-<h1>Verify</h1>
+<div class="container-fluid">
+    <div class="completion-bar">
+        @if (Context.Session.GetString("ApplyMethod") == "Singpass")
+        {
+            <progress value="4" max="4"></progress>
+            <h1 class="text-1"><b>Identity Verification</b></h1>
+            <h1 class="text-2"><b>Main Applicant Information</b></h1>
+            <h1 class="text-3"><b>Joint-Applicant Information</b></h1>
+            <h1 class="text-4"><b>Verify Information</b></h1>
+            <h2 class="circle circle-1"></h2>
+            <h2 class="circle circle-2"></h2>
+            <h2 class="circle circle-3"></h2>
+            <h2 class="circle circle-4"></h2>
+        }
+        else if (Context.Session.GetString("ApplyMethod") == "QR")
+        {
+            <progress value="2" max="2"></progress>
+            <h1 class="text-1"><b>Joint-Applicant Information</b></h1>
+            <h1 class="text-3"><b>Verify Information</b></h1>
+            <h2 class="circle circle-2"></h2>
+            <h2 class="circle circle-4"></h2>
+        }
+        else if (Context.Session.GetString("ApplyMethod") == "Scan")
+        {
+            <progress value="4" max="4"></progress>
+            <h1 class="text-1"><b>Upload Documents</b></h1>
+            <h1 class="text-2"><b>Main Applicant Information</b></h1>
+            <h1 class="text-3"><b>Joint-Applicant Information</b></h1>
+            <h1 class="text-4"><b>Verify Information</b></h1>
+            <h2 class="circle circle-1"></h2>
+            <h2 class="circle circle-2"></h2>
+            <h2 class="circle circle-3"></h2>
+            <h2 class="circle circle-4"></h2>
+        }
+    </div>
+    </div>
 <h2>Code: @TempData["Code"]</h2>
 

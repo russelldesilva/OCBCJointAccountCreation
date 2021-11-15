@@ -20,8 +20,7 @@ namespace OCBC_Joint_Account_Application.DAL
                     .SetBasePath(Directory.GetCurrentDirectory())
                     .AddJsonFile("appsettings.json");
             Configuration = builder.Build();
-            string strConn = Configuration.GetConnectionString(
-            "CJP_DBConnectionString");
+            string strConn = Configuration.GetConnectionString("CJP_DBConnectionString");
             conn = new SqlConnection(strConn);
         }
 

@@ -24,32 +24,51 @@ namespace OCBC_Joint_Account_Application.DAL
             "CJP_DBConnectionString");
             conn = new SqlConnection(strConn);
         }
+
+        public List<Application> GetApplicationByJointApplicantionCode(string JointApplicationCode)
+        {
+            SqlCommand cmd = conn.CreateCommand();
+            cmd.CommandText = @"SELECT * FROM Application WHERE JointApplicationCode = @selectedJointApplicationCode";
+            cmd.Parameters.AddWithValue("@selectedJointApplicationCode", JointApplicationCode);
+            conn.Open();
+            SqlDataReader reader = cmd.ExecuteReader();
+            List<Application> applicationList = new List<Application>();
+            while (reader.Read())
+            {
+                applicationList.Add(
+                    new Application
+                    {
+                        ApplicationID = reader.GetInt32(0),
+                        CustNRIC = reader.GetString(1),
+                        AccountTypeID = reader.GetInt32(2),
+                        Status = reader.GetString(3),
+                        CreationDate = reader.GetDateTime(4),
+                        JointApplicantCode = !reader.IsDBNull(5) ? reader.GetString(5) : (string)null,
+                        JointApplicantID = !reader.IsDBNull(6) ? reader.GetInt32(6) : (Int32?)null
+                    }
+                );
+            }
+            reader.Close();
+            conn.Close();
+            return applicationList;
+        }
+
         public int Add(Application application)
         {
-            //Create a SqlCommand object from connection object
             SqlCommand cmd = conn.CreateCommand();
-            //Specify an INSERT SQL statement which will
-            //return the auto-generated StaffID after insertion
             cmd.CommandText = @"INSERT INTO Application (CustNRIC, AccountTypeId, Status, 
                                                    CreationDate, JointApplicationCode)
                                                 OUTPUT INSERTED.ApplicationID
                                                 VALUES(@nric, @typeID, @status,
                                                 @date, @code)";
-            //Define the parameters used in SQL statement, value for each parameter
-            //is retrieved from respective class's property.
             cmd.Parameters.AddWithValue("@nric", application.CustNRIC);
             cmd.Parameters.AddWithValue("@typeID",  application.AccountTypeID);
             cmd.Parameters.AddWithValue("@status", application.Status);
             cmd.Parameters.AddWithValue("@date", application.CreationDate);
             cmd.Parameters.AddWithValue("@code", application.JointApplicantCode);
-            //A connection to database must be opened before any operations made.
             conn.Open();
-            //ExecuteScalar is used to retrieve the auto-generated
-            //StaffID after executing the INSERT SQL statement
             application.ApplicationID = (int)cmd.ExecuteScalar();
-            //A connection should be closed after operations.
             conn.Close();
-            //Return id when no error occurs.
             return application.ApplicationID;
         }
     }

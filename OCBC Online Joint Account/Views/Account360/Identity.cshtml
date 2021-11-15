@@ -1,10 +1,18 @@
 ﻿@model OCBC_Joint_Account_Application.Models.Account360ViewModel
 
-@{
-    ViewData["Title"] = "Identity Verification";
-}
+@{ ViewData["Title"] = "Identity Verification"; }
 
 @ViewData["A"]
+
+@if (Context.Session.GetString("JAC") != null)
+{
+    <div class="container-fluid">
+        <div class="vl-360 joint-account-notification">
+            <h4>Continuation of Joint-Account <br /> application with </h4>
+            <h3>@ViewData["MainSalutation"] @ViewData["MainName"]</h3>
+        </div>
+    </div>
+}
 
 <div class="container-fluid identity-verification">
     <div class="row">
