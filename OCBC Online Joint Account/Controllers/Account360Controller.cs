@@ -470,8 +470,6 @@ namespace OCBC_Joint_Account_Application.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult JointApplicant(Account360ViewModel a360)
         {
-
-
             return RedirectToAction("Verify", "Account360");
         }
 
@@ -481,7 +479,8 @@ namespace OCBC_Joint_Account_Application.Controllers
 
         public ActionResult Verify(Account360ViewModel a360)
         {
-            ResetQR();     
+            ResetQR();
+            HttpContext.Session.SetString("PageType", "Account360");
             checkJAC(HttpContext.Session.GetString("JAC")); // Check Main or Joint       
             Account360ViewModel ac360 = new Account360ViewModel(); // a360 object to display the data in the fields
             ac360.Salutation = a360.Salutation;
