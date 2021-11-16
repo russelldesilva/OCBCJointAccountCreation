@@ -500,8 +500,8 @@ namespace OCBC_Joint_Account_Application.Controllers
 
             Account360ViewModel ac360 = new Account360ViewModel();
             ac360 = HttpContext.Session.GetObjectFromJson<Account360ViewModel>("ApplicantsDetails");
-            ac360.Occupation = Occupation[Convert.ToInt32(ac360.Occupation)].Text;
-            ac360.AnnualIncome = AnnualIncome[Convert.ToInt32(ac360.AnnualIncome)].Text;
+            ac360.Occupation = Occupation[(Convert.ToInt32(ac360.Occupation) - 1)].Text;
+            ac360.AnnualIncome = AnnualIncome[(Convert.ToInt32(ac360.AnnualIncome) - 1)].Text;
             //ac360.DateOfBirth = Convert.ToDateTime(ac360.DateOfBirth.ToString("dd/MM/yyyy"));
             return View(ac360);
         }
@@ -617,6 +617,11 @@ namespace OCBC_Joint_Account_Application.Controllers
                 return true;
             }
             return false;
+        }
+
+        public void Submit()
+        {
+
         }
     }
 }

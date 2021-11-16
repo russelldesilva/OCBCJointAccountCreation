@@ -28,12 +28,6 @@ namespace OCBC_Joint_Account_Application.Models
         public string Occupation { get; set; }
         public string AnnualIncome { get; set; }
 
-        // Other data not collected in the database 
-        public bool NRICIsMailingAddress { get; set; }
-        public bool SelfEmployeed { get; set; }
-
-        public string[] TaxResidence { get; set; }
-
 
         // Joint Applicant data
         public string SalutationJoint { get; set; }
