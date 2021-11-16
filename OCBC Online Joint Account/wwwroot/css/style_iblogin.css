@@ -13,6 +13,7 @@
 .login-building img {
     position: fixed;
     right: 0;
+    /*max-height:1024px;*/
     min-width: 100%;
     width: auto;
     height: 100%;
@@ -25,10 +26,10 @@
 }
 
 .login-btn {
-    height: 30px;
-    width: 100px;
+    height: 45px;
+    width: 130px;
     border-radius: 5px;
-    font-size: 10px;
+    font-size: 15px;
     background-color: red;
     border-color: transparent;
     color: white;
@@ -39,12 +40,16 @@
 .login-form {
     background-color: white;
     width: 400px;
-    padding-left: 20px;
-    padding-right: 20px;
 }
 
-    .login-form > * {
+    .login-form .row {
+        margin-left: auto;
+        margin-right: auto;
     }
+
+        .login-form .row .spacing {
+            padding-bottom: 40px;
+        }
 
 .ib-logo {
     display: flex;
@@ -55,13 +60,12 @@
 }
 
 .textbox-title {
-    font-weight: bold;
-    padding-top: 10px;
+    padding-top: 5px;
+    padding-bottom: 2px;
 }
 
 .no-pin {
     margin-top: 40px;
-    font-size: 13px;
 }
 
 .form-textbox {
@@ -69,15 +73,16 @@
     border-bottom-color: gray;
     border-width: 1px;
     height: 10px;
-    /*width: 300px;*/
+    width: 300px;
     font-size: 18px;
     margin: 0 50px 0 10px;
-    padding-bottom: 8px;
+    padding-bottom: 3px;
     font-weight: 400;
 }
 
 .ss {
-    margin-bottom: 5px;
+    padding-top: 5px;
+    padding-bottom: 5px;
 }
 
 .form-title {
@@ -99,4 +104,5 @@
 
 .sign-up-now {
     background-color: whitesmoke;
+    text-align: center;
 }
