@@ -320,6 +320,17 @@ footer li {
     font-weight: 400;
 }
 
+.form-text {
+    border-color: transparent;
+    height: 50px;
+    font-size: 18px;
+    padding-bottom: 8px;
+    margin: -30px -5px;
+    font-weight: 400;
+    color: black;
+}
+
+
 .form-textbox-full {
     border-color: transparent;
     border-bottom-color: gray;
@@ -332,7 +343,7 @@ footer li {
     font-weight: 400;
 }
 
-.form-textbox:focus, .form-textbox-full:focus {
+.form-textbox:focus, .form-textbox-full:focus, .form-text:focus {
     outline: none;
 }
 

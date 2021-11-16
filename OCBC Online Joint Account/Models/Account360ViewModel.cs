@@ -39,6 +39,7 @@ namespace OCBC_Joint_Account_Application.Models
         public List<TaxResidency> TaxResidencyList { get; set; }
         public string TaxResidence { get; set; }
 
+
         // Joint Applicant data
         public string SalutationJoint { get; set; }
         public string JointApplicantName { get; set; }

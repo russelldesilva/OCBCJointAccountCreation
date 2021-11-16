@@ -85,6 +85,72 @@ namespace OCBC_Joint_Account_Application.DAL
             return custList;
         }
 
+        // For new customers
+        public string Add(Account360ViewModel a360)
+        {
+            SqlCommand cmd = conn.CreateCommand();
 
+            cmd.CommandText = @"INSERT INTO Customer (CustNRIC, Salutation, CustName, DateOfBirth, CountryOfBirth, Nationality, Gender, MaritalStatus, Address, Email, ContactNo, Occupation, EmployerName, Income, iBUsername, iBPin)  
+                VALUES(@CustNRIC, @Salutation, @CustName, @DateOfBirth, @CountryOfBirth, @Nationality, @Gender, @MaritalStatus, @Address, @Email, @ContactNo, @Occupation, @EmployerName, @Income, @iBUsername, @iBPin)";
+
+            cmd.Parameters.AddWithValue("@CustNRIC", a360.NRIC);
+            cmd.Parameters.AddWithValue("@Salutation", a360.Salutation);
+            cmd.Parameters.AddWithValue("@CustName", a360.FullName);
+            cmd.Parameters.AddWithValue("@DateOfBirth", a360.DateOfBirth);
+            cmd.Parameters.AddWithValue("@CountryOfBirth", a360.CountryOfBirth);
+            cmd.Parameters.AddWithValue("@Nationality", a360.Nationality);
+            cmd.Parameters.AddWithValue("@Gender", a360.Gender);
+            cmd.Parameters.AddWithValue("@MaritalStatus", a360.MaritialStatus);
+            cmd.Parameters.AddWithValue("@Address", a360.Address);
+            cmd.Parameters.AddWithValue("@Email", a360.EmailAddress);
+            cmd.Parameters.AddWithValue("@ContactNo", a360.MobileNum);
+            cmd.Parameters.AddWithValue("@Occupation", a360.Occupation);
+            cmd.Parameters.AddWithValue("@EmployerName", a360.Employer);
+            cmd.Parameters.AddWithValue("@Income", a360.AnnualIncome);
+            cmd.Parameters.AddWithValue("@iBUsername", null);
+            cmd.Parameters.AddWithValue("@iBPin", null);
+
+            conn.Open();
+
+            a360.NRIC = (string)cmd.ExecuteScalar();
+
+            conn.Close();
+
+            return a360.NRIC;
+        }
+
+        // For existing customers
+
+        public string Update(Account360ViewModel a360)
+        {
+            SqlCommand cmd = conn.CreateCommand();
+
+            cmd.CommandText = @"UPDATE Staff SET CustNRIC = @CustNRIC, Salutation = @Salutation, FullName = @FullName, DateOfBirth = @DateOfBirth, CountryOfBirth = @CountryOfBirth, Nationality = @Nationality, 
+                Gender = @Gender, MaritialStatus = @MaritialStatus, Address = @Address, EmailAddress = @EmailAddress, ContactNo = @ContactNo, Occupation = @Occupation, EmployerName = @EmployerName, Income = @Income,
+                iBUsername = @iBUsername, iBPin = @iBPin";
+
+            cmd.Parameters.AddWithValue("@CustNRIC", a360.NRIC);
+            cmd.Parameters.AddWithValue("@Salutation", a360.Salutation);
+            cmd.Parameters.AddWithValue("@CustName", a360.FullName);
+            cmd.Parameters.AddWithValue("@DateOfBirth", a360.DateOfBirth);
+            cmd.Parameters.AddWithValue("@CountryOfBirth", a360.CountryOfBirth);
+            cmd.Parameters.AddWithValue("@Nationality", a360.Nationality);
+            cmd.Parameters.AddWithValue("@Gender", a360.Gender);
+            cmd.Parameters.AddWithValue("@MaritalStatus", a360.MaritialStatus);
+            cmd.Parameters.AddWithValue("@Address", a360.Address);
+            cmd.Parameters.AddWithValue("@Email", a360.EmailAddress);
+            cmd.Parameters.AddWithValue("@ContactNo", a360.MobileNum);
+            cmd.Parameters.AddWithValue("@Occupation", a360.Occupation);
+            cmd.Parameters.AddWithValue("@EmployerName", a360.Employer);
+            cmd.Parameters.AddWithValue("@Income", a360.AnnualIncome);
+            cmd.Parameters.AddWithValue("@iBUsername", null);
+            cmd.Parameters.AddWithValue("@iBPin", null);
+
+            conn.Open();
+
+            conn.Close();
+
+            return a360.NRIC;
+        }
     }
 }
