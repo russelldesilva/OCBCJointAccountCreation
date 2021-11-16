@@ -403,17 +403,17 @@ namespace OCBC_Joint_Account_Application.Controllers
             //request.AddFile("file", ".\\wwwroot\\applicationdocs\\nric_front.jpg");
             //IRestResponse response = client.Execute(request);
 
-            //OCBC_Online_Joint_Account.Models.ClientOCR clientOCR = new OCBC_Online_Joint_Account.Models.ClientOCR();
+            ////OCBC_Online_Joint_Account.Models.ClientOCR clientOCR = new OCBC_Online_Joint_Account.Models.ClientOCR();
+            //Account360ViewModel clientOCR = new Account360ViewModel();
 
-
-            //Dictionary <string, object> obj = (Dictionary<string, object>)OCBC_Online_Joint_Account.Models.JSONHelper.Deserialize(response.Content);
+            //Dictionary<string, object> obj = (Dictionary<string, object>)OCBC_Online_Joint_Account.Models.JSONHelper.Deserialize(response.Content);
             //foreach (var item in obj.Keys)
             //{
             //    if (item == "result")
             //    {
             //        List<object> results = (List<object>)obj[item];
             //        Dictionary<string, object> predictions = (Dictionary<string, object>)results[0];
-            //        List<object> prediction = (List<object>) predictions["prediction"];
+            //        List<object> prediction = (List<object>)predictions["prediction"];
             //        foreach (var p in prediction)
             //        {
             //            Dictionary<string, object> pvalue = (Dictionary<string, object>)p;
@@ -426,7 +426,7 @@ namespace OCBC_Joint_Account_Application.Controllers
             //            }
             //            else if (label == "Name")
             //            {
-            //                clientOCR.Name = ocr_text;
+            //                clientOCR.FullName = ocr_text;
             //            }
             //            else if (label == "Sex")
             //            {
@@ -434,15 +434,15 @@ namespace OCBC_Joint_Account_Application.Controllers
             //            }
             //            else if (label == "Date_of_Birth")
             //            {
-            //                clientOCR.Date_of_Birth = ocr_text;
+            //                clientOCR.DateOfBirth = Convert.ToDateTime(ocr_text);
             //            }
             //            //Console.WriteLine("Value: " + ocr_text);
-            //            // return clientOCR object to Form.cshtml to parse the data from the OCR read
+                        
             //        }
             //    }
             //}
-
-            return View("Upload", custApplication);
+            // return clientOCR object to Form.cshtml to parse the data from the OCR read
+            return View("Form"/*, clientOCR*/);
         }
 
         /**==========================
