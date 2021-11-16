@@ -37,6 +37,7 @@ namespace OCBC_Joint_Account_Application.Controllers
         private List<SelectListItem> AnnualIncome = new List<SelectListItem>();
         private List<SelectListItem> Occupation = new List<SelectListItem>();
         private List<SelectListItem> YearsInEmployment = new List<SelectListItem>();
+        private List<TaxResidency> TaxResidencyList = new List<TaxResidency>();
         private List<string> singaporean = new List<string> { "I am a Singaporean Citizen/Permanent Resident", "I am a Foreigner working/studying or residing in Singapore" };
 
         public Account360Controller()
@@ -83,6 +84,23 @@ namespace OCBC_Joint_Account_Application.Controllers
                 YearsInEmployment.Add(new SelectListItem { Value = Convert.ToString(i), Text = Convert.ToString(i) });
             }
             YearsInEmployment.Add(new SelectListItem { Value = "> 40", Text = "> 40" });
+
+            //Populate Tax Residency list
+            TaxResidencyList.Add(new TaxResidency
+            {
+                Country = "Singapore",
+                Selected = false
+            });
+            TaxResidencyList.Add(new TaxResidency
+            {
+                Country = "United States",
+                Selected = false
+            });
+            TaxResidencyList.Add(new TaxResidency
+            {
+                Country = "Other country(s)",
+                Selected = false
+            });
         }
 
         /**==========================
@@ -199,7 +217,7 @@ namespace OCBC_Joint_Account_Application.Controllers
             ViewData["YearsInEmployment"] = YearsInEmployment;
 
             Account360ViewModel ac360 = new Account360ViewModel();
-
+            ac360.TaxResidencyList = TaxResidencyList;
             // Check for Singpass then run code to pull from singpass
             if (HttpContext.Session.GetString("ApplyMethod") == "Singpass")
             {
@@ -277,13 +295,18 @@ namespace OCBC_Joint_Account_Application.Controllers
             mainApplication.YearsInEmployment = a360.YearsInEmployment;
             mainApplication.Occupation = a360.Occupation;
             mainApplication.AnnualIncome = a360.AnnualIncome;
-
-
             mainApplication.JointApplicantCode = $"J{DateTime.Today.Day}{DateTime.Today.Month}{mainApplication.NRIC.Substring(5, 3)}";
+            mainApplication.SelfEmployeed = a360.SelfEmployeed;
+            foreach (TaxResidency country in a360.TaxResidencyList)
+            {
+                if (country.Selected)
+                {
+                    mainApplication.TaxResidence += country.Country + ", ";
+                }
+            }
+            mainApplication.TaxResidence.Substring(0, mainApplication.TaxResidence.Length - 2);
 
             HttpContext.Session.SetObjectAsJson("ApplicantsDetails", mainApplication);
-
-
 
             return RedirectToAction("JointApplicant", "Account360");
         }
@@ -500,9 +523,9 @@ namespace OCBC_Joint_Account_Application.Controllers
 
             Account360ViewModel ac360 = new Account360ViewModel();
             ac360 = HttpContext.Session.GetObjectFromJson<Account360ViewModel>("ApplicantsDetails");
-            ac360.Occupation = Occupation[Convert.ToInt32(ac360.Occupation)].Text;
-            ac360.AnnualIncome = AnnualIncome[Convert.ToInt32(ac360.AnnualIncome)].Text;
-            //ac360.DateOfBirth = Convert.ToDateTime(ac360.DateOfBirth.ToString("dd/MM/yyyy"));
+            ac360.Occupation = Occupation[Convert.ToInt32(ac360.Occupation)-1].Text;
+            ac360.AnnualIncome = AnnualIncome[Convert.ToInt32(ac360.AnnualIncome)-1].Text;
+            ac360.DateOfBirth = ac360.DateOfBirth.Date;
             return View(ac360);
         }
 

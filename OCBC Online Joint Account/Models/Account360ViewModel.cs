@@ -6,6 +6,11 @@ using System.ComponentModel.DataAnnotations;
 
 namespace OCBC_Joint_Account_Application.Models
 {
+    public class TaxResidency
+    {
+        public string Country { get; set; }
+        public bool Selected { get; set; }
+    }
     public class Account360ViewModel
     {
         public int OTP { get; set; }
@@ -24,16 +29,15 @@ namespace OCBC_Joint_Account_Application.Models
         public string EmailAddress { get; set; }
         public string Address { get; set; }
         public string Employer { get; set; }
-        public int YearsInEmployment { get; set; }
+        public string YearsInEmployment { get; set; }
         public string Occupation { get; set; }
         public string AnnualIncome { get; set; }
 
         // Other data not collected in the database 
-        public bool NRICIsMailingAddress { get; set; }
+        public bool NRICIsMailingAddresses { get; set; }
         public bool SelfEmployeed { get; set; }
-
-        public string[] TaxResidence { get; set; }
-
+        public List<TaxResidency> TaxResidencyList { get; set; }
+        public string TaxResidence { get; set; }
 
         // Joint Applicant data
         public string SalutationJoint { get; set; }

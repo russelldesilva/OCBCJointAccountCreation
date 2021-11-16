@@ -99,7 +99,7 @@
                 <label>NRIC</label>
                 <h1><input asp-for="NRIC" class="form-textbox" type="text" readonly></h1>
                 <label>Date of Birth</label>
-                <h1><input asp-for="DateOfBirth" class="form-textbox" type="text" readonly></h1>
+                <h1><input value="@Model.DateOfBirth.Day/@Model.DateOfBirth.Month/@Model.DateOfBirth.Year" class="form-textbox" type="text" readonly></h1>
                 <label>Country of Birth</label>
                 <h1><input asp-for="CountryOfBirth" class="form-textbox" type="text" readonly></h1>
                 <label>Nationality</label>
@@ -114,6 +114,30 @@
                 <h1><input asp-for="EmailAddress" class="form-textbox" type="text" readonly></h1>
                 <label>Contact Number</label>
                 <h1><input asp-for="MobileNum" class="form-textbox" type="text" readonly></h1>
+                @if (Model.NRICIsMailingAddresses)
+                {
+                    <label>Address on NRIC is also mailing address </label>
+                }
+                <label>Country(s) of tax residency: </label>
+                <h1><input asp-for="TaxResidence" class="form-textbox-small" readonly /></h1>
+            </div>
+            <div class="cover">
+                <h2>Employment Information</h2>
+                <label>Occupation</label>
+                <h1><input asp-for="Occupation" class="form-textbox" type="text" readonly></h1>
+                <label>Annual Income</label>
+                <h1><input asp-for="AnnualIncome" class="form-textbox" type="text" readonly></h1>
+                <label>Employer</label>
+                @if (Model.SelfEmployeed)
+                {
+                    <h1>Self-employed</h1>
+                }
+                else
+                {
+                    <h1><input asp-for="Employer" class="form-textbox" type="text" readonly></h1>
+                }
+                <label>Years in Employment</label>
+                <h1><input asp-for="YearsInEmployment" class="form-textbox" type="text" readonly></h1>
             </div>
             @if (Context.Session.GetString("JAC") == null)
             {
@@ -129,17 +153,6 @@
                     <h1><input asp-for="ContactNo" class="form-textbox" type="text" readonly></h1>
                 </div>
             }
-            <div class="cover">
-                <h2>Employment Information</h2>
-                <label>Occupation</label>
-                <h1><input asp-for="Occupation" class="form-textbox" type="text" readonly></h1>
-                <label>Annual Income</label>
-                <h1><input asp-for="AnnualIncome" class="form-textbox" type="text" readonly></h1>
-                <label>Employer</label>
-                <h1><input asp-for="Employer" class="form-textbox" type="text" required></h1>
-                <label>Years in Employment</label>
-                <h1><input asp-for="YearsInEmployment" class="form-textbox" type="text" required></h1>
-            </div>
         </div>
         <div class="col-md-4">
             @{
