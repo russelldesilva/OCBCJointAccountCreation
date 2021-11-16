@@ -481,16 +481,11 @@ namespace OCBC_Joint_Account_Application.Controllers
 
         public ActionResult Verify(Account360ViewModel a360)
         {
-            // Check Main or Joint
-            checkJAC(HttpContext.Session.GetString("JAC"));
-
-
-            // a360 object to display the data in the fields
-            Account360ViewModel ac360 = new Account360ViewModel();
-
+            ResetQR();     
+            checkJAC(HttpContext.Session.GetString("JAC")); // Check Main or Joint       
+            Account360ViewModel ac360 = new Account360ViewModel(); // a360 object to display the data in the fields
             ac360.Salutation = a360.Salutation;
             Console.WriteLine(TempData["Object"]);
-
             return View(ac360);
         }
 
