@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using OCBC_Joint_Account_Application.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -25,30 +26,24 @@ namespace OCBC_Online_Joint_Account.DAL
         }
         // INSERT INTO CustApplication (CustNRIC, ApplicationId, CustNRICFront, CustNRICBack, CustProofOfResidence, CustPassport, CustForeignPassFront, CustForeignPassBack, JointApplicantName, JointApplicantNRIC) VALUES
 
-        public int Add()
+        public int Add(Account360ViewModel a360)
         {
             SqlCommand cmd = conn.CreateCommand();
 
             cmd.CommandText = @"INSERT INTO CustApplication (CustNRIC, ApplicationId, CustNRICFront, CustNRICBack, CustProofOfResidence, CustPassport, CustForeignPassFront, CustForeignPassBack, JointApplicantName, JointApplicantNRIC) VALUES
                 VALUES(@CustNRIC, @ApplicationId, @CustNRICFront, @CustNRICBack, @CustProofOfResidence, @CustPassport, @CustForeignPassFront, @CustForeignPassBack, @JointApplicantName, @JointApplicantNRIC)";
-            /*
+
             cmd.Parameters.AddWithValue("@CustNRIC", a360.NRIC);
-            cmd.Parameters.AddWithValue("@Salutation", a360.Salutation);
-            cmd.Parameters.AddWithValue("@CustName", a360.FullName);
-            cmd.Parameters.AddWithValue("@DateOfBirth", a360.DateOfBirth);
-            cmd.Parameters.AddWithValue("@CountryOfBirth", a360.CountryOfBirth);
-            cmd.Parameters.AddWithValue("@Nationality", a360.Nationality);
-            cmd.Parameters.AddWithValue("@Gender", a360.Gender);
-            cmd.Parameters.AddWithValue("@MaritalStatus", a360.MaritialStatus);
-            cmd.Parameters.AddWithValue("@Address", a360.Address);
-            cmd.Parameters.AddWithValue("@Email", a360.EmailAddress);
-            cmd.Parameters.AddWithValue("@ContactNo", a360.MobileNum);
-            cmd.Parameters.AddWithValue("@Occupation", a360.Occupation);
-            cmd.Parameters.AddWithValue("@EmployerName", a360.Employer);
-            cmd.Parameters.AddWithValue("@Income", a360.AnnualIncome);
-            cmd.Parameters.AddWithValue("@iBUsername", null);
-            cmd.Parameters.AddWithValue("@iBPin", null);
-            */
+            cmd.Parameters.AddWithValue("@ApplicationId", a360.Salutation);
+            cmd.Parameters.AddWithValue("@CustNRICFront", null);
+            cmd.Parameters.AddWithValue("@CustNRICBack", null);
+            cmd.Parameters.AddWithValue("@CustProofOfResidence", null);
+            cmd.Parameters.AddWithValue("@CustPassport", null);
+            cmd.Parameters.AddWithValue("@CustForeignPassFront", null);
+            cmd.Parameters.AddWithValue("@CustForeignPassBack", null);
+            cmd.Parameters.AddWithValue("@JointApplicantName", null);
+            cmd.Parameters.AddWithValue("@JointApplicantNRIC", null);
+
             conn.Open();
 
             //a360.NRIC = (string)cmd.ExecuteScalar();

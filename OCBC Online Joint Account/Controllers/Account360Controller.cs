@@ -577,6 +577,8 @@ namespace OCBC_Joint_Account_Application.Controllers
                 
             }
             ViewData["DateOfBirth"] = ac360.DateOfBirth.Date.ToString("d");
+
+            HttpContext.Session.SetObjectAsJson("ApplicantsDetails", ac360);
             return View(ac360);
         }
 
@@ -584,7 +586,11 @@ namespace OCBC_Joint_Account_Application.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Verify(Account360ViewModel a360)
         {
-            return View();
+            a360 = HttpContext.Session.GetObjectFromJson<Account360ViewModel>("ApplicantsDetails");
+
+            // Only scan and new singpass is add rest update
+            customerContext.Add(a360);
+            return View("Index", "Home");
         }
 
         /**==========================
