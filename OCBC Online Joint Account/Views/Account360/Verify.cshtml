@@ -15,9 +15,41 @@
     </div>
 }
 
-<div class="container-fluid">
+<div class="container-fluid applicant">
     <div class="completion-bar">
-        @if (Context.Session.GetString("ApplyMethod") == "Singpass")
+        @if (Context.Session.GetString("ApplyMethod") == "Scan" && Context.Session.GetString("JAC") != null)
+        {
+            <div class="completion-bar-3">
+                <progress value="3" max="3"></progress>
+                <h1 class="text-1"><b>Identity Verification</b></h1>
+                <h1 class="text-2"><b>Joint-Applicant Information</b></h1>
+                <h1 class="text-3"><b>Verify Information</b></h1>
+                <h2 class="circle circle-1"></h2>
+                <h2 class="circle circle-2"></h2>
+                <h2 class="circle circle-3"></h2>
+            </div>
+        }
+        else if (Context.Session.GetString("ApplyMethod") == "Singpass" && Context.Session.GetString("JAC") != null)
+        {
+            <div class="completion-bar-3">
+                <progress value="3" max="3"></progress>
+                <h1 class="text-1"><b>Identity Verification</b></h1>
+                <h1 class="text-2"><b>Joint-Applicant Information</b></h1>
+                <h1 class="text-3"><b>Verify Information</b></h1>
+                <h2 class="circle circle-1"></h2>
+                <h2 class="circle circle-2"></h2>
+                <h2 class="circle circle-3"></h2>
+            </div>
+        }
+        else if (Context.Session.GetString("ApplyMethod") == "QR" && Context.Session.GetString("JAC") != null)
+        {
+            <div class="completion-bar-1">
+                <progress value="1" max="1"></progress>
+                <h1 class="text-1"><b>Verify Information</b></h1>
+                <h2 class="circle circle-1"></h2>
+            </div>
+        }
+        else if (Context.Session.GetString("ApplyMethod") == "Singpass")
         {
             <progress value="4" max="4"></progress>
             <h1 class="text-1"><b>Identity Verification</b></h1>
@@ -31,11 +63,13 @@
         }
         else if (Context.Session.GetString("ApplyMethod") == "QR")
         {
-            <progress value="2" max="2"></progress>
-            <h1 class="text-1"><b>Joint-Applicant Information</b></h1>
-            <h1 class="text-3"><b>Verify Information</b></h1>
-            <h2 class="circle circle-2"></h2>
-            <h2 class="circle circle-4"></h2>
+            <div class="completion-bar-2">
+                <progress value="2" max="2"></progress>
+                <h1 class="text-1"><b>Joint-Applicant Information</b></h1>
+                <h1 class="text-2"><b>Verify Information</b></h1>
+                <h2 class="circle circle-1"></h2>
+                <h2 class="circle circle-2"></h2>
+            </div>
         }
         else if (Context.Session.GetString("ApplyMethod") == "Scan")
         {
@@ -53,159 +87,64 @@
 </div>
 @*<h2>Code: @TempData["Code"]</h2>*@
 
-<!-- Display all data -->
-<div class="container-fluid applicant">
-    <form method="post">
-        <div class="row border">
-            <div class="col-md-8">
-
-                <h3><b>Main Applicant Personal Information</b></h3>
-
-                <div class="row">
-                    <div class="col-md-4">
-                        <label class="textbox-title">Salutation</label>
-                        <input asp-for="Salutation" class="form-textbox" type="text" readonly />
-                        </select>
-                    </div>
-                    <div class="col-md-6 textbox-right">
-                        <label class="textbox-title">Full Name (as in NRIC)</label>
-                        <input asp-for="FullName" class="form-textbox" type="text" readonly>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-4">
-                        <label class="textbox-title">NRIC</label>
-                        <input asp-for="NRIC" class="form-textbox" type="text" readonly>
-                    </div>
-                    <div class="col-md-6 textbox-right">
-                        <label class="textbox-title">Date of Birth</label>
-                        <input asp-for="DateOfBirth" class="form-textbox" readonly>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-4">
-                        <label class="textbox-title">Country of Birth</label>
-                        <input asp-for="CountryOfBirth" class="form-textbox" type="text" readonly />
-                    </div>
-                    <div class="col-md-6 textbox-right">
-                        <label class="textbox-title">Nationality</label>
-                        <input asp-for="Nationality" class="form-textbox" type="text" readonly />
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-4">
-                        <label class="textbox-title">Gender</label>
-                        <input asp-for="Gender" class="form-textbox" type="text" readonly />
-                    </div>
-                    <div class="col-md-6 textbox-right">
-                        <label class="textbox-title">Maritial Status</label>
-                        <input asp-for="MaritialStatus" class="form-textbox" type="text" readonly />
-                    </div>
-                </div>
-                <div class="margin">
-                    <h3><b>Address (as in NRIC)</b></h3>
-                    <label class="textbox-title">Address</label>
-                    <input asp-for="Address" class="form-textbox-full" type="text" required><br />
-                    <input type="checkbox" id="mailingaddress">
-                    <label class="form-checkbox" for="mailingaddress"> Use NRIC address as mailing address </label><br>
-                </div>
-                <div class="margin">
-                    <h3><b>Contact Information</b></h3>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <label class="textbox-title">Email Address</label>
-                            <input asp-for="EmailAddress" class="form-textbox" type="text" readonly>
-                        </div>
-                        <div class="col-md-6 textbox-right">
-                            <label class="textbox-title">Contact Number</label>
-                            <input asp-for="MobileNum" class="form-textbox" type="text" readonly>
-                        </div>
-                    </div>
-                </div>
-                <div class="margin">
-                    <h3><b>Employment Information</b></h3>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <label class="textbox-title">Occupation</label>
-                            <input asp-for="Occupation" class="form-textbox" type="text" readonly />
-                        </div>
-                        <div class="col-md-6 textbox-right">
-                            <label class="textbox-title">Annual Income</label>
-                            <input asp-for="AnnualIncome" class="form-textbox" type="text" readonly />
-                        </div>
-                    </div>
-                    <h6>Are you self-employed?</h6>
-                    <input type="radio" id="yes" name="self-employed" value="Yes">
-                    <label class="form-radio" for="yes">Yes</label>
-                    <input type="radio" id="no" name="self-employed" value="No">
-                    <label class="form-radio" for="no">No</label><br>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <label class="textbox-title">Employer</label>
-                            <input asp-for="Employer" class="form-textbox" type="text">
-                        </div>
-                        <div class="col-md-6 textbox-right">
-                            <label class="textbox-title">Years in Employment</label>
-                            <input asp-for="YearsInEmployment" class="form-textbox" type="text" readonly />
-                        </div>
-                    </div>
-                </div>
+<div class="container-fluid verify">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="cover">
+                <h2>Verify Information</h2>
+                <label>Salutation</label>
+                <h1></h1>
+                <label>Name</label>
+                <h1></h1>
+                <label>NRIC</label>
+                <h1></h1>
+                <label>Date of Birth</label>
+                <h1></h1>
+                <label>Country of Birth</label>
+                <h1></h1>
+                <label>Nationality</label>
+                <h1></h1>
+                <label>Maritial Status</label>
+                <h1></h1>
+                <label>Gender</label>
+                <h1></h1>
+                <label>Address</label>
+                <h1></h1>
+                <label>Email</label>
+                <h1></h1>
+                <label>Contact Number</label>
+                <h1></h1>
             </div>
-            <div class="col-md-4">
-                @{
-                    @await Html.PartialAsync("_AccountInfoCard.cshtml"); }
-            </div>
-
-            <div class="margin marketing">
-                <h3><b>Please indicate your country of Tax Residency</b></h3>
-                <h4>We are collecting this information in compliance with the relevant tax regulations. Help us ensure the information is accurate and up to date.</h4>
-                <input type="checkbox" id="singapore" name="singapore" value="Singapore">
-                <label class="form-checkbox-2" for="singapore"> Singapore</label><br>
-                <input type="checkbox" id="united-states" name="united-states" value="United-States">
-                <label class="form-checkbox-2" for="united-states"> United States</label><br>
-                <input type="checkbox" id="other-country" name="other-country" value="Other-Country">
-                <label class="form-checkbox-2" for="other-country"> Other country(s)</label><br>
+            @if (Context.Session.GetString("JAC") == null)
+            {
+                <div class="cover">
+                    <h2>Verify Joint Applicant Information</h2>
+                    <label>Salutation</label>
+                    <h1></h1>
+                    <label>Name</label>
+                    <h1></h1>
+                    <label>Email</label>
+                    <h1></h1>
+                    <label>Contact Number</label>
+                    <h1></h1>
+                </div>
+            }
+            <div class="cover">
+                <h2>Employment Information</h2>
+                <label>Occupation</label>
+                <h1></h1>
+                <label>Annual Income</label>
+                <h1></h1>
+                <label>Employer</label>
+                <h1></h1>
+                <label>Years in Employment</label>
+                <h1></h1>
             </div>
         </div>
-
-        <!--Joint Applicant details -->
-        <div class="col-md-8 border">
-            <div class="row">
-                <div class="row">
-                    <div class="margin">
-                        <h3><b>Joint Applicant Personal Information</b></h3>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <label class="textbox-title">Salutation</label>
-                                <input asp-for="SalutationJoint" class="form-textbox" type="text" readonly />
-                            </div>
-                            <div class="col-md-6 textbox-right">
-                                <label class="textbox-title">Full Name (as in NRIC)</label>
-                                <input asp-for="JointApplicantName" class="form-textbox" type="text" required>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="margin">
-                        <h3><b>Contact Information</b></h3>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <label class="textbox-title">Email Address</label>
-                                <input asp-for="Email" class="form-textbox" type="text" required>
-                            </div>
-                            <div class="col-md-6 textbox-right">
-                                <label class="textbox-title">Contact Number</label>
-                                <input asp-for="ContactNo" class="form-textbox" type="text" required>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="margin">
-                <input class="resend" type="submit" value="Next" asp-controller="Account360" asp-action="Form">
-            </div>
+        <div class="col-md-4">
+            @{
+                @await Html.PartialAsync("_AccountInfoCard.cshtml");
+            }
         </div>
-    </form>
-    <h4 style="color:red">@ViewData["Error"]</h4>
+    </div>
 </div>
