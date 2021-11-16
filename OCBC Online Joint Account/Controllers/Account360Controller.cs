@@ -19,6 +19,7 @@ using System.IO;
 using System.Threading;
 using System.Text;
 using OCBC_Online_Joint_Account.Models;
+using System.Globalization;
 
 namespace OCBC_Joint_Account_Application.Controllers
 {
@@ -27,7 +28,6 @@ namespace OCBC_Joint_Account_Application.Controllers
         private SingpassDAL singpassContext = new SingpassDAL();
         private CustomerDAL customerContext = new CustomerDAL();
         private ApplicationDAL applicationContext = new ApplicationDAL();
-        Account360ViewModel applicants = new Account360ViewModel();
 
         private List<SelectListItem> Salutation = new List<SelectListItem>();
         private List<SelectListItem> CountryOfBirth = new List<SelectListItem>();
@@ -468,8 +468,6 @@ namespace OCBC_Joint_Account_Application.Controllers
             HttpContext.Session.SetString("PageType", "Account360");
             ViewData["Salutation"] = Salutation;
 
-            Console.WriteLine(applicants.FullName);
-
             return View();
         }
 
@@ -477,6 +475,15 @@ namespace OCBC_Joint_Account_Application.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult JointApplicant(Account360ViewModel a360)
         {
+            Account360ViewModel ac360 = new Account360ViewModel();
+            ac360 = HttpContext.Session.GetObjectFromJson<Account360ViewModel>("ApplicantsDetails");
+
+            ac360.SalutationJoint = a360.SalutationJoint;
+            ac360.JointApplicantName = a360.JointApplicantName;
+            ac360.Email = a360.Email;
+            ac360.ContactNo = a360.ContactNo;
+            HttpContext.Session.SetObjectAsJson("ApplicantsDetails", ac360);
+
             return RedirectToAction("Verify", "Account360");
         }
 
@@ -484,19 +491,24 @@ namespace OCBC_Joint_Account_Application.Controllers
                VERIFY.CSHTML
        ==========================**/
 
-        public ActionResult Verify(Account360ViewModel a360)
+        public ActionResult Verify()
         {
             ResetQR();
             HttpContext.Session.SetString("PageType", "Account360");
             checkJAC(HttpContext.Session.GetString("JAC")); // Check Main or Joint       
-            Account360ViewModel ac360 = new Account360ViewModel(); // a360 object to display the data in the fields
-            ac360.Salutation = a360.Salutation;
+
+
+            Account360ViewModel ac360 = new Account360ViewModel();
+            ac360 = HttpContext.Session.GetObjectFromJson<Account360ViewModel>("ApplicantsDetails");
+            ac360.Occupation = Occupation[Convert.ToInt32(ac360.Occupation)].Text;
+            ac360.AnnualIncome = AnnualIncome[Convert.ToInt32(ac360.AnnualIncome)].Text;
+            //ac360.DateOfBirth = Convert.ToDateTime(ac360.DateOfBirth.ToString("dd/MM/yyyy"));
             return View(ac360);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Verifya()
+        public ActionResult Verify(Account360ViewModel a360)
         {
             return View();
         }
