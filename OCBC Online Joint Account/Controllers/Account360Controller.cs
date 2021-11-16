@@ -28,6 +28,66 @@ namespace OCBC_Joint_Account_Application.Controllers
         private ApplicationDAL applicationContext = new ApplicationDAL();
         Account360ViewModel applicants = new Account360ViewModel();
 
+        private List<SelectListItem> Salutation = new List<SelectListItem>();
+        private List<SelectListItem> CountryOfBirth = new List<SelectListItem>();
+        private List<SelectListItem> Nationality = new List<SelectListItem>();
+        private List<SelectListItem> Gender = new List<SelectListItem>();
+        private List<SelectListItem> MaritialStatus = new List<SelectListItem>();
+        private List<SelectListItem> AnnualIncome = new List<SelectListItem>();
+        private List<SelectListItem> Occupation = new List<SelectListItem>();
+        private List<SelectListItem> YearsInEmployment = new List<SelectListItem>();
+        private List<string> singaporean = new List<string> { "I am a Singaporean Citizen/Permanent Resident", "I am a Foreigner working/studying or residing in Singapore" };
+
+        public Account360Controller()
+        {
+            //Populate Salutation
+            Salutation.Add(new SelectListItem { Value = "Dr", Text = "Dr" });
+            Salutation.Add(new SelectListItem { Value = "Mdm", Text = "Mdm" });
+            Salutation.Add(new SelectListItem { Value = "Miss", Text = "Miss" });
+            Salutation.Add(new SelectListItem { Value = "Mr", Text = "Mr" });
+            Salutation.Add(new SelectListItem { Value = "Mrs", Text = "Mrs" });
+            Salutation.Add(new SelectListItem { Value = "Ms", Text = "Ms" });
+
+            //Populate Gender
+            Gender.Add(new SelectListItem { Value = "Male", Text = "Male" });
+            Gender.Add(new SelectListItem { Value = "Female", Text = "Female" });
+
+            //Populate Maritial Status
+            MaritialStatus.Add(new SelectListItem { Value = "Single", Text = "Single" });
+            MaritialStatus.Add(new SelectListItem { Value = "Married", Text = "Married" });
+            MaritialStatus.Add(new SelectListItem { Value = "Widowed", Text = "Widowed" });
+            MaritialStatus.Add(new SelectListItem { Value = "Divorced", Text = "Divorced" });
+            MaritialStatus.Add(new SelectListItem { Value = "Married but seprated", Text = "Married but seprated" });
+
+            //Populate Annual Income
+            AnnualIncome.Add(new SelectListItem { Value = "1", Text = "Less Than 30,000" });
+            AnnualIncome.Add(new SelectListItem { Value = "2", Text = "30,000 - 49,000" });
+            AnnualIncome.Add(new SelectListItem { Value = "3", Text = "50,000 - 99,999" });
+            AnnualIncome.Add(new SelectListItem { Value = "4", Text = "100,000 - 149,000" });
+            AnnualIncome.Add(new SelectListItem { Value = "5", Text = "150,000 - 199,000" });
+            AnnualIncome.Add(new SelectListItem { Value = "6", Text = "Above 200,000" });
+
+            //Populate Occupation
+            Occupation.Add(new SelectListItem { Value = "1", Text = "Architect" });
+            Occupation.Add(new SelectListItem { Value = "2", Text = "Doctor/Dentist" });
+            Occupation.Add(new SelectListItem { Value = "3", Text = "Engineer" });
+            Occupation.Add(new SelectListItem { Value = "4", Text = "IT Professional" });
+            Occupation.Add(new SelectListItem { Value = "5", Text = "Legal Professional/Lawyer" });
+            Occupation.Add(new SelectListItem { Value = "6", Text = "Student" });
+
+            //Populate Years In Employment
+            YearsInEmployment.Add(new SelectListItem { Value = "< 1", Text = "< 1" });
+            for (int i = 1; i <= 40; i++)
+            {
+                YearsInEmployment.Add(new SelectListItem { Value = Convert.ToString(i), Text = Convert.ToString(i) });
+            }
+            YearsInEmployment.Add(new SelectListItem { Value = "> 40", Text = "> 40" });
+        }
+
+        /**==========================
+             APPLYONLINE.CSHTML
+        ==========================**/
+
         public ActionResult ApplyOnline(int? AT, string? JAC)
         {
             HttpContext.Session.SetString("PageType", "Account360");
@@ -48,6 +108,10 @@ namespace OCBC_Joint_Account_Application.Controllers
            
             return View();     
         }
+
+        /**==========================
+              IDENTITY.CSHTML
+        ==========================**/
 
         public ActionResult Identity()
         {
@@ -102,61 +166,9 @@ namespace OCBC_Joint_Account_Application.Controllers
             return View();
         }
 
-        private List<SelectListItem> Salutation = new List<SelectListItem>();
-        private List<SelectListItem> CountryOfBirth = new List<SelectListItem>();
-        private List<SelectListItem> Nationality = new List<SelectListItem>();
-        private List<SelectListItem> Gender = new List<SelectListItem>();
-        private List<SelectListItem> MaritialStatus = new List<SelectListItem>();
-        private List<SelectListItem> AnnualIncome = new List<SelectListItem>();
-        private List<SelectListItem> Occupation = new List<SelectListItem>();
-        private List<SelectListItem> YearsInEmployment = new List<SelectListItem>();
-        private List<string> singaporean = new List<string> { "I am a Singaporean Citizen/Permanent Resident", "I am a Foreigner working/studying or residing in Singapore" };
-
-        public Account360Controller()
-        {
-            //Populate Salutation
-            Salutation.Add(new SelectListItem { Value = "Dr",  Text = "Dr"});
-            Salutation.Add(new SelectListItem { Value = "Mdm", Text = "Mdm" });
-            Salutation.Add(new SelectListItem { Value = "Miss", Text = "Miss" });
-            Salutation.Add(new SelectListItem { Value = "Mr", Text = "Mr" });
-            Salutation.Add(new SelectListItem { Value = "Mrs", Text = "Mrs" });
-            Salutation.Add(new SelectListItem { Value = "Ms", Text = "Ms" });
-
-            //Populate Gender
-            Gender.Add(new SelectListItem { Value = "Male", Text = "Male" });
-            Gender.Add(new SelectListItem { Value = "Female", Text = "Female" });
-
-            //Populate Maritial Status
-            MaritialStatus.Add(new SelectListItem { Value = "Single", Text = "Single" });
-            MaritialStatus.Add(new SelectListItem { Value = "Married", Text = "Married" });
-            MaritialStatus.Add(new SelectListItem { Value = "Widowed", Text = "Widowed" });
-            MaritialStatus.Add(new SelectListItem { Value = "Divorced", Text = "Divorced" });
-            MaritialStatus.Add(new SelectListItem { Value = "Married but seprated", Text = "Married but seprated" });
-
-            //Populate Annual Income
-            AnnualIncome.Add(new SelectListItem { Value = "1", Text = "Less Than 30,000" });
-            AnnualIncome.Add(new SelectListItem { Value = "2", Text = "30,000 - 49,000" });
-            AnnualIncome.Add(new SelectListItem { Value = "3", Text = "50,000 - 99,999" });
-            AnnualIncome.Add(new SelectListItem { Value = "4", Text = "100,000 - 149,000" });
-            AnnualIncome.Add(new SelectListItem { Value = "5", Text = "150,000 - 199,000" });
-            AnnualIncome.Add(new SelectListItem { Value = "6", Text = "Above 200,000" });
-
-            //Populate Occupation
-            Occupation.Add(new SelectListItem { Value = "1", Text = "Architect" });
-            Occupation.Add(new SelectListItem { Value = "2", Text = "Doctor/Dentist" });
-            Occupation.Add(new SelectListItem { Value = "3", Text = "Engineer" });
-            Occupation.Add(new SelectListItem { Value = "4", Text = "IT Professional" });
-            Occupation.Add(new SelectListItem { Value = "5", Text = "Legal Professional/Lawyer" });
-            Occupation.Add(new SelectListItem { Value = "6", Text = "Student" });
-
-            //Populate Years In Employment
-            YearsInEmployment.Add(new SelectListItem { Value = "< 1", Text = "< 1" });
-            for (int i = 1; i <= 40; i++)
-            {
-                YearsInEmployment.Add(new SelectListItem { Value = Convert.ToString(i), Text = Convert.ToString(i) });
-            }
-            YearsInEmployment.Add(new SelectListItem { Value = "> 40", Text = "> 40" });
-        }
+        /**==========================
+                 FORM.CSHTML
+        ==========================**/
 
         public async Task<ActionResult> Form()
         {
@@ -274,6 +286,10 @@ namespace OCBC_Joint_Account_Application.Controllers
             
             return RedirectToAction("JointApplicant", "Account360", applicants);
         }
+
+        /**==========================
+                UPLOAD.CSHTML
+        ==========================**/
 
         public ActionResult Upload()
         {
@@ -430,15 +446,22 @@ namespace OCBC_Joint_Account_Application.Controllers
             return View("Upload", custApplication);
         }
 
+        /**==========================
+            JOINTAPPLICANT.CSHTML
+        ==========================**/
+
         public ActionResult JointApplicant()
         {
+            if (HttpContext.Session.GetString("JAC") != null)
+            {       
+                return RedirectToAction("Verify", "Account360");
+            }
+
+            ResetQR();
             checkJAC(HttpContext.Session.GetString("JAC"));
             HttpContext.Session.SetString("PageType", "Account360");
-            ResetQR();
             ViewData["Salutation"] = Salutation;
-
             Console.WriteLine(applicants.FullName);
-
             return View();
         }
 
@@ -446,23 +469,20 @@ namespace OCBC_Joint_Account_Application.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult JointApplicant(Account360ViewModel a360)
         {
-
-
             return RedirectToAction("Verify", "Account360");
         }
 
+        /**==========================
+               VERIFY.CSHTML
+       ==========================**/
+
         public ActionResult Verify(Account360ViewModel a360)
         {
-            // Check Main or Joint
-            checkJAC(HttpContext.Session.GetString("JAC"));
-
-
-            // a360 object to display the data in the fields
-            Account360ViewModel ac360 = new Account360ViewModel();
-
+            ResetQR();
+            checkJAC(HttpContext.Session.GetString("JAC")); // Check Main or Joint
+            Account360ViewModel ac360 = new Account360ViewModel(); // a360 object to display the data in the fields
             ac360.Salutation = a360.Salutation;
             Console.WriteLine(TempData["Object"]);
-
             return View(ac360);
         }
 
@@ -505,6 +525,7 @@ namespace OCBC_Joint_Account_Application.Controllers
                 "\"selectedAccountTypeName\":\"360 Account\"," +
                 "\"mainApplicantName\":null," +
                 "\"mainApplicantNRIC\":null," +
+                "\"jointApplicationCode\":null," +
                 "\"id\":0}";
 
             var client = new RestClient("https://pfdocbcdb-5763.restdb.io/rest/qr-response/6191214a9402c24f00017a99");
@@ -543,6 +564,7 @@ namespace OCBC_Joint_Account_Application.Controllers
                 "\"selectedAccountTypeName\":\"360 Account\"," +
                 "\"mainApplicantName\":\"" + Name + "\"," +
                 "\"mainApplicantNRIC\":\"" + NRIC + "\"," +
+                "\"jointApplicationCode\":\"" + JAC + "\"," +
                 "\"id\":0}";
 
             var client1 = new RestClient("https://pfdocbcdb-5763.restdb.io/rest/qr-response/6191214a9402c24f00017a99");

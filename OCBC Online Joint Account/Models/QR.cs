@@ -17,5 +17,6 @@ namespace OCBC_Joint_Account_Application.Models
         public bool isJointApplicant { get; set; }
         public string mainApplicantName { get; set; }
         public int custId { get; set; }
+        public string jointApplicationCode { get; set; }
     }
 }

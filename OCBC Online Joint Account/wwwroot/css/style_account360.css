@@ -77,6 +77,22 @@ progress {
     margin: -30px 985px;
 }
 
+.completion-bar-1 progress {
+    margin-top: 50px;
+    width: 250px;
+}
+
+.completion-bar-2 progress {
+    margin-top: 50px;
+    width: 500px;
+}
+
+.completion-bar-3 progress{
+    margin-top: 50px;
+    width: 750px;
+}
+
+
 /**Footer*/
 footer {
     margin-top: 150px;

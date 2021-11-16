@@ -22,11 +22,13 @@
                     }
                     else if (Context.Session.GetString("ApplyMethod") == "QR")
                     {
-                        <progress value="1" max="2"></progress>
-                        <h1 class="text-1"><b>Joint-Applicant Information</b></h1>
-                        <h1 class="text-3">Verify Information</h1>
-                        <h2 class="circle circle-2"></h2>
-                        <h2 class="circle circle-4"></h2>
+                        <div class="completion-bar-2">
+                            <progress value="1" max="2"></progress>
+                            <h1 class="text-1"><b>Joint-Applicant Information</b></h1>
+                            <h1 class="text-2">Verify Information</h1>
+                            <h2 class="circle circle-1"></h2>
+                            <h2 class="circle circle-2"></h2>
+                        </div>
                     }
                     else if (Context.Session.GetString("ApplyMethod") == "Scan")
                     {
