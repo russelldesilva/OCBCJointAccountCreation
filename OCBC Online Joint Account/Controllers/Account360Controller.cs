@@ -75,6 +75,7 @@ namespace OCBC_Joint_Account_Application.Controllers
             Occupation.Add(new SelectListItem { Value = "4", Text = "IT Professional" });
             Occupation.Add(new SelectListItem { Value = "5", Text = "Legal Professional/Lawyer" });
             Occupation.Add(new SelectListItem { Value = "6", Text = "Student" });
+            Occupation.Add(new SelectListItem { Value = "7", Text = "Teacher" });
 
             //Populate Years In Employment
             YearsInEmployment.Add(new SelectListItem { Value = "< 1", Text = "< 1" });
@@ -294,9 +295,6 @@ namespace OCBC_Joint_Account_Application.Controllers
             mainApplication.JointApplicantCode = $"J{DateTime.Today.Day}{DateTime.Today.Month}{mainApplication.NRIC.Substring(5, 3)}";
 
             HttpContext.Session.SetObjectAsJson("ApplicantsDetails", mainApplication);
-
-
-
             return RedirectToAction("JointApplicant", "Account360");
         }
 
@@ -525,8 +523,31 @@ namespace OCBC_Joint_Account_Application.Controllers
         public ActionResult JointApplicant(Account360ViewModel a360)
         {
             Account360ViewModel ac360 = new Account360ViewModel();
-            ac360 = HttpContext.Session.GetObjectFromJson<Account360ViewModel>("ApplicantsDetails");
 
+            if (HttpContext.Session.GetString("ApplyMethod") == "QR" || HttpContext.Session.GetString("ApplyMethod") == "iBanking")
+            {
+                foreach (Customer c in customerContext.GetCustomerByNRIC("S7654321J"))
+                {
+                    ac360.NRIC = c.CustNRIC;
+                    ac360.Salutation = c.Salutation;
+                    ac360.FullName = c.CustName;
+                    ac360.EmailAddress = c.Email;
+                    ac360.MobileNum = c.ContactNo;
+                    ac360.Gender = c.Gender;
+                    ac360.MaritialStatus = c.MaritialStatus;
+                    ac360.Address = c.Address;
+                    ac360.CountryOfBirth = c.CountryOfBirth;
+                    ac360.Nationality = c.Nationality;
+                    ac360.DateOfBirth = c.DateOfBirth;
+                    ac360.Employer = c.EmployerName;
+                    ac360.Occupation = c.Occupation;
+                    ac360.AnnualIncome = c.Income;
+                }
+
+                HttpContext.Session.SetObjectAsJson("ApplicantsDetails", ac360);
+            }
+
+            ac360 = HttpContext.Session.GetObjectFromJson<Account360ViewModel>("ApplicantsDetails");
             ac360.SalutationJoint = a360.SalutationJoint;
             ac360.JointApplicantName = a360.JointApplicantName;
             ac360.Email = a360.Email;
@@ -546,12 +567,16 @@ namespace OCBC_Joint_Account_Application.Controllers
             HttpContext.Session.SetString("PageType", "Account360");
             checkJAC(HttpContext.Session.GetString("JAC")); // Check Main or Joint       
 
-
-            Account360ViewModel ac360 = new Account360ViewModel();
+            Account360ViewModel ac360 = new Account360ViewModel();   
             ac360 = HttpContext.Session.GetObjectFromJson<Account360ViewModel>("ApplicantsDetails");
-            ac360.Occupation = Occupation[(Convert.ToInt32(ac360.Occupation) - 1)].Text;
-            ac360.AnnualIncome = AnnualIncome[(Convert.ToInt32(ac360.AnnualIncome) - 1)].Text;
-            //ac360.DateOfBirth = Convert.ToDateTime(ac360.DateOfBirth.ToString("dd/MM/yyyy"));
+            if (HttpContext.Session.GetString("ApplyMethod") != "QR" && HttpContext.Session.GetString("ApplyMethod") != "iBanking")
+            {
+                ac360.Occupation = Occupation[(Convert.ToInt32(ac360.Occupation) - 1)].Text;
+                ac360.AnnualIncome = AnnualIncome[(Convert.ToInt32(ac360.AnnualIncome) - 1)].Text;
+                //ac360.DateOfBirth = Convert.ToDateTime(ac360.DateOfBirth.ToString("dd/MM/yyyy"));
+                
+            }
+            ViewData["DateOfBirth"] = ac360.DateOfBirth.Date.ToString("d");
             return View(ac360);
         }
 

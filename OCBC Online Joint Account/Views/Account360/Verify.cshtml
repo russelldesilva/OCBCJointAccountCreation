@@ -93,52 +93,52 @@
             <div class="cover">
                 <h2>Verify Information</h2>
                 <label>Salutation</label>
-                <h1><input asp-for="Salutation" class="form-textbox" type="text" readonly></h1>
+                <h1><input asp-for="Salutation" class="form-text" type="text" readonly></h1>
                 <label>Name</label>
-                <h1><input asp-for="FullName" class="form-textbox" type="text" readonly></h1>
+                <h1><input asp-for="FullName" class="form-text" type="text" readonly></h1>
                 <label>NRIC</label>
-                <h1><input asp-for="NRIC" class="form-textbox" type="text" readonly></h1>
+                <h1><input asp-for="NRIC" class="form-text" type="text" readonly></h1>
                 <label>Date of Birth</label>
-                <h1><input asp-for="DateOfBirth" class="form-textbox" type="text" readonly></h1>
+                <h1><input class="form-text" type="text" value="@ViewData["DateOfBirth"]" readonly></h1>
                 <label>Country of Birth</label>
-                <h1><input asp-for="CountryOfBirth" class="form-textbox" type="text" readonly></h1>
+                <h1><input asp-for="CountryOfBirth" class="form-text" type="text" readonly></h1>
                 <label>Nationality</label>
-                <h1><input asp-for="Nationality" class="form-textbox" type="text" readonly></h1>
+                <h1><input asp-for="Nationality" class="form-text" type="text" readonly></h1>
                 <label>Maritial Status</label>
-                <h1><input asp-for="MaritialStatus" class="form-textbox" type="text" readonly></h1>
+                <h1><input asp-for="MaritialStatus" class="form-text" type="text" readonly></h1>
                 <label>Gender</label>
-                <h1><input asp-for="Gender" class="form-textbox" type="text" readonly></h1>
+                <h1><input asp-for="Gender" class="form-text" type="text" readonly></h1>
                 <label>Address</label>
-                <h1><input asp-for="Address" class="form-textbox" type="text" readonly></h1>
+                <h1><input asp-for="Address" class="form-text" type="text" readonly></h1>
                 <label>Email</label>
-                <h1><input asp-for="EmailAddress" class="form-textbox" type="text" readonly></h1>
+                <h1><input asp-for="EmailAddress" class="form-text" type="text" readonly></h1>
                 <label>Contact Number</label>
-                <h1><input asp-for="MobileNum" class="form-textbox" type="text" readonly></h1>
+                <h1><input asp-for="MobileNum" class="form-text" type="text" readonly></h1>
             </div>
             @if (Context.Session.GetString("JAC") == null)
             {
                 <div class="cover">
                     <h2>Verify Joint Applicant Information</h2>
                     <label>Salutation</label>
-                    <h1><input asp-for="SalutationJoint" class="form-textbox" type="text" readonly></h1>
+                    <h1><input asp-for="SalutationJoint" class="form-text" type="text" readonly></h1>
                     <label>Name</label>
-                    <h1><input asp-for="JointApplicantName" class="form-textbox" type="text" readonly></h1>
+                    <h1><input asp-for="JointApplicantName" class="form-text" type="text" readonly></h1>
                     <label>Email</label>
-                    <h1><input asp-for="Email" class="form-textbox" type="text" readonly></h1>
+                    <h1><input asp-for="Email" class="form-text" type="text" readonly></h1>
                     <label>Contact Number</label>
-                    <h1><input asp-for="ContactNo" class="form-textbox" type="text" readonly></h1>
+                    <h1><input asp-for="ContactNo" class="form-text" type="text" readonly></h1>
                 </div>
             }
             <div class="cover">
                 <h2>Employment Information</h2>
                 <label>Occupation</label>
-                <h1><input asp-for="Occupation" class="form-textbox" type="text" readonly></h1>
+                <h1><input asp-for="Occupation" class="form-text" type="text" readonly></h1>
                 <label>Annual Income</label>
-                <h1><input asp-for="AnnualIncome" class="form-textbox" type="text" readonly></h1>
+                <h1><input asp-for="AnnualIncome" class="form-text" type="text" readonly></h1>
                 <label>Employer</label>
-                <h1><input asp-for="Employer" class="form-textbox" type="text" required></h1>
+                <h1><input asp-for="Employer" class="form-text" type="text" required></h1>
                 <label>Years in Employment</label>
-                <h1><input asp-for="YearsInEmployment" class="form-textbox" type="text" required></h1>
+                <h1><input asp-for="YearsInEmployment" class="form-text" type="text" required></h1>
             </div>
         </div>
         <div class="col-md-4">
