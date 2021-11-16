@@ -19,7 +19,31 @@
         <div class="row">
             <div class="col-md-8">
                 <div class="completion-bar">
-                    @if (Context.Session.GetString("ApplyMethod") == "Singpass")
+                    @if (Context.Session.GetString("ApplyMethod") == "Singpass" && Context.Session.GetString("JAC") != null)
+                    {
+                        <div class="completion-bar-3">
+                            <progress value="2" max="3"></progress>
+                            <h1 class="text-1"><b>Identity Verification</b></h1>
+                            <h1 class="text-2"><b>Joint-Applicant Information</b></h1>
+                            <h1 class="text-3">Verify Information</h1>
+                            <h2 class="circle circle-1"></h2>
+                            <h2 class="circle circle-2"></h2>
+                            <h2 class="circle circle-3"></h2>
+                        </div>
+                    }
+                    else if (Context.Session.GetString("ApplyMethod") == "Scan" && Context.Session.GetString("JAC") != null)
+                    {
+                        <div class="completion-bar-3">
+                            <progress value="2" max="3"></progress>
+                            <h1 class="text-1"><b>Upload Documents</b></h1>
+                            <h1 class="text-2"><b>Joint-Applicant Information</b></h1>
+                            <h1 class="text-3">Verify Information</h1>
+                            <h2 class="circle circle-1"></h2>
+                            <h2 class="circle circle-2"></h2>
+                            <h2 class="circle circle-3"></h2>
+                        </div>
+                    }
+                    else if (Context.Session.GetString("ApplyMethod") == "Singpass")
                     {
                         <progress value="2" max="4"></progress>
                         <h1 class="text-1"><b>Identity Verification</b></h1>
@@ -46,7 +70,16 @@
                 </div>
 
                 <h1 class="page-title">Application for New Applicants</h1>
-                <h3><b>Main Applicant Personal Information</b></h3>
+                @if (Context.Session.GetString("JAC") != null)
+                {
+                    <h3><b>Joint Applicant Personal Information</b></h3>
+                }
+                else
+                {
+                    <h3><b>Main Applicant Personal Information</b></h3>
+                }
+
+
 
                 <div class="row">
                     <div class="col-md-4">
@@ -199,7 +232,15 @@
                 </label>
             </div>
             <div class="margin">
-                <input class="resend" type="submit" value="Next" asp-controller="Account360" asp-action="Form">
+                @if (Context.Session.GetString("JAC") != null)
+                {
+                    <input class="resend" type="submit" value="Next" asp-controller="Account360" asp-action="Verify">
+                }
+                else
+                {
+                    <input class="resend" type="submit" value="Next" asp-controller="Account360" asp-action="Form">
+                }
+
             </div>
         </div>
     </form>

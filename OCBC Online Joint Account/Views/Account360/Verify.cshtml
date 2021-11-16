@@ -15,9 +15,41 @@
     </div>
 }
 
-<div class="container-fluid">
+<div class="container-fluid applicant">
     <div class="completion-bar">
-        @if (Context.Session.GetString("ApplyMethod") == "Singpass")
+        @if (Context.Session.GetString("ApplyMethod") == "Scan" && Context.Session.GetString("JAC") != null)
+        {
+            <div class="completion-bar-3">
+                <progress value="3" max="3"></progress>
+                <h1 class="text-1"><b>Identity Verification</b></h1>
+                <h1 class="text-2"><b>Joint-Applicant Information</b></h1>
+                <h1 class="text-3"><b>Verify Information</b></h1>
+                <h2 class="circle circle-1"></h2>
+                <h2 class="circle circle-2"></h2>
+                <h2 class="circle circle-3"></h2>
+            </div>
+        }
+        else if (Context.Session.GetString("ApplyMethod") == "Singpass" && Context.Session.GetString("JAC") != null)
+        {
+            <div class="completion-bar-3">
+                <progress value="3" max="3"></progress>
+                <h1 class="text-1"><b>Identity Verification</b></h1>
+                <h1 class="text-2"><b>Joint-Applicant Information</b></h1>
+                <h1 class="text-3"><b>Verify Information</b></h1>
+                <h2 class="circle circle-1"></h2>
+                <h2 class="circle circle-2"></h2>
+                <h2 class="circle circle-3"></h2>
+            </div>
+        }
+        else if (Context.Session.GetString("ApplyMethod") == "QR" && Context.Session.GetString("JAC") != null)
+        {
+            <div class="completion-bar-1">
+                <progress value="1" max="1"></progress>
+                <h1 class="text-1"><b>Verify Information</b></h1>
+                <h2 class="circle circle-1"></h2>
+            </div>
+        }
+        else if (Context.Session.GetString("ApplyMethod") == "Singpass")
         {
             <progress value="4" max="4"></progress>
             <h1 class="text-1"><b>Identity Verification</b></h1>
@@ -31,11 +63,13 @@
         }
         else if (Context.Session.GetString("ApplyMethod") == "QR")
         {
-            <progress value="2" max="2"></progress>
-            <h1 class="text-1"><b>Joint-Applicant Information</b></h1>
-            <h1 class="text-3"><b>Verify Information</b></h1>
-            <h2 class="circle circle-2"></h2>
-            <h2 class="circle circle-4"></h2>
+            <div class="completion-bar-2">
+                <progress value="2" max="2"></progress>
+                <h1 class="text-1"><b>Joint-Applicant Information</b></h1>
+                <h1 class="text-2"><b>Verify Information</b></h1>
+                <h2 class="circle circle-1"></h2>
+                <h2 class="circle circle-2"></h2>
+            </div>
         }
         else if (Context.Session.GetString("ApplyMethod") == "Scan")
         {
@@ -64,51 +98,42 @@
                 <div class="row">
                     <div class="col-md-4">
                         <label class="textbox-title">Salutation</label>
-                        <select asp-for="Salutation" class="form-textbox" asp-items="@ViewData["Salutation"] as List<SelectListItem>" required>
-                            <option value="" hidden></option>
+                        <input asp-for="Salutation" class="form-textbox" type="text" readonly />
                         </select>
                     </div>
                     <div class="col-md-6 textbox-right">
                         <label class="textbox-title">Full Name (as in NRIC)</label>
-                        <input asp-for="FullName" class="form-textbox" type="text" required>
+                        <input asp-for="FullName" class="form-textbox" type="text" readonly>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-4">
                         <label class="textbox-title">NRIC</label>
-                        <input asp-for="NRIC" class="form-textbox" type="text" required>
+                        <input asp-for="NRIC" class="form-textbox" type="text" readonly>
                     </div>
                     <div class="col-md-6 textbox-right">
                         <label class="textbox-title">Date of Birth</label>
-                        <input asp-for="DateOfBirth" class="form-textbox" required>
+                        <input asp-for="DateOfBirth" class="form-textbox" readonly>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-4">
                         <label class="textbox-title">Country of Birth</label>
-                        <select asp-for="CountryOfBirth" class="form-textbox" asp-items="@ViewData["CountryOfBirth"] as List<SelectListItem>" required>
-                            <option value="" hidden></option>
-                        </select>
+                        <input asp-for="CountryOfBirth" class="form-textbox" type="text" readonly />
                     </div>
                     <div class="col-md-6 textbox-right">
                         <label class="textbox-title">Nationality</label>
-                        <select asp-for="Nationality" class="form-textbox" asp-items="@ViewData["Nationality"] as List<SelectListItem>" required>
-                            <option value="" hidden></option>
-                        </select>
+                        <input asp-for="Nationality" class="form-textbox" type="text" readonly />
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-4">
                         <label class="textbox-title">Gender</label>
-                        <select asp-for="Gender" class="form-textbox" asp-items="@ViewData["Gender"] as List<SelectListItem>" required>
-                            <option value="" hidden></option>
-                        </select>
+                        <input asp-for="Gender" class="form-textbox" type="text" readonly />
                     </div>
                     <div class="col-md-6 textbox-right">
                         <label class="textbox-title">Maritial Status</label>
-                        <select asp-for="MaritialStatus" class="form-textbox" asp-items="@ViewData["MaritialStatus"] as List<SelectListItem>" required>
-                            <option value="" hidden></option>
-                        </select>
+                        <input asp-for="MaritialStatus" class="form-textbox" type="text" readonly />
                     </div>
                 </div>
                 <div class="margin">
@@ -123,11 +148,11 @@
                     <div class="row">
                         <div class="col-md-4">
                             <label class="textbox-title">Email Address</label>
-                            <input asp-for="EmailAddress" class="form-textbox" type="text" required>
+                            <input asp-for="EmailAddress" class="form-textbox" type="text" readonly>
                         </div>
                         <div class="col-md-6 textbox-right">
                             <label class="textbox-title">Contact Number</label>
-                            <input asp-for="MobileNum" class="form-textbox" type="text" required>
+                            <input asp-for="MobileNum" class="form-textbox" type="text" readonly>
                         </div>
                     </div>
                 </div>
@@ -136,15 +161,11 @@
                     <div class="row">
                         <div class="col-md-4">
                             <label class="textbox-title">Occupation</label>
-                            <select asp-for="Occupation" class="form-textbox" asp-items="@ViewData["Occupation"] as List<SelectListItem>" required>
-                                <option value="" hidden></option>
-                            </select>
+                            <input asp-for="Occupation" class="form-textbox" type="text" readonly />
                         </div>
                         <div class="col-md-6 textbox-right">
                             <label class="textbox-title">Annual Income</label>
-                            <select asp-for="AnnualIncome" class="form-textbox" asp-items="@ViewData["AnnualIncome"] as List<SelectListItem>" required>
-                                <option value="" hidden></option>
-                            </select>
+                            <input asp-for="AnnualIncome" class="form-textbox" type="text" readonly />
                         </div>
                     </div>
                     <h6>Are you self-employed?</h6>
@@ -159,9 +180,7 @@
                         </div>
                         <div class="col-md-6 textbox-right">
                             <label class="textbox-title">Years in Employment</label>
-                            <select asp-for="YearsInEmployment" class="form-textbox" type="text" asp-items="@ViewData["YearsInEmployment"] as List<SelectListItem>" required>
-                                <option value="" hidden></option>
-                            </select>
+                            <input asp-for="YearsInEmployment" class="form-textbox" type="text" readonly />
                         </div>
                     </div>
                 </div>
@@ -222,9 +241,7 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <label class="textbox-title">Salutation</label>
-                                <select asp-for="SalutationJoint" class="form-textbox" asp-items="@ViewData["Salutation"] as List<SelectListItem>" required>
-                                    <option value="" hidden></option>
-                                </select>
+                                <input asp-for="SalutationJoint" class="form-textbox" type="text" readonly />
                             </div>
                             <div class="col-md-6 textbox-right">
                                 <label class="textbox-title">Full Name (as in NRIC)</label>

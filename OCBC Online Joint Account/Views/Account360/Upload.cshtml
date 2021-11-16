@@ -15,15 +15,31 @@
 
 <div class="container-fluid" style="margin-top: 150px;">
     <div class="completion-bar">
-        <progress value="1" max="4"></progress>
-        <h1 class="text-1"><b>Upload Document</b></h1>
-        <h1 class="text-2">Main Applicant Information</h1>
-        <h1 class="text-3">Joint-Applicant Information</h1>
-        <h1 class="text-4">Verify Information</h1>
-        <h2 class="circle circle-1"></h2>
-        <h2 class="circle circle-2"></h2>
-        <h2 class="circle circle-3"></h2>
-        <h2 class="circle circle-4"></h2>
+        @if (Context.Session.GetString("JAC") != null)
+        {
+            <div class="completion-bar-3">
+                <progress value="1" max="3"></progress>
+                <h1 class="text-1"><b>Upload Document</b></h1>
+                <h1 class="text-2">Joint-Applicant Information</h1>
+                <h1 class="text-3">Verify Information</h1>
+                <h2 class="circle circle-1"></h2>
+                <h2 class="circle circle-2"></h2>
+                <h2 class="circle circle-3"></h2>
+            </div>
+        }
+        else
+        {
+            <progress value="1" max="4"></progress>
+            <h1 class="text-1"><b>Upload Document</b></h1>
+            <h1 class="text-2">Main Applicant Information</h1>
+            <h1 class="text-3">Joint-Applicant Information</h1>
+            <h1 class="text-4">Verify Information</h1>
+            <h2 class="circle circle-1"></h2>
+            <h2 class="circle circle-2"></h2>
+            <h2 class="circle circle-3"></h2>
+            <h2 class="circle circle-4"></h2>
+        }
+
     </div>
 </div>
 
