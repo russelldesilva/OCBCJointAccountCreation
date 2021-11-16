@@ -260,6 +260,8 @@ namespace OCBC_Joint_Account_Application.Controllers
             mainApplication.Occupation = a360.Occupation;
             mainApplication.AnnualIncome = a360.AnnualIncome;
 
+            mainApplication.NRICIsMailingAddress = a360.
+
             mainApplication.JointApplicantCode = $"J{DateTime.Today.Day}{DateTime.Today.Month}{mainApplication.NRIC.Substring(5, 3)}";
 
             HttpContext.Session.SetObjectAsJson("ApplicantsDetails", mainApplication);
@@ -464,6 +466,7 @@ namespace OCBC_Joint_Account_Application.Controllers
 
             Account360ViewModel applicants = new Account360ViewModel();
             applicants = HttpContext.Session.GetObjectFromJson<Account360ViewModel>("ApplicantsDetails");
+
 
             return View(applicants);
         }
