@@ -238,7 +238,16 @@ namespace OCBC_Joint_Account_Application.Controllers
             // Else if Scan run code to pull from Scan
             else if (HttpContext.Session.GetString("ApplyMethod") == "Scan")
             {
-                return View();
+                // Get data from OCR
+                Account360ViewModel OCRDetails = new Account360ViewModel();
+                OCRDetails = HttpContext.Session.GetObjectFromJson<Account360ViewModel>("Scan");
+                ac360.FullName = OCRDetails.FullName;
+                ac360.Gender = OCRDetails.Gender;
+                ac360.CountryOfBirth = OCRDetails.CountryOfBirth;
+                ac360.DateOfBirth = OCRDetails.DateOfBirth;
+                ac360.NRIC = OCRDetails.NRIC;
+
+                return View(ac360);
             }
 
             // Else show some error
@@ -269,20 +278,11 @@ namespace OCBC_Joint_Account_Application.Controllers
             mainApplication.Occupation = a360.Occupation;
             mainApplication.AnnualIncome = a360.AnnualIncome;
 
-            //mainApplication.NRICIsMailingAddress = a360.
 
             mainApplication.JointApplicantCode = $"J{DateTime.Today.Day}{DateTime.Today.Month}{mainApplication.NRIC.Substring(5, 3)}";
 
             HttpContext.Session.SetObjectAsJson("ApplicantsDetails", mainApplication);
 
-            //Application mainApplication = new Application()
-            //{
-            //    CustNRIC = storedApplicant.CustNRIC,
-            //    AccountTypeID = 2,
-            //    Status = "Pending",
-            //    CreationDate = DateTime.Today,
-            //    JointApplicantCode = $"J{DateTime.Today.Day}{DateTime.Today.Month}{storedApplicant.CustNRIC.Substring(5, 3)}"
-            //};
 
 
             return RedirectToAction("JointApplicant", "Account360");
@@ -311,7 +311,11 @@ namespace OCBC_Joint_Account_Application.Controllers
         public async Task<IActionResult> Upload(CustApplication custApplication)
         {
             checkJAC(HttpContext.Session.GetString("JAC"));
+            HttpContext.Session.SetString("ApplyMethod", "Scan");
             ViewData["SingaporeanSelection"] = singaporean;
+
+            string uploadedFile = "";
+
             CustApplication custApplication1 = new CustApplication
             {
                 Singaporean = singaporean[0]
@@ -323,7 +327,7 @@ namespace OCBC_Joint_Account_Application.Controllers
                 try
                 {
                     string fileExt = Path.GetExtension(custApplication.CustProofOfResidenceUpload.FileName);
-                    string uploadedFile = String.Format("residence_proof" + fileExt);
+                    uploadedFile = String.Format("residence_proof" + fileExt);
                     string savePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\applicationdocs\\", uploadedFile);
                     using (var fileSteam = new FileStream(savePath, FileMode.Create))
                     {
@@ -349,7 +353,7 @@ namespace OCBC_Joint_Account_Application.Controllers
                 try
                 {
                     string fileExt = Path.GetExtension(custApplication.CustNRICFrontUpload.FileName);
-                    string uploadedFile = String.Format("nric_front" + fileExt);
+                    uploadedFile = String.Format("nric_front" + fileExt);
                     string savePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\applicationdocs\\", uploadedFile);
                     using (var fileSteam = new FileStream(savePath, FileMode.Create))
                     {
@@ -375,7 +379,7 @@ namespace OCBC_Joint_Account_Application.Controllers
                 try
                 {
                     string fileExt = Path.GetExtension(custApplication.CustNRICBackUpload.FileName);
-                    string uploadedFile = String.Format("nric_back" + fileExt);
+                    uploadedFile = String.Format("nric_back" + fileExt);
                     string savePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\applicationdocs\\", uploadedFile);
                     using (var fileSteam = new FileStream(savePath, FileMode.Create))
                     {
@@ -398,53 +402,54 @@ namespace OCBC_Joint_Account_Application.Controllers
             }
 
             // NRIC Front OCR API - DO NOT DELETE. COMMENTING OUT TO REDUCE API CALL USAGE.
-            //var client = new RestClient("https://app.nanonets.com/api/v2/OCR/Model/3de1189e-0087-4b80-8954-813aa4b0aaac/LabelFile/");
-            //var request = new RestRequest(Method.POST);
-            //request.AddHeader("authorization", "Basic " + Convert.ToBase64String(Encoding.Default.GetBytes("_9xwEpzEdi3gevc7Oy-SucehAswdtRFG:")));
-            //request.AddHeader("accept", "Multipart/form-data");
-            //request.AddFile("file", ".\\wwwroot\\applicationdocs\\nric_front.jpg");
-            //IRestResponse response = client.Execute(request);
+            var client = new RestClient("https://app.nanonets.com/api/v2/OCR/Model/3de1189e-0087-4b80-8954-813aa4b0aaac/LabelFile/");
+            var request = new RestRequest(Method.POST);
+            request.AddHeader("authorization", "Basic " + Convert.ToBase64String(Encoding.Default.GetBytes("_9xwEpzEdi3gevc7Oy-SucehAswdtRFG:")));
+            request.AddHeader("accept", "Multipart/form-data");
+            request.AddFile("file", ".\\wwwroot\\applicationdocs\\" + uploadedFile);
+            IRestResponse response = client.Execute(request);
 
-            ////OCBC_Online_Joint_Account.Models.ClientOCR clientOCR = new OCBC_Online_Joint_Account.Models.ClientOCR();
-            //Account360ViewModel clientOCR = new Account360ViewModel();
+            //OCBC_Online_Joint_Account.Models.ClientOCR clientOCR = new OCBC_Online_Joint_Account.Models.ClientOCR();
+            Account360ViewModel clientOCR = new Account360ViewModel();
 
-            //Dictionary<string, object> obj = (Dictionary<string, object>)OCBC_Online_Joint_Account.Models.JSONHelper.Deserialize(response.Content);
-            //foreach (var item in obj.Keys)
-            //{
-            //    if (item == "result")
-            //    {
-            //        List<object> results = (List<object>)obj[item];
-            //        Dictionary<string, object> predictions = (Dictionary<string, object>)results[0];
-            //        List<object> prediction = (List<object>)predictions["prediction"];
-            //        foreach (var p in prediction)
-            //        {
-            //            Dictionary<string, object> pvalue = (Dictionary<string, object>)p;
-            //            var label = (string)pvalue["label"];
-            //            var ocr_text = (string)pvalue["ocr_text"];
-            //            //Console.WriteLine("Label: " + label);
-            //            if (label == "NRIC")
-            //            {
-            //                clientOCR.NRIC = ocr_text;
-            //            }
-            //            else if (label == "Name")
-            //            {
-            //                clientOCR.FullName = ocr_text;
-            //            }
-            //            else if (label == "Sex")
-            //            {
-            //                clientOCR.Gender = ocr_text;
-            //            }
-            //            else if (label == "Date_of_Birth")
-            //            {
-            //                clientOCR.DateOfBirth = Convert.ToDateTime(ocr_text);
-            //            }
-            //            //Console.WriteLine("Value: " + ocr_text);
-                        
-            //        }
-            //    }
-            //}
-            // return clientOCR object to Form.cshtml to parse the data from the OCR read
-            return View("Form"/*, clientOCR*/);
+            Dictionary<string, object> obj = (Dictionary<string, object>)OCBC_Online_Joint_Account.Models.JSONHelper.Deserialize(response.Content);
+            foreach (var item in obj.Keys)
+            {
+                if (item == "result")
+                {
+                    List<object> results = (List<object>)obj[item];
+                    Dictionary<string, object> predictions = (Dictionary<string, object>)results[0];
+                    List<object> prediction = (List<object>)predictions["prediction"];
+                    foreach (var p in prediction)
+                    {
+                        Dictionary<string, object> pvalue = (Dictionary<string, object>)p;
+                        var label = (string)pvalue["label"];
+                        var ocr_text = (string)pvalue["ocr_text"];
+                        //Console.WriteLine("Label: " + label);
+                        if (label == "NRIC")
+                        {
+                            clientOCR.NRIC = ocr_text;
+                        }
+                        else if (label == "Name")
+                        {
+                            clientOCR.FullName = ocr_text;
+                        }
+                        else if (label == "Sex")
+                        {
+                            clientOCR.Gender = ocr_text;
+                        }
+                        else if (label == "Date_of_Birth")
+                        {
+                            clientOCR.DateOfBirth = Convert.ToDateTime(ocr_text);
+                        }
+                        //Console.WriteLine("Value: " + ocr_text);
+
+                    }
+                }
+            }
+            HttpContext.Session.SetObjectAsJson("Scan", clientOCR);
+            //return clientOCR object to Form.cshtml to parse the data from the OCR read
+            return RedirectToAction("Form");
         }
 
         /**==========================
@@ -486,7 +491,6 @@ namespace OCBC_Joint_Account_Application.Controllers
             checkJAC(HttpContext.Session.GetString("JAC")); // Check Main or Joint       
             Account360ViewModel ac360 = new Account360ViewModel(); // a360 object to display the data in the fields
             ac360.Salutation = a360.Salutation;
-            Console.WriteLine(TempData["Object"]);
             return View(ac360);
         }
 
