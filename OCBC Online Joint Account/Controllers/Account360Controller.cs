@@ -17,6 +17,9 @@ using Newtonsoft.Json;
 using RestSharp;
 using System.IO;
 using System.Threading;
+using System.Text;
+using OCBC_Online_Joint_Account.Models;
+using System.Globalization;
 
 namespace OCBC_Joint_Account_Application.Controllers
 {
@@ -25,7 +28,66 @@ namespace OCBC_Joint_Account_Application.Controllers
         private SingpassDAL singpassContext = new SingpassDAL();
         private CustomerDAL customerContext = new CustomerDAL();
         private ApplicationDAL applicationContext = new ApplicationDAL();
-        Account360ViewModel applicants = new Account360ViewModel();
+
+        private List<SelectListItem> Salutation = new List<SelectListItem>();
+        private List<SelectListItem> CountryOfBirth = new List<SelectListItem>();
+        private List<SelectListItem> Nationality = new List<SelectListItem>();
+        private List<SelectListItem> Gender = new List<SelectListItem>();
+        private List<SelectListItem> MaritialStatus = new List<SelectListItem>();
+        private List<SelectListItem> AnnualIncome = new List<SelectListItem>();
+        private List<SelectListItem> Occupation = new List<SelectListItem>();
+        private List<SelectListItem> YearsInEmployment = new List<SelectListItem>();
+        private List<string> singaporean = new List<string> { "I am a Singaporean Citizen/Permanent Resident", "I am a Foreigner working/studying or residing in Singapore" };
+
+        public Account360Controller()
+        {
+            //Populate Salutation
+            Salutation.Add(new SelectListItem { Value = "Dr", Text = "Dr" });
+            Salutation.Add(new SelectListItem { Value = "Mdm", Text = "Mdm" });
+            Salutation.Add(new SelectListItem { Value = "Miss", Text = "Miss" });
+            Salutation.Add(new SelectListItem { Value = "Mr", Text = "Mr" });
+            Salutation.Add(new SelectListItem { Value = "Mrs", Text = "Mrs" });
+            Salutation.Add(new SelectListItem { Value = "Ms", Text = "Ms" });
+
+            //Populate Gender
+            Gender.Add(new SelectListItem { Value = "Male", Text = "Male" });
+            Gender.Add(new SelectListItem { Value = "Female", Text = "Female" });
+
+            //Populate Maritial Status
+            MaritialStatus.Add(new SelectListItem { Value = "Single", Text = "Single" });
+            MaritialStatus.Add(new SelectListItem { Value = "Married", Text = "Married" });
+            MaritialStatus.Add(new SelectListItem { Value = "Widowed", Text = "Widowed" });
+            MaritialStatus.Add(new SelectListItem { Value = "Divorced", Text = "Divorced" });
+            MaritialStatus.Add(new SelectListItem { Value = "Married but seprated", Text = "Married but seprated" });
+
+            //Populate Annual Income
+            AnnualIncome.Add(new SelectListItem { Value = "1", Text = "Less Than 30,000" });
+            AnnualIncome.Add(new SelectListItem { Value = "2", Text = "30,000 - 49,000" });
+            AnnualIncome.Add(new SelectListItem { Value = "3", Text = "50,000 - 99,999" });
+            AnnualIncome.Add(new SelectListItem { Value = "4", Text = "100,000 - 149,000" });
+            AnnualIncome.Add(new SelectListItem { Value = "5", Text = "150,000 - 199,000" });
+            AnnualIncome.Add(new SelectListItem { Value = "6", Text = "Above 200,000" });
+
+            //Populate Occupation
+            Occupation.Add(new SelectListItem { Value = "1", Text = "Architect" });
+            Occupation.Add(new SelectListItem { Value = "2", Text = "Doctor/Dentist" });
+            Occupation.Add(new SelectListItem { Value = "3", Text = "Engineer" });
+            Occupation.Add(new SelectListItem { Value = "4", Text = "IT Professional" });
+            Occupation.Add(new SelectListItem { Value = "5", Text = "Legal Professional/Lawyer" });
+            Occupation.Add(new SelectListItem { Value = "6", Text = "Student" });
+
+            //Populate Years In Employment
+            YearsInEmployment.Add(new SelectListItem { Value = "< 1", Text = "< 1" });
+            for (int i = 1; i <= 40; i++)
+            {
+                YearsInEmployment.Add(new SelectListItem { Value = Convert.ToString(i), Text = Convert.ToString(i) });
+            }
+            YearsInEmployment.Add(new SelectListItem { Value = "> 40", Text = "> 40" });
+        }
+
+        /**==========================
+              APPLYONLINE.CSHTML
+         ==========================**/
 
         public ActionResult ApplyOnline(int? AT, string? JAC)
         {
@@ -37,16 +99,17 @@ namespace OCBC_Joint_Account_Application.Controllers
                 InsertQRForJointApplicant(AT, JAC);
                 return RedirectToAction("ApplyOnline", "Account360");
             }
-
             checkJAC(HttpContext.Session.GetString("JAC"));
-
             if (ResponseQR() == true)
             {
                 return RedirectToAction("JointApplicant", "Account360");
-            }
-           
+            }  
             return View();     
         }
+
+        /**==========================
+              IDENTITY.CSHTML
+        ==========================**/
 
         public ActionResult Identity()
         {
@@ -101,61 +164,9 @@ namespace OCBC_Joint_Account_Application.Controllers
             return View();
         }
 
-        private List<SelectListItem> Salutation = new List<SelectListItem>();
-        private List<SelectListItem> CountryOfBirth = new List<SelectListItem>();
-        private List<SelectListItem> Nationality = new List<SelectListItem>();
-        private List<SelectListItem> Gender = new List<SelectListItem>();
-        private List<SelectListItem> MaritialStatus = new List<SelectListItem>();
-        private List<SelectListItem> AnnualIncome = new List<SelectListItem>();
-        private List<SelectListItem> Occupation = new List<SelectListItem>();
-        private List<SelectListItem> YearsInEmployment = new List<SelectListItem>();
-        private List<string> singaporean = new List<string> { "I am a Singaporean Citizen/Permanent Resident", "I am a Foreigner working/studying or residing in Singapore" };
-
-        public Account360Controller()
-        {
-            //Populate Salutation
-            Salutation.Add(new SelectListItem { Value = "Dr",  Text = "Dr"});
-            Salutation.Add(new SelectListItem { Value = "Mdm", Text = "Mdm" });
-            Salutation.Add(new SelectListItem { Value = "Miss", Text = "Miss" });
-            Salutation.Add(new SelectListItem { Value = "Mr", Text = "Mr" });
-            Salutation.Add(new SelectListItem { Value = "Mrs", Text = "Mrs" });
-            Salutation.Add(new SelectListItem { Value = "Ms", Text = "Ms" });
-
-            //Populate Gender
-            Gender.Add(new SelectListItem { Value = "Male", Text = "Male" });
-            Gender.Add(new SelectListItem { Value = "Female", Text = "Female" });
-
-            //Populate Maritial Status
-            MaritialStatus.Add(new SelectListItem { Value = "Single", Text = "Single" });
-            MaritialStatus.Add(new SelectListItem { Value = "Married", Text = "Married" });
-            MaritialStatus.Add(new SelectListItem { Value = "Widowed", Text = "Widowed" });
-            MaritialStatus.Add(new SelectListItem { Value = "Divorced", Text = "Divorced" });
-            MaritialStatus.Add(new SelectListItem { Value = "Married but seprated", Text = "Married but seprated" });
-
-            //Populate Annual Income
-            AnnualIncome.Add(new SelectListItem { Value = "1", Text = "Less Than 30,000" });
-            AnnualIncome.Add(new SelectListItem { Value = "2", Text = "30,000 - 49,000" });
-            AnnualIncome.Add(new SelectListItem { Value = "3", Text = "50,000 - 99,999" });
-            AnnualIncome.Add(new SelectListItem { Value = "4", Text = "100,000 - 149,000" });
-            AnnualIncome.Add(new SelectListItem { Value = "5", Text = "150,000 - 199,000" });
-            AnnualIncome.Add(new SelectListItem { Value = "6", Text = "Above 200,000" });
-
-            //Populate Occupation
-            Occupation.Add(new SelectListItem { Value = "1", Text = "Architect" });
-            Occupation.Add(new SelectListItem { Value = "2", Text = "Doctor/Dentist" });
-            Occupation.Add(new SelectListItem { Value = "3", Text = "Engineer" });
-            Occupation.Add(new SelectListItem { Value = "4", Text = "IT Professional" });
-            Occupation.Add(new SelectListItem { Value = "5", Text = "Legal Professional/Lawyer" });
-            Occupation.Add(new SelectListItem { Value = "6", Text = "Student" });
-
-            //Populate Years In Employment
-            YearsInEmployment.Add(new SelectListItem { Value = "< 1", Text = "< 1" });
-            for (int i = 1; i <= 40; i++)
-            {
-                YearsInEmployment.Add(new SelectListItem { Value = Convert.ToString(i), Text = Convert.ToString(i) });
-            }
-            YearsInEmployment.Add(new SelectListItem { Value = "> 40", Text = "> 40" });
-        }
+        /**==========================
+                 FORM.CSHTML
+        ==========================**/
 
         public async Task<ActionResult> Form()
         {
@@ -227,7 +238,16 @@ namespace OCBC_Joint_Account_Application.Controllers
             // Else if Scan run code to pull from Scan
             else if (HttpContext.Session.GetString("ApplyMethod") == "Scan")
             {
-                return View();
+                // Get data from OCR
+                Account360ViewModel OCRDetails = new Account360ViewModel();
+                OCRDetails = HttpContext.Session.GetObjectFromJson<Account360ViewModel>("Scan");
+                ac360.FullName = OCRDetails.FullName;
+                ac360.Gender = OCRDetails.Gender;
+                ac360.CountryOfBirth = OCRDetails.CountryOfBirth;
+                ac360.DateOfBirth = OCRDetails.DateOfBirth;
+                ac360.NRIC = OCRDetails.NRIC;
+
+                return View(ac360);
             }
 
             // Else show some error
@@ -241,38 +261,36 @@ namespace OCBC_Joint_Account_Application.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Form(Account360ViewModel a360)
         {
-            
-            applicants.Salutation = a360.Salutation;
-            applicants.FullName = a360.FullName;
-            applicants.NRIC = a360.NRIC;
-            applicants.DateOfBirth = a360.DateOfBirth;
-            applicants.CountryOfBirth = a360.CountryOfBirth;
-            applicants.Nationality = a360.Nationality;
-            applicants.Gender = a360.Gender;
-            applicants.MaritialStatus = a360.MaritialStatus;
-            applicants.MobileNum = a360.MobileNum;
-            applicants.EmailAddress = a360.EmailAddress;
-            applicants.Address = a360.Address;
-            applicants.Employer = a360.Employer;
-            applicants.YearsInEmployment = a360.YearsInEmployment;
-            applicants.Occupation = a360.Occupation;
-            applicants.AnnualIncome = a360.AnnualIncome;
-
-            applicants.JointApplicantCode = $"J{DateTime.Today.Day}{DateTime.Today.Month}{applicants.NRIC.Substring(5, 3)}";
+            Account360ViewModel mainApplication = new Account360ViewModel();
+            mainApplication.Salutation = a360.Salutation;
+            mainApplication.FullName = a360.FullName;
+            mainApplication.NRIC = a360.NRIC;
+            mainApplication.DateOfBirth = a360.DateOfBirth;
+            mainApplication.CountryOfBirth = a360.CountryOfBirth;
+            mainApplication.Nationality = a360.Nationality;
+            mainApplication.Gender = a360.Gender;
+            mainApplication.MaritialStatus = a360.MaritialStatus;
+            mainApplication.MobileNum = a360.MobileNum;
+            mainApplication.EmailAddress = a360.EmailAddress;
+            mainApplication.Address = a360.Address;
+            mainApplication.Employer = a360.Employer;
+            mainApplication.YearsInEmployment = a360.YearsInEmployment;
+            mainApplication.Occupation = a360.Occupation;
+            mainApplication.AnnualIncome = a360.AnnualIncome;
 
 
-            //Application mainApplication = new Application()
-            //{
-            //    CustNRIC = storedApplicant.CustNRIC,
-            //    AccountTypeID = 2,
-            //    Status = "Pending",
-            //    CreationDate = DateTime.Today,
-            //    JointApplicantCode = $"J{DateTime.Today.Day}{DateTime.Today.Month}{storedApplicant.CustNRIC.Substring(5, 3)}"
-            //};
+            mainApplication.JointApplicantCode = $"J{DateTime.Today.Day}{DateTime.Today.Month}{mainApplication.NRIC.Substring(5, 3)}";
 
-            
-            return RedirectToAction("JointApplicant", "Account360", applicants);
+            HttpContext.Session.SetObjectAsJson("ApplicantsDetails", mainApplication);
+
+
+
+            return RedirectToAction("JointApplicant", "Account360");
         }
+
+        /**==========================
+                UPLOAD.CSHTML
+        ==========================**/
 
         public ActionResult Upload()
         {
@@ -293,7 +311,11 @@ namespace OCBC_Joint_Account_Application.Controllers
         public async Task<IActionResult> Upload(CustApplication custApplication)
         {
             checkJAC(HttpContext.Session.GetString("JAC"));
+            HttpContext.Session.SetString("ApplyMethod", "Scan");
             ViewData["SingaporeanSelection"] = singaporean;
+
+            string uploadedFile = "";
+
             CustApplication custApplication1 = new CustApplication
             {
                 Singaporean = singaporean[0]
@@ -305,7 +327,7 @@ namespace OCBC_Joint_Account_Application.Controllers
                 try
                 {
                     string fileExt = Path.GetExtension(custApplication.CustProofOfResidenceUpload.FileName);
-                    string uploadedFile = String.Format("residence_proof" + fileExt);
+                    uploadedFile = String.Format("residence_proof" + fileExt);
                     string savePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\applicationdocs\\", uploadedFile);
                     using (var fileSteam = new FileStream(savePath, FileMode.Create))
                     {
@@ -331,7 +353,7 @@ namespace OCBC_Joint_Account_Application.Controllers
                 try
                 {
                     string fileExt = Path.GetExtension(custApplication.CustNRICFrontUpload.FileName);
-                    string uploadedFile = String.Format("nric_front", fileExt);
+                    uploadedFile = String.Format("nric_front" + fileExt);
                     string savePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\applicationdocs\\", uploadedFile);
                     using (var fileSteam = new FileStream(savePath, FileMode.Create))
                     {
@@ -357,7 +379,7 @@ namespace OCBC_Joint_Account_Application.Controllers
                 try
                 {
                     string fileExt = Path.GetExtension(custApplication.CustNRICBackUpload.FileName);
-                    string uploadedFile = String.Format("nric_back", fileExt);
+                    uploadedFile = String.Format("nric_back" + fileExt);
                     string savePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\applicationdocs\\", uploadedFile);
                     using (var fileSteam = new FileStream(savePath, FileMode.Create))
                     {
@@ -378,17 +400,73 @@ namespace OCBC_Joint_Account_Application.Controllers
                     return View("Upload", custApplication);
                 }
             }
-            return View("Upload", custApplication);
+
+            // NRIC Front OCR API - DO NOT DELETE. COMMENTING OUT TO REDUCE API CALL USAGE.
+            var client = new RestClient("https://app.nanonets.com/api/v2/OCR/Model/3de1189e-0087-4b80-8954-813aa4b0aaac/LabelFile/");
+            var request = new RestRequest(Method.POST);
+            request.AddHeader("authorization", "Basic " + Convert.ToBase64String(Encoding.Default.GetBytes("_9xwEpzEdi3gevc7Oy-SucehAswdtRFG:")));
+            request.AddHeader("accept", "Multipart/form-data");
+            request.AddFile("file", ".\\wwwroot\\applicationdocs\\" + uploadedFile);
+            IRestResponse response = client.Execute(request);
+
+            //OCBC_Online_Joint_Account.Models.ClientOCR clientOCR = new OCBC_Online_Joint_Account.Models.ClientOCR();
+            Account360ViewModel clientOCR = new Account360ViewModel();
+
+            Dictionary<string, object> obj = (Dictionary<string, object>)OCBC_Online_Joint_Account.Models.JSONHelper.Deserialize(response.Content);
+            foreach (var item in obj.Keys)
+            {
+                if (item == "result")
+                {
+                    List<object> results = (List<object>)obj[item];
+                    Dictionary<string, object> predictions = (Dictionary<string, object>)results[0];
+                    List<object> prediction = (List<object>)predictions["prediction"];
+                    foreach (var p in prediction)
+                    {
+                        Dictionary<string, object> pvalue = (Dictionary<string, object>)p;
+                        var label = (string)pvalue["label"];
+                        var ocr_text = (string)pvalue["ocr_text"];
+                        //Console.WriteLine("Label: " + label);
+                        if (label == "NRIC")
+                        {
+                            clientOCR.NRIC = ocr_text;
+                        }
+                        else if (label == "Name")
+                        {
+                            clientOCR.FullName = ocr_text;
+                        }
+                        else if (label == "Sex")
+                        {
+                            clientOCR.Gender = ocr_text;
+                        }
+                        else if (label == "Date_of_Birth")
+                        {
+                            clientOCR.DateOfBirth = Convert.ToDateTime(ocr_text);
+                        }
+                        //Console.WriteLine("Value: " + ocr_text);
+
+                    }
+                }
+            }
+            HttpContext.Session.SetObjectAsJson("Scan", clientOCR);
+            //return clientOCR object to Form.cshtml to parse the data from the OCR read
+            return RedirectToAction("Form");
         }
+
+        /**==========================
+            JOINTAPPLICANT.CSHTML
+        ==========================**/
 
         public ActionResult JointApplicant()
         {
+            if (HttpContext.Session.GetString("JAC") != null)
+            {       
+                return RedirectToAction("Verify", "Account360");
+            }
+
+            ResetQR();
             checkJAC(HttpContext.Session.GetString("JAC"));
             HttpContext.Session.SetString("PageType", "Account360");
-            ResetQR();
             ViewData["Salutation"] = Salutation;
-
-            Console.WriteLine(applicants.FullName);
 
             return View();
         }
@@ -397,29 +475,40 @@ namespace OCBC_Joint_Account_Application.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult JointApplicant(Account360ViewModel a360)
         {
+            Account360ViewModel ac360 = new Account360ViewModel();
+            ac360 = HttpContext.Session.GetObjectFromJson<Account360ViewModel>("ApplicantsDetails");
 
+            ac360.SalutationJoint = a360.SalutationJoint;
+            ac360.JointApplicantName = a360.JointApplicantName;
+            ac360.Email = a360.Email;
+            ac360.ContactNo = a360.ContactNo;
+            HttpContext.Session.SetObjectAsJson("ApplicantsDetails", ac360);
 
             return RedirectToAction("Verify", "Account360");
         }
 
-        public ActionResult Verify(Account360ViewModel a360)
+        /**==========================
+               VERIFY.CSHTML
+       ==========================**/
+
+        public ActionResult Verify()
         {
-            // Check Main or Joint
-            checkJAC(HttpContext.Session.GetString("JAC"));
+            ResetQR();
+            HttpContext.Session.SetString("PageType", "Account360");
+            checkJAC(HttpContext.Session.GetString("JAC")); // Check Main or Joint       
 
 
-            // a360 object to display the data in the fields
             Account360ViewModel ac360 = new Account360ViewModel();
-
-            ac360.Salutation = a360.Salutation;
-            Console.WriteLine(TempData["Object"]);
-
+            ac360 = HttpContext.Session.GetObjectFromJson<Account360ViewModel>("ApplicantsDetails");
+            ac360.Occupation = Occupation[Convert.ToInt32(ac360.Occupation)].Text;
+            ac360.AnnualIncome = AnnualIncome[Convert.ToInt32(ac360.AnnualIncome)].Text;
+            //ac360.DateOfBirth = Convert.ToDateTime(ac360.DateOfBirth.ToString("dd/MM/yyyy"));
             return View(ac360);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Verifya()
+        public ActionResult Verify(Account360ViewModel a360)
         {
             return View();
         }
@@ -456,6 +545,7 @@ namespace OCBC_Joint_Account_Application.Controllers
                 "\"selectedAccountTypeName\":\"360 Account\"," +
                 "\"mainApplicantName\":null," +
                 "\"mainApplicantNRIC\":null," +
+                "\"jointApplicationCode\":null," +
                 "\"id\":0}";
 
             var client = new RestClient("https://pfdocbcdb-5763.restdb.io/rest/qr-response/6191214a9402c24f00017a99");
@@ -494,6 +584,7 @@ namespace OCBC_Joint_Account_Application.Controllers
                 "\"selectedAccountTypeName\":\"360 Account\"," +
                 "\"mainApplicantName\":\"" + Name + "\"," +
                 "\"mainApplicantNRIC\":\"" + NRIC + "\"," +
+                "\"jointApplicationCode\":\"" + JAC + "\"," +
                 "\"id\":0}";
 
             var client1 = new RestClient("https://pfdocbcdb-5763.restdb.io/rest/qr-response/6191214a9402c24f00017a99");
