@@ -18,6 +18,7 @@ using RestSharp;
 using System.IO;
 using System.Threading;
 using System.Text;
+using OCBC_Online_Joint_Account.Models;
 
 namespace OCBC_Joint_Account_Application.Controllers
 {
@@ -26,7 +27,7 @@ namespace OCBC_Joint_Account_Application.Controllers
         private SingpassDAL singpassContext = new SingpassDAL();
         private CustomerDAL customerContext = new CustomerDAL();
         private ApplicationDAL applicationContext = new ApplicationDAL();
-        Account360ViewModel applicants = new Account360ViewModel();
+        
 
         private List<SelectListItem> Salutation = new List<SelectListItem>();
         private List<SelectListItem> CountryOfBirth = new List<SelectListItem>();
@@ -254,25 +255,26 @@ namespace OCBC_Joint_Account_Application.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Form(Account360ViewModel a360)
         {
-            
-            applicants.Salutation = a360.Salutation;
-            applicants.FullName = a360.FullName;
-            applicants.NRIC = a360.NRIC;
-            applicants.DateOfBirth = a360.DateOfBirth;
-            applicants.CountryOfBirth = a360.CountryOfBirth;
-            applicants.Nationality = a360.Nationality;
-            applicants.Gender = a360.Gender;
-            applicants.MaritialStatus = a360.MaritialStatus;
-            applicants.MobileNum = a360.MobileNum;
-            applicants.EmailAddress = a360.EmailAddress;
-            applicants.Address = a360.Address;
-            applicants.Employer = a360.Employer;
-            applicants.YearsInEmployment = a360.YearsInEmployment;
-            applicants.Occupation = a360.Occupation;
-            applicants.AnnualIncome = a360.AnnualIncome;
+            Account360ViewModel mainApplication = new Account360ViewModel();
+            mainApplication.Salutation = a360.Salutation;
+            mainApplication.FullName = a360.FullName;
+            mainApplication.NRIC = a360.NRIC;
+            mainApplication.DateOfBirth = a360.DateOfBirth;
+            mainApplication.CountryOfBirth = a360.CountryOfBirth;
+            mainApplication.Nationality = a360.Nationality;
+            mainApplication.Gender = a360.Gender;
+            mainApplication.MaritialStatus = a360.MaritialStatus;
+            mainApplication.MobileNum = a360.MobileNum;
+            mainApplication.EmailAddress = a360.EmailAddress;
+            mainApplication.Address = a360.Address;
+            mainApplication.Employer = a360.Employer;
+            mainApplication.YearsInEmployment = a360.YearsInEmployment;
+            mainApplication.Occupation = a360.Occupation;
+            mainApplication.AnnualIncome = a360.AnnualIncome;
 
-            applicants.JointApplicantCode = $"J{DateTime.Today.Day}{DateTime.Today.Month}{applicants.NRIC.Substring(5, 3)}";
+            mainApplication.JointApplicantCode = $"J{DateTime.Today.Day}{DateTime.Today.Month}{mainApplication.NRIC.Substring(5, 3)}";
 
+            HttpContext.Session.SetObjectAsJson("ApplicantsDetails", mainApplication);
 
             //Application mainApplication = new Application()
             //{
@@ -283,8 +285,8 @@ namespace OCBC_Joint_Account_Application.Controllers
             //    JointApplicantCode = $"J{DateTime.Today.Day}{DateTime.Today.Month}{storedApplicant.CustNRIC.Substring(5, 3)}"
             //};
 
-            
-            return RedirectToAction("JointApplicant", "Account360", applicants);
+
+            return RedirectToAction("JointApplicant", "Account360");
         }
 
         /**==========================
@@ -461,7 +463,10 @@ namespace OCBC_Joint_Account_Application.Controllers
             checkJAC(HttpContext.Session.GetString("JAC"));
             HttpContext.Session.SetString("PageType", "Account360");
             ViewData["Salutation"] = Salutation;
+<<<<<<< HEAD
             Console.WriteLine(applicants.FullName);
+=======
+>>>>>>> 3a2f03781c9c2c16c70285ad61aad6fd0590f1b6
             return View();
         }
 
@@ -469,6 +474,18 @@ namespace OCBC_Joint_Account_Application.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult JointApplicant(Account360ViewModel a360)
         {
+<<<<<<< HEAD
+=======
+            Account360ViewModel mainApplication = new Account360ViewModel();
+
+            mainApplication = HttpContext.Session.GetObjectFromJson<Account360ViewModel>("ApplicantsDetails");
+            mainApplication.SalutationJoint = a360.SalutationJoint;
+            mainApplication.JointApplicantName = a360.JointApplicantName;
+            mainApplication.Email = a360.Email;
+            mainApplication.ContactNo = a360.ContactNo;
+            HttpContext.Session.SetObjectAsJson("ApplicantsDetails", mainApplication);
+                
+>>>>>>> 3a2f03781c9c2c16c70285ad61aad6fd0590f1b6
             return RedirectToAction("Verify", "Account360");
         }
 
@@ -478,12 +495,22 @@ namespace OCBC_Joint_Account_Application.Controllers
 
         public ActionResult Verify(Account360ViewModel a360)
         {
+<<<<<<< HEAD
             ResetQR();
             checkJAC(HttpContext.Session.GetString("JAC")); // Check Main or Joint
             Account360ViewModel ac360 = new Account360ViewModel(); // a360 object to display the data in the fields
             ac360.Salutation = a360.Salutation;
             Console.WriteLine(TempData["Object"]);
             return View(ac360);
+=======
+            // Check Main or Joint
+            checkJAC(HttpContext.Session.GetString("JAC"));
+
+            Account360ViewModel applicants = new Account360ViewModel();
+            applicants = HttpContext.Session.GetObjectFromJson<Account360ViewModel>("ApplicantsDetails");
+
+            return View(applicants);
+>>>>>>> 3a2f03781c9c2c16c70285ad61aad6fd0590f1b6
         }
 
         [HttpPost]
