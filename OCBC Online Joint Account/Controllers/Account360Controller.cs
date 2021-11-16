@@ -242,10 +242,22 @@ namespace OCBC_Joint_Account_Application.Controllers
                 Account360ViewModel OCRDetails = new Account360ViewModel();
                 OCRDetails = HttpContext.Session.GetObjectFromJson<Account360ViewModel>("Scan");
                 ac360.FullName = OCRDetails.FullName;
-                ac360.Gender = OCRDetails.Gender;
+                if (OCRDetails.Gender == null)
+                {
+                    ac360.Gender = "";
+                }
+                else if (OCRDetails.Gender.Contains("F"))
+                {
+                    ac360.Gender = "Female";
+                }
+                else if (OCRDetails.Gender.Contains("M"))
+                {
+                    ac360.Gender = "Male";
+                }
                 ac360.CountryOfBirth = OCRDetails.CountryOfBirth;
                 ac360.DateOfBirth = OCRDetails.DateOfBirth;
                 ac360.NRIC = OCRDetails.NRIC;
+                ac360.Address = OCRDetails.Address;
 
                 return View(ac360);
             }
@@ -314,7 +326,9 @@ namespace OCBC_Joint_Account_Application.Controllers
             HttpContext.Session.SetString("ApplyMethod", "Scan");
             ViewData["SingaporeanSelection"] = singaporean;
 
-            string uploadedFile = "";
+            string uploadedNRICFront = "";
+            string uploadedNRICBack = "";
+            string uploadedResidentialProof = "";
 
             CustApplication custApplication1 = new CustApplication
             {
@@ -327,8 +341,8 @@ namespace OCBC_Joint_Account_Application.Controllers
                 try
                 {
                     string fileExt = Path.GetExtension(custApplication.CustProofOfResidenceUpload.FileName);
-                    uploadedFile = String.Format("residence_proof" + fileExt);
-                    string savePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\applicationdocs\\", uploadedFile);
+                    uploadedResidentialProof = String.Format("residence_proof" + fileExt);
+                    string savePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\applicationdocs\\", uploadedResidentialProof);
                     using (var fileSteam = new FileStream(savePath, FileMode.Create))
                     {
                         await custApplication.CustProofOfResidenceUpload.CopyToAsync(fileSteam);
@@ -353,8 +367,8 @@ namespace OCBC_Joint_Account_Application.Controllers
                 try
                 {
                     string fileExt = Path.GetExtension(custApplication.CustNRICFrontUpload.FileName);
-                    uploadedFile = String.Format("nric_front" + fileExt);
-                    string savePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\applicationdocs\\", uploadedFile);
+                    uploadedNRICFront = String.Format("nric_front" + fileExt);
+                    string savePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\applicationdocs\\", uploadedNRICFront);
                     using (var fileSteam = new FileStream(savePath, FileMode.Create))
                     {
                         await custApplication.CustNRICFrontUpload.CopyToAsync(fileSteam);
@@ -379,8 +393,8 @@ namespace OCBC_Joint_Account_Application.Controllers
                 try
                 {
                     string fileExt = Path.GetExtension(custApplication.CustNRICBackUpload.FileName);
-                    uploadedFile = String.Format("nric_back" + fileExt);
-                    string savePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\applicationdocs\\", uploadedFile);
+                    uploadedNRICBack = String.Format("nric_back" + fileExt);
+                    string savePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\applicationdocs\\", uploadedNRICBack);
                     using (var fileSteam = new FileStream(savePath, FileMode.Create))
                     {
                         await custApplication.CustNRICBackUpload.CopyToAsync(fileSteam);
@@ -402,14 +416,13 @@ namespace OCBC_Joint_Account_Application.Controllers
             }
 
             // NRIC Front OCR API - DO NOT DELETE. COMMENTING OUT TO REDUCE API CALL USAGE.
-            var client = new RestClient("https://app.nanonets.com/api/v2/OCR/Model/3de1189e-0087-4b80-8954-813aa4b0aaac/LabelFile/");
+            var client = new RestClient("https://app.nanonets.com/api/v2/OCR/Model/96fa0936-a5dd-4e70-96dd-0bae04e9d8f4/LabelFile/");
             var request = new RestRequest(Method.POST);
-            request.AddHeader("authorization", "Basic " + Convert.ToBase64String(Encoding.Default.GetBytes("_9xwEpzEdi3gevc7Oy-SucehAswdtRFG:")));
+            request.AddHeader("authorization", "Basic " + Convert.ToBase64String(Encoding.Default.GetBytes("1xpmJsen1wvDnk5v-50NMcSF4uO5qCZp:")));
             request.AddHeader("accept", "Multipart/form-data");
-            request.AddFile("file", ".\\wwwroot\\applicationdocs\\" + uploadedFile);
+            request.AddFile("file", ".\\wwwroot\\applicationdocs\\" + uploadedNRICFront);
             IRestResponse response = client.Execute(request);
 
-            //OCBC_Online_Joint_Account.Models.ClientOCR clientOCR = new OCBC_Online_Joint_Account.Models.ClientOCR();
             Account360ViewModel clientOCR = new Account360ViewModel();
 
             Dictionary<string, object> obj = (Dictionary<string, object>)OCBC_Online_Joint_Account.Models.JSONHelper.Deserialize(response.Content);
@@ -442,13 +455,49 @@ namespace OCBC_Joint_Account_Application.Controllers
                         {
                             clientOCR.DateOfBirth = Convert.ToDateTime(ocr_text);
                         }
+                        else if (label == "Country_Of_Birth")
+                        {
+                            clientOCR.CountryOfBirth = ocr_text;
+                        }
                         //Console.WriteLine("Value: " + ocr_text);
 
                     }
                 }
             }
+
+
+            // NRIC BACK OCR API - DO NOT DELETE. COMMENTING OUT TO REDUCE API CALL USAGE.
+            var client2 = new RestClient("https://app.nanonets.com/api/v2/OCR/Model/8ee8790a-92db-48d7-adf0-c9512997b60a/LabelFile/");
+            var request2 = new RestRequest(Method.POST);
+            request2.AddHeader("authorization", "Basic " + Convert.ToBase64String(Encoding.Default.GetBytes("_9xwEpzEdi3gevc7Oy-SucehAswdtRFG:")));
+            request2.AddHeader("accept", "Multipart/form-data");
+            request2.AddFile("file", ".\\wwwroot\\applicationdocs\\" + uploadedNRICBack);
+            IRestResponse response2 = client2.Execute(request2);
+            
+            
+            Dictionary<string, object> obj2 = (Dictionary<string, object>)OCBC_Online_Joint_Account.Models.JSONHelper.Deserialize(response2.Content);
+
+            foreach (var item in obj2.Keys)
+            {
+                if (item == "result")
+                {
+                    List<object> results = (List<object>)obj2[item];
+                    Dictionary<string, object> predictions = (Dictionary<string, object>)results[0];
+                    List<object> prediction = (List<object>)predictions["prediction"];
+
+                    foreach (var p in prediction)
+                    {
+                        Dictionary<string, object> pvalue = (Dictionary<string, object>)p;
+                        clientOCR.Address = (string)pvalue["ocr_text"];
+                        break;
+                    }
+                    break;
+                }
+            }
+
+            ////Set clientOCR object to the "Scan" string to be used in Form.cshtml to parse the data from the OCR read
             HttpContext.Session.SetObjectAsJson("Scan", clientOCR);
-            //return clientOCR object to Form.cshtml to parse the data from the OCR read
+
             return RedirectToAction("Form");
         }
 
