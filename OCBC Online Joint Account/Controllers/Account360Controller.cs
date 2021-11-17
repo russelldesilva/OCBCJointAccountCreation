@@ -20,6 +20,9 @@ using System.Threading;
 using System.Text;
 using OCBC_Online_Joint_Account.Models;
 using System.Globalization;
+using Mailjet.Client;
+using Mailjet.Client.Resources;
+using Newtonsoft.Json.Linq;
 
 namespace OCBC_Joint_Account_Application.Controllers
 {
@@ -111,6 +114,7 @@ namespace OCBC_Joint_Account_Application.Controllers
         public ActionResult ApplyOnline(int? AT, string? JAC)
         {
             HttpContext.Session.SetString("PageType", "Account360");
+            HttpContext.Session.SetInt32("AccountTypeID", 2);
      
             if (JAC != null)
             {
@@ -323,7 +327,6 @@ namespace OCBC_Joint_Account_Application.Controllers
             mainApplication.YearsInEmployment = a360.YearsInEmployment;
             mainApplication.Occupation = a360.Occupation;
             mainApplication.AnnualIncome = a360.AnnualIncome;
-            mainApplication.JointApplicantCode = $"J{DateTime.Today.Day}{DateTime.Today.Month}{mainApplication.NRIC.Substring(5, 3)}";
             mainApplication.SelfEmployeed = a360.SelfEmployeed;
             mainApplication.TaxResidence = "";
 
@@ -632,14 +635,86 @@ namespace OCBC_Joint_Account_Application.Controllers
         {
             a360 = HttpContext.Session.GetObjectFromJson<Account360ViewModel>("ApplicantsDetails");
 
-            // Only scan and new singpass is add rest update
-            customerContext.Add(a360);
-            return View("Index", "Home");
+            // Only scan and new singpass is add, rest update
+            // Convert gender to single char
+            if (a360.Gender == "Male")
+            {
+                a360.Gender = "M";
+            }
+            else
+            {
+                a360.Gender = "F";
+            }
+            // if not scan || not new singpass
+            if (HttpContext.Session.GetString("ApplyMethod") != "Scan" && HttpContext.Session.GetString("CustSingpass") != "newCustomer")
+            {
+                customerContext.Update(a360);
+            }
+            else
+            {
+                customerContext.Add(a360);
+            }
+
+            // Add application table
+            Application newApplication = new Application();
+            newApplication.CustNRIC = a360.NRIC;
+            newApplication.AccountTypeID = (int)HttpContext.Session.GetInt32("AccountTypeID");
+
+            // Main applicant
+            if (HttpContext.Session.GetString("JAC") == null)
+            {
+                Random rnd = new Random();
+                int rndNum = rnd.Next(1000, 9999);
+                string JAC = "J" + DateTime.Today.Day + rndNum + a360.NRIC.Substring(5, 3);
+                //Email API
+                RunAsync(a360.Salutation, a360.FullName, a360.Email, JAC, a360.SalutationJoint, a360.JointApplicantName).Wait();
+
+                newApplication.Status = "Pending";
+                newApplication.JointApplicantID = null;
+            }
+            // Joint applicant
+            else
+            {
+                newApplication.Status = "Successful";
+            }
+
+            // Create Bank Account && CustomerAccounts once status = successful.
+
+            return RedirectToAction("Index", "Home");
         }
 
         /**==========================
                     METHODS
         ==========================**/
+
+        static async Task RunAsync(string sal, string name, string email, string jac, string sj, string jan)
+        {
+            MailjetClient client = new MailjetClient("883c10fe26db15ef52b5ff8f0a4965fb", "2f42f3a81ad1fa32fe50ebf5274be5e0");
+            MailjetRequest request = new MailjetRequest
+            {
+                Resource = Send.Resource,
+            }
+               .Property(Send.FromEmail, "s10208193@connect.np.edu.sg")
+               .Property(Send.FromName, "OCBC Bank")
+               .Property(Send.Subject, "360 Account Joint-Account Application")
+               .Property(Send.TextPart, "")
+               .Property(Send.HtmlPart, "<div style='text-align: center; margin: 0 20% 0 20%'><img style='height: 150px' src='https://i.ibb.co/X28mfrZ/ocbc-logo-330-160.png'><h1><b>360 Account Joint-Account Application</b></h1><hr><div style='text-align: left; font-weight: lighter;'><h3 style='font-weight: lighter; margin-top: 40px'>Dear "+ sj + " " + jan +"</h3><h3 style='font-weight: lighter; margin-top: 40px'>"+ sal + " " + name +" has initiated a Joint-Account application and is requesting you to complete it. Simply click on this <a href='https://localhost:44381/Account360/ApplyOnline?AT=2&JAC="+ jac + "'>link</a> to complete your application.</h3><h3 style='font-weight: lighter; margin-top: 40px'>If you do not know this person, call 1800 363 333 at once.</h3><h3 style='font-weight: lighter; margin-top: 40px'>Yours sincerely<br><b>OCBC Bank</b></h3></div></div>")
+               .Property(Send.Recipients, new JArray { new JObject { {"Email", email} } });
+            MailjetResponse response = await client.PostAsync(request);
+            if (response.IsSuccessStatusCode)
+            {
+                Console.WriteLine(string.Format("Total: {0}, Count: {1}\n", response.GetTotal(), response.GetCount()));
+                Console.WriteLine(response.GetData());
+            }
+            else
+            {
+                Console.WriteLine(string.Format("StatusCode: {0}\n", response.StatusCode));
+                Console.WriteLine(string.Format("ErrorInfo: {0}\n", response.GetErrorInfo()));
+                Console.WriteLine(string.Format("ErrorMessage: {0}\n", response.GetErrorMessage()));
+                Console.ReadLine();
+            }
+        }
+
         public void checkJAC(string JAC)
         {
             if(HttpContext.Session.GetString("JAC") != null)

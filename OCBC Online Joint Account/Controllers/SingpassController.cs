@@ -18,8 +18,9 @@ namespace OCBC_Joint_Account_Application.Controllers
     {
         private SingpassDAL singpassContext = new SingpassDAL();
 
-        public ActionResult Login()
+        public ActionResult Login(string customer)
         {
+            HttpContext.Session.SetString("CustSingpass", customer);
             HttpContext.Session.SetString("PageType", "Singpass");
             HttpContext.Session.Remove("Applicant");
             return View();
