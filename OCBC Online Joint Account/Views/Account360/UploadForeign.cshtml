@@ -52,7 +52,7 @@
                             <img class="card-img-top" src="~/image/no-image.png" alt="Card image cap">
                             <h5 class="card-title">Foreign Pass (Front)</h5>
                             <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                            <input type="file" asp-for="CustForeignPassFrontUpload" accept="image/png, image/gif, image/jpeg" style="margin-bottom:20px;" /><!--Upload btn-->
+                            <input type="file" asp-for="CustForeignPassFrontUpload" accept="image/png, image/gif, image/jpeg" required style="margin-bottom:20px;" /><!--Upload btn-->
                         </div>
                     </div>
                     <div class="card text-center col-md-6 shadow-sm">
@@ -60,7 +60,7 @@
                             <img class="card-img-top" src="~/image/no-image.png" alt="Card image cap">
                             <h5 class="card-title">Foreign Pass (Back)</h5>
                             <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                            <input type="file" asp-for="CustForeignPassBackUpload" accept="image/png, image/gif, image/jpeg" style="margin-bottom:20px;" /><!--Upload btn-->
+                            <input type="file" asp-for="CustForeignPassBackUpload" accept="image/png, image/gif, image/jpeg" required style="margin-bottom:20px;" /><!--Upload btn-->
                         </div>
                     </div>
                 </div>
@@ -70,7 +70,7 @@
                             <img class="card-img-top" src="~/image/no-image.png" alt="Card image cap">
                             <h5 class="card-title">Residential Address</h5>
                             <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                            <input type="file" asp-for="CustProofOfResidenceUpload" style="margin-bottom:20px;" /><!--Upload btn-->
+                            <input type="file" asp-for="CustProofOfResidenceUpload" accept="image/png, image/gif, image/jpeg" required style="margin-bottom:20px;" /><!--Upload btn-->
                         </div>
                     </div>
                     <div class="card text-center col-md-6 shadow-sm">
@@ -78,7 +78,7 @@
                             <img class="card-img-top" src="~/image/no-image.png" alt="Card image cap">
                             <h5 class="card-title">Passport</h5>
                             <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                            <input type="file" asp-for="CustPassportUpload" style="margin-bottom:20px;" /><!--Upload btn-->
+                            <input type="file" asp-for="CustPassportUpload" accept="image/png, image/gif, image/jpeg" required style="margin-bottom:20px;" /><!--Upload btn-->
                         </div>
                     </div>
                 </div>
@@ -90,5 +90,6 @@
         </div>
     </div>
     <br />
+    <a asp-action="Upload">Singaporean File Upload</a>
     <input type="submit" class="btn btn-primary" asp-action="UploadForeign" value="Next" />
 </form>

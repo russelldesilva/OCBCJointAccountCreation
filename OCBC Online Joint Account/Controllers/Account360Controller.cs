@@ -320,6 +320,11 @@ namespace OCBC_Joint_Account_Application.Controllers
                 ac360.DateOfBirth = OCRDetails.DateOfBirth;
                 ac360.NRIC = OCRDetails.NRIC;
                 ac360.Address = OCRDetails.Address;
+                if (OCRDetails.Nationality == "BRITISH")
+                {
+                    ac360.Nationality = "British, UK";
+                }
+                
 
                 return View(ac360);
             }
@@ -695,7 +700,129 @@ namespace OCBC_Joint_Account_Application.Controllers
                 }
             }
 
-            return View();
+            // FOREIGN PASS FRONT OCR API - DO NOT DELETE. COMMENTING OUT TO REDUCE API CALL USAGE.
+            var client = new RestClient("https://app.nanonets.com/api/v2/OCR/Model/122a71fe-02a0-41cf-acc3-95e7f8e3718a/LabelFile/");
+            var request = new RestRequest(Method.POST);
+            request.AddHeader("authorization", "Basic " + Convert.ToBase64String(Encoding.Default.GetBytes("nS1BZUjLhtCHkKjiOBqs2JbtN10rzNPA:")));
+            request.AddHeader("accept", "Multipart/form-data");
+            request.AddFile("file", ".\\wwwroot\\applicationdocs\\" + uploadedForeignPassFront);
+            IRestResponse response = client.Execute(request);
+
+            Account360ViewModel clientOCR = new Account360ViewModel();
+
+            Dictionary<string, object> obj = (Dictionary<string, object>)OCBC_Online_Joint_Account.Models.JSONHelper.Deserialize(response.Content);
+
+            foreach (var item in obj.Keys)
+            {
+                if (item == "result")
+                {
+                    List<object> results = (List<object>)obj[item];
+                    Dictionary<string, object> predictions = (Dictionary<string, object>)results[0];
+                    List<object> prediction = (List<object>)predictions["prediction"];
+
+                    foreach (var p in prediction)
+                    {
+                        Dictionary<string, object> pvalue = (Dictionary<string, object>)p;
+                        clientOCR.FullName = (string)pvalue["ocr_text"];
+                        break;
+                    }
+                    break;
+                }
+            }
+
+            // FOREIGN PASS BACK OCR API - DO NOT DELETE. COMMENTING OUT TO REDUCE API CALL USAGE.
+            var client2 = new RestClient("https://app.nanonets.com/api/v2/OCR/Model/33be2877-b284-4374-9d84-11915b755727/LabelFile/");
+            var request2 = new RestRequest(Method.POST);
+            request2.AddHeader("authorization", "Basic " + Convert.ToBase64String(Encoding.Default.GetBytes("nS1BZUjLhtCHkKjiOBqs2JbtN10rzNPA:")));
+            request2.AddHeader("accept", "Multipart/form-data");
+            request2.AddFile("file", ".\\wwwroot\\applicationdocs\\" + uploadedForeignPassBack);
+            IRestResponse response2 = client2.Execute(request2);
+
+
+            Dictionary<string, object> obj2 = (Dictionary<string, object>)OCBC_Online_Joint_Account.Models.JSONHelper.Deserialize(response2.Content);
+
+            foreach (var item in obj2.Keys)
+            {
+                if (item == "result")
+                {
+                    List<object> results = (List<object>)obj2[item];
+                    Dictionary<string, object> predictions = (Dictionary<string, object>)results[0];
+                    List<object> prediction = (List<object>)predictions["prediction"];
+
+                    foreach (var p in prediction)
+                    {
+                        Dictionary<string, object> pvalue = (Dictionary<string, object>)p;
+                        var label = (string)pvalue["label"];
+                        var ocr_text = (string)pvalue["ocr_text"];
+                        //Console.WriteLine("Label: " + label);
+                        if (label == "NRIC")
+                        {
+                            clientOCR.NRIC = ocr_text;
+                        }
+                        else if (label == "Gender")
+                        {
+                            clientOCR.Gender = ocr_text;
+                        }
+                        else if (label == "Date_of_Birth")
+                        {
+                            clientOCR.DateOfBirth = Convert.ToDateTime(ocr_text);
+                        }
+                        else if (label == "Nationality")
+                        {
+                            clientOCR.Nationality = ocr_text;
+                        }
+                    }
+                }
+            }
+
+            // PASSPORT OCR API - DO NOT DELETE. COMMENTING OUT TO REDUCE API CALL USAGE.
+            var client3 = new RestClient("https://app.nanonets.com/api/v2/OCR/Model/4461263c-ecec-42e7-9e88-1f9a48b580a1/LabelFile/");
+            var request3 = new RestRequest(Method.POST);
+            request3.AddHeader("authorization", "Basic " + Convert.ToBase64String(Encoding.Default.GetBytes("nS1BZUjLhtCHkKjiOBqs2JbtN10rzNPA:")));
+            request3.AddHeader("accept", "Multipart/form-data");
+            request3.AddFile("file", ".\\wwwroot\\applicationdocs\\" + uploadedPassport);
+            IRestResponse response3 = client3.Execute(request3);
+
+
+            Dictionary<string, object> obj3 = (Dictionary<string, object>)OCBC_Online_Joint_Account.Models.JSONHelper.Deserialize(response3.Content);
+
+            foreach (var item in obj3.Keys)
+            {
+                if (item == "result")
+                {
+                    List<object> results = (List<object>)obj3[item];
+                    Dictionary<string, object> predictions = (Dictionary<string, object>)results[0];
+                    List<object> prediction = (List<object>)predictions["prediction"];
+
+                    foreach (var p in prediction)
+                    {
+                        Dictionary<string, object> pvalue = (Dictionary<string, object>)p;
+                        var label = (string)pvalue["label"];
+                        var ocr_text = (string)pvalue["ocr_text"];
+                        //Console.WriteLine("Label: " + label);
+                        if (label == "Place_of_birth")
+                        {
+                            clientOCR.CountryOfBirth = ocr_text;
+                        }
+                        else if (label == "Sex")
+                        {
+                            clientOCR.Gender = ocr_text;
+                        }
+                        else if (label == "Date_of_Birth")
+                        {
+                            clientOCR.DateOfBirth = Convert.ToDateTime(ocr_text);
+                        }
+                    }
+                }
+            }
+
+            ////Set clientOCR object to the "Scan" string to be used in Form.cshtml to parse the data from the OCR read
+            HttpContext.Session.SetObjectAsJson("Scan", clientOCR);
+
+
+
+
+            return RedirectToAction("Form");
         }
 
         /**==========================
