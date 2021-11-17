@@ -1,6 +1,6 @@
 ﻿@model OCBC_Joint_Account_Application.Models.CustApplication
 
-@{ ViewData["Title"] = "Upload"; }
+@{ ViewData["Title"] = "UploadForeign"; }
 
 
 @if (Context.Session.GetString("JAC") != null)
@@ -42,9 +42,7 @@
 
     </div>
 </div>
-
-<!--If user chooses Singaporean (Default option from the radio btn) radio btn, hide the Foreigner details-->
-<form asp-action="Upload" enctype="multipart/form-data">
+<form asp-action="UploadForeign" enctype="multipart/form-data">
     <div class="container d-flex">
         <div class="container col-md-8" style="max-width:65%; margin-left:0; margin-top: 150px">
             <div class="container">
@@ -52,17 +50,17 @@
                     <div class="card text-center col-md-6 shadow-sm">
                         <div class="card-body d-flex flex-column">
                             <img class="card-img-top" src="~/image/no-image.png" alt="Card image cap">
-                            <h5 class="card-title">Photo Identity (Front)</h5>
+                            <h5 class="card-title">Foreign Pass (Front)</h5>
                             <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                            <input type="file" asp-for="CustNRICFrontUpload" accept="image/png, image/gif, image/jpeg" required style="margin-bottom:20px;" /><!--Upload btn-->
+                            <input type="file" asp-for="CustForeignPassFrontUpload" accept="image/png, image/gif, image/jpeg" style="margin-bottom:20px;" /><!--Upload btn-->
                         </div>
                     </div>
                     <div class="card text-center col-md-6 shadow-sm">
                         <div class="card-body d-flex flex-column">
                             <img class="card-img-top" src="~/image/no-image.png" alt="Card image cap">
-                            <h5 class="card-title">Photo Identity (Back)</h5>
+                            <h5 class="card-title">Foreign Pass (Back)</h5>
                             <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                            <input type="file" asp-for="CustNRICBackUpload" accept="image/png, image/gif, image/jpeg" required style="margin-bottom:20px;" /><!--Upload btn-->
+                            <input type="file" asp-for="CustForeignPassBackUpload" accept="image/png, image/gif, image/jpeg" style="margin-bottom:20px;" /><!--Upload btn-->
                         </div>
                     </div>
                 </div>
@@ -72,7 +70,15 @@
                             <img class="card-img-top" src="~/image/no-image.png" alt="Card image cap">
                             <h5 class="card-title">Residential Address</h5>
                             <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                            <input type="file" asp-for="CustProofOfResidenceUpload" accept="image/png, image/gif, image/jpeg" required style="margin-bottom:20px;" /><!--Upload btn-->
+                            <input type="file" asp-for="CustProofOfResidenceUpload" style="margin-bottom:20px;" /><!--Upload btn-->
+                        </div>
+                    </div>
+                    <div class="card text-center col-md-6 shadow-sm">
+                        <div class="card-body d-flex flex-column">
+                            <img class="card-img-top" src="~/image/no-image.png" alt="Card image cap">
+                            <h5 class="card-title">Passport</h5>
+                            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                            <input type="file" asp-for="CustPassportUpload" style="margin-bottom:20px;" /><!--Upload btn-->
                         </div>
                     </div>
                 </div>
@@ -83,8 +89,6 @@
                 @await Html.PartialAsync("_AccountInfoCard.cshtml"); }
         </div>
     </div>
-    <a asp-action="UploadForeign">Foreign File Upload</a>
-    <input type="submit" class="btn btn-primary" asp-action="Upload" value="Next" />
+    <br />
+    <input type="submit" class="btn btn-primary" asp-action="UploadForeign" value="Next" />
 </form>
-
-

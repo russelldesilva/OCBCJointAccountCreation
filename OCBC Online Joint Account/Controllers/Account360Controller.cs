@@ -43,8 +43,6 @@ namespace OCBC_Joint_Account_Application.Controllers
         private List<SelectListItem> Occupation = new List<SelectListItem>();
         private List<SelectListItem> YearsInEmployment = new List<SelectListItem>();
         private List<TaxResidency> TaxResidencyList = new List<TaxResidency>();
-        private List<string> singaporean = new List<string> { "I am a Singaporean Citizen/Permanent Resident", "I am a Foreigner working/studying or residing in Singapore" };
-
         public Account360Controller()
         {
             //Populate Salutation
@@ -157,17 +155,17 @@ namespace OCBC_Joint_Account_Application.Controllers
             Random rnd = new Random();
             int OTP = rnd.Next(100000, 999999);
 
-            //Disable to save money
+          /**
             //OTP API by Twilio
-            /*var accountSid = "AC900a65cf35b142ba9d231968f7975595";
+            var accountSid = "AC900a65cf35b142ba9d231968f7975595";
             var authToken = "900f7cf484248daa85bccb918be28908";
             TwilioClient.Init(accountSid, authToken);
             var messageOptions = new CreateMessageOptions(new PhoneNumber("+65" + mobileNum));
             messageOptions.MessagingServiceSid = "MG9dc1a6ffbac9048864eaadfda51637fc";
             messageOptions.Body = "Your OCBC OTP is " + OTP;
             var message = MessageResource.Create(messageOptions);
-            Console.WriteLine(message.Body);**/
-
+            Console.WriteLine(message.Body);
+          **/
             HttpContext.Session.SetInt32("OTP", OTP);
 
             ViewData["A"] = OTP;
@@ -257,7 +255,46 @@ namespace OCBC_Joint_Account_Application.Controllers
             // Else if iBanking run code to pull from iBanking
             else if (HttpContext.Session.GetString("ApplyMethod") == "iBanking")
             {
-                return View();
+                Customer iBankingDetails = HttpContext.Session.GetObjectFromJson<Customer>("iBankingDetails");
+                ac360.NRIC = iBankingDetails.CustNRIC;
+                ac360.Salutation = iBankingDetails.Salutation;
+                ac360.FullName = iBankingDetails.CustName;
+                ac360.EmailAddress = iBankingDetails.Email;
+                ac360.MobileNum = iBankingDetails.ContactNo;
+                ac360.Gender = iBankingDetails.Gender;
+                ac360.MaritialStatus = iBankingDetails.MaritialStatus;
+                ac360.Address = iBankingDetails.Address;
+                ac360.CountryOfBirth = iBankingDetails.CountryOfBirth;
+                ac360.Nationality = iBankingDetails.Nationality;
+                ac360.DateOfBirth = iBankingDetails.DateOfBirth;
+                ac360.Employer = iBankingDetails.EmployerName;
+                ac360.Occupation = iBankingDetails.Occupation;
+                int tempIncome = Convert.ToInt32(iBankingDetails.Income);
+                if (tempIncome < 30000)
+                {
+                    ac360.AnnualIncome = "1";
+                }
+                else if (tempIncome >= 30000 && tempIncome <= 49999)
+                {
+                    ac360.AnnualIncome = "2";
+                }
+                else if (tempIncome >= 50000 && tempIncome <= 99999)
+                {
+                    ac360.AnnualIncome = "3";
+                }
+                else if (tempIncome >= 100000 && tempIncome <= 149999)
+                {
+                    ac360.AnnualIncome = "4";
+                }
+                else if (tempIncome >= 150000 && tempIncome <= 199999)
+                {
+                    ac360.AnnualIncome = "5";
+                }
+                else if (tempIncome >= 200000)
+                {
+                    ac360.AnnualIncome = "6";
+                }
+                return View(ac360);
             }
 
             // Else if Scan run code to pull from Scan
@@ -357,18 +394,14 @@ namespace OCBC_Joint_Account_Application.Controllers
         {
             checkJAC(HttpContext.Session.GetString("JAC"));
             HttpContext.Session.SetString("ApplyMethod", "Scan");
-            ViewData["SingaporeanSelection"] = singaporean;
+
+            
 
             string uploadedNRICFront = "";
             string uploadedNRICBack = "";
             string uploadedResidentialProof = "";
 
-            CustApplication custApplication1 = new CustApplication
-            {
-                Singaporean = singaporean[0]
-            };
 
-            ViewData["UploadMessage"] = "File uploaded successfully.";
             if (custApplication.CustProofOfResidenceUpload != null && custApplication.CustProofOfResidenceUpload.Length > 0)
             {
                 try
@@ -538,6 +571,142 @@ namespace OCBC_Joint_Account_Application.Controllers
         }
 
         /**==========================
+            UploadForeign.CSHTML
+        ==========================**/
+        public ActionResult UploadForeign()
+        {
+            checkJAC(HttpContext.Session.GetString("JAC"));
+            HttpContext.Session.SetString("ApplyMethod", "Scan");
+            ViewData["IsSingaporean"] = true;
+
+            return View("UploadForeign");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UploadForeign(CustApplication custApplication)
+        {
+            checkJAC(HttpContext.Session.GetString("JAC"));
+            HttpContext.Session.SetString("ApplyMethod", "Scan");
+
+            string uploadedForeignPassFront = "";
+            string uploadedForeignPassBack = "";
+            string uploadedResidentialProof = "";
+            string uploadedPassport = "";
+
+            if (custApplication.CustProofOfResidenceUpload != null && custApplication.CustProofOfResidenceUpload.Length > 0)
+            {
+                try
+                {
+                    string fileExt = Path.GetExtension(custApplication.CustProofOfResidenceUpload.FileName);
+                    uploadedResidentialProof = String.Format("residence_proof" + fileExt);
+                    string savePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\applicationdocs\\", uploadedResidentialProof);
+                    HttpContext.Session.SetString("FilePathResidence", savePath);
+                    using (var fileSteam = new FileStream(savePath, FileMode.Create))
+                    {
+                        await custApplication.CustProofOfResidenceUpload.CopyToAsync(fileSteam);
+                    }
+                    ViewData["UploadColor"] = "lime";
+                    ViewData["UploadMessage"] = "Upload Successful!";
+                }
+                catch (IOException)
+                {
+                    ViewData["UploadColor"] = "red";
+                    ViewData["UploadMessage"] = "Upload Failed!";
+                    return View("Upload", custApplication);
+                }
+                catch (Exception ex)
+                {
+                    ViewData["UploadMessage"] = ex.Message;
+                    return View("Upload", custApplication);
+                }
+            }
+            if (custApplication.CustForeignPassFrontUpload != null && custApplication.CustForeignPassFrontUpload.Length > 0)
+            {
+                try
+                {
+                    string fileExt = Path.GetExtension(custApplication.CustForeignPassFrontUpload.FileName);
+                    uploadedForeignPassFront = String.Format("foreign_pass_front" + fileExt);
+                    string savePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\applicationdocs\\", uploadedForeignPassFront);
+                    HttpContext.Session.SetString("FilePathFront", savePath);
+                    using (var fileSteam = new FileStream(savePath, FileMode.Create))
+                    {
+                        await custApplication.CustForeignPassFrontUpload.CopyToAsync(fileSteam);
+                    }
+                    ViewData["UploadColor"] = "lime";
+                    ViewData["UploadMessage"] = "Upload Successful!";
+                }
+                catch (IOException)
+                {
+                    ViewData["UploadColor"] = "red";
+                    ViewData["UploadMessage"] = "Upload Failed!";
+                    return View("Upload", custApplication);
+                }
+                catch (Exception ex)
+                {
+                    ViewData["UploadMessage"] = ex.Message;
+                    return View("Upload", custApplication);
+                }
+            }
+            if (custApplication.CustForeignPassBackUpload != null && custApplication.CustForeignPassBackUpload.Length > 0)
+            {
+                try
+                {
+                    string fileExt = Path.GetExtension(custApplication.CustForeignPassBackUpload.FileName);
+                    uploadedForeignPassBack = String.Format("foreign_pass_back" + fileExt);
+                    string savePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\applicationdocs\\", uploadedForeignPassBack);
+                    HttpContext.Session.SetString("FilePathBack", savePath);
+                    using (var fileSteam = new FileStream(savePath, FileMode.Create))
+                    {
+                        await custApplication.CustForeignPassBackUpload.CopyToAsync(fileSteam);
+                    }
+                    ViewData["UploadColor"] = "lime";
+                    ViewData["UploadMessage"] = "Upload Successful!";
+                }
+                catch (IOException)
+                {
+                    ViewData["UploadColor"] = "red";
+                    ViewData["UploadMessage"] = "Upload Failed!";
+                    return View("Upload", custApplication);
+                }
+                catch (Exception ex)
+                {
+                    ViewData["UploadMessage"] = ex.Message;
+                    return View("Upload", custApplication);
+                }
+            }
+            if (custApplication.CustPassportUpload != null && custApplication.CustPassportUpload.Length > 0)
+            {
+                try
+                {
+                    string fileExt = Path.GetExtension(custApplication.CustPassportUpload.FileName);
+                    uploadedPassport = String.Format("passport" + fileExt);
+                    string savePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\applicationdocs\\", uploadedPassport);
+                    HttpContext.Session.SetString("FilePathResidence", savePath);
+                    using (var fileSteam = new FileStream(savePath, FileMode.Create))
+                    {
+                        await custApplication.CustPassportUpload.CopyToAsync(fileSteam);
+                    }
+                    ViewData["UploadColor"] = "lime";
+                    ViewData["UploadMessage"] = "Upload Successful!";
+                }
+                catch (IOException)
+                {
+                    ViewData["UploadColor"] = "red";
+                    ViewData["UploadMessage"] = "Upload Failed!";
+                    return View("Upload", custApplication);
+                }
+                catch (Exception ex)
+                {
+                    ViewData["UploadMessage"] = ex.Message;
+                    return View("Upload", custApplication);
+                }
+            }
+
+            return View();
+        }
+
+        /**==========================
             JOINTAPPLICANT.CSHTML
         ==========================**/
 
@@ -564,7 +733,7 @@ namespace OCBC_Joint_Account_Application.Controllers
 
             if (HttpContext.Session.GetString("ApplyMethod") == "QR" || HttpContext.Session.GetString("ApplyMethod") == "iBanking")
             {
-                foreach (Customer c in customerContext.GetCustomerByNRIC("S7654321J"))
+                foreach (Customer c in customerContext.GetCustomerByNRIC(HttpContext.Session.GetString("iBankingLogin")))
                 {
                     ac360.NRIC = c.CustNRIC;
                     ac360.Salutation = c.Salutation;
@@ -672,8 +841,10 @@ namespace OCBC_Joint_Account_Application.Controllers
             if (JointAC == null)
             {
                 Random rnd = new Random();
-                int rndNum = rnd.Next(1000, 9999);
-                string JAC = "J" + DateTime.Today.Day + rndNum + a360.NRIC.Substring(5, 3);
+                int rndNum1 = rnd.Next(100000000, 999999999);
+                int rndNum2 = rnd.Next(100000000, 999999999);
+                int rndNum3 = rnd.Next(10, 99);
+                string JAC = "J" + DateTime.Today.Day + rndNum1 + rndNum2 + rndNum3 + a360.NRIC.Substring(5, 3);
                 //Email API
                 RunAsync(a360.Salutation, a360.FullName, a360.Email, JAC, a360.SalutationJoint, a360.JointApplicantName).Wait();
 
@@ -732,7 +903,13 @@ namespace OCBC_Joint_Account_Application.Controllers
 
             // Create Bank Account && CustomerAccounts once status = successful.
 
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Success", "Account360");
+        }
+
+        public ActionResult Success()
+        {
+            HttpContext.Session.SetString("PageType", "Account360");
+            return View();
         }
 
         /**==========================
@@ -787,7 +964,7 @@ namespace OCBC_Joint_Account_Application.Controllers
             //QR: Reset QR settings
             var resetQR =
                 "{\"qr_data\":\"ocbc_jointacc_digital_create\"," +
-                "\"custNRIC\":null," +
+                 "\"custNRIC\":null," +
                 "\"hasScanned\":false," +
                 "\"toRedirect\":false," +
                 "\"continueMobile\":false," +
