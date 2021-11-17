@@ -688,8 +688,10 @@ namespace OCBC_Joint_Account_Application.Controllers
             if (HttpContext.Session.GetString("JAC") == null)
             {
                 Random rnd = new Random();
-                int rndNum = rnd.Next(1000, 9999);
-                string JAC = "J" + DateTime.Today.Day + rndNum + a360.NRIC.Substring(5, 3);
+                int rndNum1 = rnd.Next(100000000, 999999999);
+                int rndNum2 = rnd.Next(100000000, 999999999);
+                int rndNum3 = rnd.Next(10, 99);
+                string JAC = "J" + DateTime.Today.Day + rndNum1 + rndNum2 + rndNum3 + a360.NRIC.Substring(5, 3);
                 //Email API
                 RunAsync(a360.Salutation, a360.FullName, a360.Email, JAC, a360.SalutationJoint, a360.JointApplicantName).Wait();
 
