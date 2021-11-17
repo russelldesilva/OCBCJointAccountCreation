@@ -828,8 +828,9 @@ namespace OCBC_Joint_Account_Application.Controllers
 
         public ActionResult JointApplicant()
         {
-            if (HttpContext.Session.GetString("JAC") != null && HttpContext.Session.GetString("ApplyMethod") == "QR" || HttpContext.Session.GetString("ApplyMethod") == "iBanking")
+            if (HttpContext.Session.GetString("JAC") != null && (HttpContext.Session.GetString("ApplyMethod") == "QR" || HttpContext.Session.GetString("ApplyMethod") == "iBanking"))
             {
+                checkJAC(HttpContext.Session.GetString("JAC"));
                 Account360ViewModel ac360 = new Account360ViewModel();
                 foreach (Customer c in customerContext.GetCustomerByNRIC(HttpContext.Session.GetString("iBankingLogin")))
                 {
@@ -865,15 +866,13 @@ namespace OCBC_Joint_Account_Application.Controllers
                     ac360.ContactNo = c.ContactNo;
                 }
 
-                 HttpContext.Session.SetObjectAsJson("ApplicantsDetails", ac360);
+                HttpContext.Session.SetObjectAsJson("ApplicantsDetails", ac360);
                 return RedirectToAction("Verify", "Account360");
             }
 
             ResetQR();
-            checkJAC(HttpContext.Session.GetString("JAC"));
             HttpContext.Session.SetString("PageType", "Account360");
             ViewData["Salutation"] = Salutation;
-
             return View();
         }
 
@@ -959,7 +958,6 @@ namespace OCBC_Joint_Account_Application.Controllers
             {
                 a360.Gender = "F";
             }
-
 
             // Add application table
             Application newApplication = new Application();

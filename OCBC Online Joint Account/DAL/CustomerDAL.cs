@@ -139,11 +139,8 @@ namespace OCBC_Joint_Account_Application.DAL
             cmd.Parameters.AddWithValue("@iBPin", DBNull.Value);
 
             conn.Open();
-
             a360.NRIC = (string)cmd.ExecuteScalar();
-
             conn.Close();
-
             return a360.NRIC;
         }
     }

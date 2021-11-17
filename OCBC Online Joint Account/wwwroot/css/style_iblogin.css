@@ -22,7 +22,7 @@
 
 .inner-wrap {
     width: 45%;
-    margin-left: auto;
+    margin-left: 24%;
     margin-right: auto;
 }
 
@@ -35,51 +35,49 @@
     border-color: transparent;
     color: white;
     font-weight: bold;
-    margin-top: 40px;
 }
 
 .login-form {
     background-color: white;
-    width: 400px;
+    width: 500px;
 }
 
-    .login-form .row {
-        margin-left: auto;
-        margin-right: auto;
-    }
+.login-form .row {
+    margin-left: auto;
+    margin-right: auto;
+}
 
-        .login-form .row .spacing {
-            padding-bottom: 40px;
-        }
+.login-form .row .spacing {
+    padding-bottom: 40px;
+}
 
 .ib-logo {
     display: flex;
     width: 100%;
     height: 39px;
-    margin-top: 30px;
-    margin-bottom: 30px;
+    margin-top: 60px;
+    margin-bottom: 40px;
 }
 
 .textbox-title {
-    padding-top: 5px;
-    padding-bottom: 2px;
-    font-weight: bold;
-}
-
-.no-pin {
-    margin-top: 40px;
-    font-size:12px;
+    font-weight: lighter;
+    color: dimgray;
 }
 
 .form-textbox {
     border: transparent;
     border-bottom: black solid 1px;
-    width: 300px;
+    width: 100%;
+    height: 50px;
     font-size: 15px;
-    margin-left: 10px;
+    margin: -5px 0 20px 15px;
     color: black;
     padding-left: 1px;
-    margin-bottom:5px;
+    outline: none;
+}
+
+.form-textbox:active{
+    outline: none;
 }
 
 .ss {
@@ -89,24 +87,31 @@
     display: block;
     float: left;
     height: 16px;
-    margin-top: 5px;
+    margin-top: 60px;
     margin-left: 10.5px;
     width: 100%;
     background-size: contain;
     padding-left: 20px;
     line-height: 7px;
+    font-size: 14px;
+    font-weight: lighter;
+    color: dimgray;
 }
 
 .form-title {
-    margin-bottom: 50px;
+    margin-bottom: 45px;
+    font-size: 30px;
 }
 
 .button-header {
     display: flex;
+    height: 70px;
     justify-content: space-around;
     background-color: whitesmoke;
-    padding-top: 10px;
+    padding-top: 20px;
     padding-bottom: 10px;
+    font-weight: bold;
+    color: dimgray;
 }
 
 .button-header-active {
@@ -116,5 +121,21 @@
 
 .sign-up-now {
     background-color: whitesmoke;
-    text-align: center;
+    text-align: left;
+    width: 100%;
+    padding: 12px;
+    height: 50px;
+    font-size: 15px;
+}
+
+.content {
+    padding: 0 60px 0 30px;
+}
+
+.no-pin {
+    font-size: 13px;
+}
+
+.col-md-5{
+    text-align: right;
 }
