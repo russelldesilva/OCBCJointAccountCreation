@@ -120,7 +120,7 @@
                         <label>Address on NRIC is also mailing address </label>
                     }
                     <label>Country(s) of tax residency: </label>
-                    <h1><input asp-for="TaxResidence" class="form-textbox-small" readonly /></h1>
+                    <h1><input asp-for="TaxResidence" class="form-text" readonly /></h1>
                 </div>
                 <div class="cover">
                     <h2>Employment Information</h2>
@@ -131,11 +131,11 @@
                     <label>Employer</label>
                     @if (Model.SelfEmployeed)
                     {
-                        <h1>Self-employed</h1>
+                        <h1 class="form-text">Self-employed</h1>
                     }
                     else
                     {
-                        <h1><input asp-for="Employer" class="form-textbox" type="text" readonly></h1>
+                        <h1><input asp-for="Employer" class="form-text" type="text" readonly></h1>
                     }
                     <label>Years in Employment</label>
                     <h1><input asp-for="YearsInEmployment" class="form-text" type="text" required></h1>

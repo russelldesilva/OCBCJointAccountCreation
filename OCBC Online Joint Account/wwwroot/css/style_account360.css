@@ -323,6 +323,7 @@ footer li {
 .form-text {
     border-color: transparent;
     height: 50px;
+    width: 300px;
     font-size: 18px;
     padding-bottom: 8px;
     margin: -30px -5px;
