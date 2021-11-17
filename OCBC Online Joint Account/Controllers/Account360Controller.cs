@@ -598,7 +598,7 @@ namespace OCBC_Joint_Account_Application.Controllers
 
             if (HttpContext.Session.GetString("ApplyMethod") == "QR" || HttpContext.Session.GetString("ApplyMethod") == "iBanking")
             {
-                foreach (Customer c in customerContext.GetCustomerByNRIC("S7654321J"))
+                foreach (Customer c in customerContext.GetCustomerByNRIC(HttpContext.Session.GetString("iBankingLogin")))
                 {
                     ac360.NRIC = c.CustNRIC;
                     ac360.Salutation = c.Salutation;
@@ -704,7 +704,7 @@ namespace OCBC_Joint_Account_Application.Controllers
 
             // Create Bank Account && CustomerAccounts once status = successful.
 
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Success", "Account360");
         }
 
         public ActionResult Success()
@@ -765,7 +765,7 @@ namespace OCBC_Joint_Account_Application.Controllers
             //QR: Reset QR settings
             var resetQR =
                 "{\"qr_data\":\"ocbc_jointacc_digital_create\"," +
-                "\"custNRIC\":null," +
+                 "\"custNRIC\":null," +
                 "\"hasScanned\":false," +
                 "\"toRedirect\":false," +
                 "\"continueMobile\":false," +

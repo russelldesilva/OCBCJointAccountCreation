@@ -101,9 +101,9 @@ namespace OCBC_Joint_Account_Application.DAL
                     CountryOfBirth = reader.GetString(10),
                     Nationality = reader.GetString(11),
                     DateOfBirth = reader.GetDateTime(12),
-                    EmployerName = reader.GetString(14),
-                    Occupation = reader.GetString(15),
-                    Income = reader.GetString(16)
+                    EmployerName = reader.GetString(13),
+                    Occupation = reader.GetString(14),
+                    Income = reader.GetString(15)
                 }
             );
         }
