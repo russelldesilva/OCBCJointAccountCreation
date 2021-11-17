@@ -34,13 +34,21 @@ namespace OCBC_Joint_Account_Application.DAL
             Customer cust = new Customer()
             {
                 CustNRIC = reader.GetString(0),
-                CustName = reader.GetString(1),
-                Email = reader.GetString(2),
-                ContactNo = reader.GetString(3),
-                Gender = reader.GetString(4),
-                MaritialStatus = reader.GetString(5),
-                iBUsername = iBUsername,
-                iBPin = reader.GetString(7),
+                Salutation = reader.GetString(1),
+                CustName = reader.GetString(2),
+                Email = reader.GetString(3),
+                ContactNo = reader.GetString(4),
+                Gender = reader.GetString(5),
+                MaritialStatus = reader.GetString(6),
+                iBUsername = reader.GetString(7),
+                iBPin = reader.GetString(8),
+                Address = reader.GetString(9),
+                CountryOfBirth = reader.GetString(10),
+                Nationality = reader.GetString(11),
+                DateOfBirth = reader.GetDateTime(12),
+                EmployerName = reader.GetString(13),
+                Occupation = reader.GetString(14),
+                Income = reader.GetString(15)
             };
             reader.Close();
             conn.Close();
@@ -73,9 +81,9 @@ namespace OCBC_Joint_Account_Application.DAL
                         CountryOfBirth = reader.GetString(10),
                         Nationality = reader.GetString(11),
                         DateOfBirth = reader.GetDateTime(12),
-                        EmployerName = reader.GetString(13),
-                        Occupation = reader.GetString(14),
-                        Income = reader.GetString(15),
+                        EmployerName = reader.GetString(14),
+                        Occupation = reader.GetString(15),
+                        Income = reader.GetString(16)
                     }
                 );
             }
