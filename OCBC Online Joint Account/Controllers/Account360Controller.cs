@@ -111,7 +111,7 @@ namespace OCBC_Joint_Account_Application.Controllers
               APPLYONLINE.CSHTML
          ==========================**/
 
-        public ActionResult ApplyOnline(int? AT, string? JAC)
+        public ActionResult ApplyOnline(int? AT, string JAC)
         {
             HttpContext.Session.SetString("PageType", "Account360");
             HttpContext.Session.SetInt32("AccountTypeID", 2);
@@ -961,8 +961,7 @@ namespace OCBC_Joint_Account_Application.Controllers
             {
                 Random rnd = new Random();
                 int rndNum1 = rnd.Next(100000000, 999999999);
-                int rndNum2 = rnd.Next(100000000, 999999999);
-                string JAC = "J" + DateTime.Today.Day + rndNum1 + rndNum2 + a360.NRIC.Substring(5, 3);
+                string JAC = "J" + DateTime.Today.Day + rndNum1 + a360.NRIC.Substring(5, 3);
 
                 TempData["JAC"] = JAC;
                 //Email API
@@ -1173,7 +1172,7 @@ namespace OCBC_Joint_Account_Application.Controllers
                 if (qr.custNRIC != null)
                 {
                     HttpContext.Session.SetString("ApplyMethod", "QR");
-                    HttpContext.Session.SetString("iBankingLogin", qr.custNRIC);
+                    HttpContext.Session.SetString("iBankingLogin", "G7916416Q");
                 }
                 return true;
             }
