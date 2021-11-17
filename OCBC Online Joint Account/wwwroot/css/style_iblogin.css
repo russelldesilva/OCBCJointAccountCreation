@@ -80,18 +80,6 @@
     font-weight: 400;
 }
 
-.form-textbox-small {
-    border-color: transparent;
-    border-bottom-color: gray;
-    border-width: 1px;
-    height: 10px;
-    width: 300px;
-    font-size: 15px;
-    margin: 0 50px 0 10px;
-    padding-bottom: 3px;
-    font-weight: 400;
-}
-
 .ss {
     padding-top: 5px;
     padding-bottom: 5px;

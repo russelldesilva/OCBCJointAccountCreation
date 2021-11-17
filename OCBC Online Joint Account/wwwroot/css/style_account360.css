@@ -331,6 +331,15 @@ footer li {
     color: black;
 }
 
+.form-text-small {
+    border-color: transparent;
+    height: 50px;
+    font-size: 15px;
+    padding-bottom: 8px;
+    margin: -30px -5px;
+    font-weight: 400;
+    color: black;
+}
 
 .form-textbox-full {
     border-color: transparent;

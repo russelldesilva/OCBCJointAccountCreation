@@ -120,7 +120,7 @@
                         <label>Address on NRIC is also mailing address </label>
                     }
                     <label>Country(s) of tax residency: </label>
-                    <h1><input asp-for="TaxResidence" class="form-text" readonly /></h1>
+                    <h1><input asp-for="TaxResidence" class="form-text-small" readonly /></h1>
                 </div>
                 <div class="cover">
                     <h2>Employment Information</h2>
@@ -161,6 +161,6 @@
                 }
             </div>
         </div>
-        <input type="submit" value="Submit" asp-action="Verify" />
+        <input class="resend" type="submit" value="Submit" asp-action="Verify" />
     </form>
 </div>
