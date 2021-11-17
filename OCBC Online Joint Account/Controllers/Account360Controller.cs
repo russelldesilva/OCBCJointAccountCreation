@@ -23,6 +23,7 @@ using System.Globalization;
 using Mailjet.Client;
 using Mailjet.Client.Resources;
 using Newtonsoft.Json.Linq;
+using OCBC_Online_Joint_Account.DAL;
 
 namespace OCBC_Joint_Account_Application.Controllers
 {
@@ -30,6 +31,7 @@ namespace OCBC_Joint_Account_Application.Controllers
     {
         private SingpassDAL singpassContext = new SingpassDAL();
         private CustomerDAL customerContext = new CustomerDAL();
+        private CustApplicationDAL custApplicationContext = new CustApplicationDAL();
         private ApplicationDAL applicationContext = new ApplicationDAL();
 
         private List<SelectListItem> Salutation = new List<SelectListItem>();
@@ -115,7 +117,7 @@ namespace OCBC_Joint_Account_Application.Controllers
         {
             HttpContext.Session.SetString("PageType", "Account360");
             HttpContext.Session.SetInt32("AccountTypeID", 2);
-     
+
             if (JAC != null)
             {
                 HttpContext.Session.SetString("JAC", JAC);
@@ -126,8 +128,8 @@ namespace OCBC_Joint_Account_Application.Controllers
             if (ResponseQR() == true)
             {
                 return RedirectToAction("JointApplicant", "Account360");
-            }  
-            return View();     
+            }
+            return View();
         }
 
         /**==========================
@@ -165,7 +167,7 @@ namespace OCBC_Joint_Account_Application.Controllers
             messageOptions.Body = "Your OCBC OTP is " + OTP;
             var message = MessageResource.Create(messageOptions);
             Console.WriteLine(message.Body);**/
-          
+
             HttpContext.Session.SetInt32("OTP", OTP);
 
             ViewData["A"] = OTP;
@@ -205,11 +207,11 @@ namespace OCBC_Joint_Account_Application.Controllers
                 string data = await response.Content.ReadAsStringAsync();
                 List<Country> country = JsonConvert.DeserializeObject<List<Country>>(data);
 
-                foreach(Country c in country)
+                foreach (Country c in country)
                 {
                     CountryOfBirth.Add(new SelectListItem { Value = c.en_short_name, Text = c.en_short_name });
                     Nationality.Add(new SelectListItem { Value = c.nationality, Text = c.nationality });
-                }            
+                }
             }
 
             ViewData["CountryOfBirth"] = CountryOfBirth;
@@ -345,7 +347,7 @@ namespace OCBC_Joint_Account_Application.Controllers
             {
                 Singaporean = singaporean[0]
             };
-            
+
             return View("Upload", custApplication);
         }
 
@@ -374,6 +376,7 @@ namespace OCBC_Joint_Account_Application.Controllers
                     string fileExt = Path.GetExtension(custApplication.CustProofOfResidenceUpload.FileName);
                     uploadedResidentialProof = String.Format("residence_proof" + fileExt);
                     string savePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\applicationdocs\\", uploadedResidentialProof);
+                    HttpContext.Session.SetString("FilePathResidence", savePath);
                     using (var fileSteam = new FileStream(savePath, FileMode.Create))
                     {
                         await custApplication.CustProofOfResidenceUpload.CopyToAsync(fileSteam);
@@ -400,6 +403,7 @@ namespace OCBC_Joint_Account_Application.Controllers
                     string fileExt = Path.GetExtension(custApplication.CustNRICFrontUpload.FileName);
                     uploadedNRICFront = String.Format("nric_front" + fileExt);
                     string savePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\applicationdocs\\", uploadedNRICFront);
+                    HttpContext.Session.SetString("FilePathFront", savePath);
                     using (var fileSteam = new FileStream(savePath, FileMode.Create))
                     {
                         await custApplication.CustNRICFrontUpload.CopyToAsync(fileSteam);
@@ -426,6 +430,7 @@ namespace OCBC_Joint_Account_Application.Controllers
                     string fileExt = Path.GetExtension(custApplication.CustNRICBackUpload.FileName);
                     uploadedNRICBack = String.Format("nric_back" + fileExt);
                     string savePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\applicationdocs\\", uploadedNRICBack);
+                    HttpContext.Session.SetString("FilePathBack", savePath);
                     using (var fileSteam = new FileStream(savePath, FileMode.Create))
                     {
                         await custApplication.CustNRICBackUpload.CopyToAsync(fileSteam);
@@ -504,8 +509,8 @@ namespace OCBC_Joint_Account_Application.Controllers
             request2.AddHeader("accept", "Multipart/form-data");
             request2.AddFile("file", ".\\wwwroot\\applicationdocs\\" + uploadedNRICBack);
             IRestResponse response2 = client2.Execute(request2);
-            
-            
+
+
             Dictionary<string, object> obj2 = (Dictionary<string, object>)OCBC_Online_Joint_Account.Models.JSONHelper.Deserialize(response2.Content);
 
             foreach (var item in obj2.Keys)
@@ -539,7 +544,7 @@ namespace OCBC_Joint_Account_Application.Controllers
         public ActionResult JointApplicant()
         {
             if (HttpContext.Session.GetString("JAC") != null)
-            {       
+            {
                 return RedirectToAction("Verify", "Account360");
             }
 
@@ -585,6 +590,7 @@ namespace OCBC_Joint_Account_Application.Controllers
             ac360.JointApplicantName = a360.JointApplicantName;
             ac360.Email = a360.Email;
             ac360.ContactNo = a360.ContactNo;
+            ac360.JointApplicantNRIC = a360.JointApplicantNRIC;
             HttpContext.Session.SetObjectAsJson("ApplicantsDetails", ac360);
 
             return RedirectToAction("Verify", "Account360");
@@ -620,6 +626,8 @@ namespace OCBC_Joint_Account_Application.Controllers
         {
             a360 = HttpContext.Session.GetObjectFromJson<Account360ViewModel>("ApplicantsDetails");
 
+            string JointAC = HttpContext.Session.GetString("JAC");
+
             // Only scan and new singpass is add, rest update
             // Convert gender to single char
             if (a360.Gender == "Male")
@@ -630,23 +638,38 @@ namespace OCBC_Joint_Account_Application.Controllers
             {
                 a360.Gender = "F";
             }
-            // if not scan || not new singpass
-            if (HttpContext.Session.GetString("ApplyMethod") != "Scan" && HttpContext.Session.GetString("CustSingpass") != "newCustomer")
-            {
-                customerContext.Update(a360);
-            }
-            else
-            {
-                customerContext.Add(a360);
-            }
+
 
             // Add application table
             Application newApplication = new Application();
+
+            // Create CustApplication
+            CustApplication custApp = new CustApplication();
+
+            //Application table stuff
             newApplication.CustNRIC = a360.NRIC;
             newApplication.AccountTypeID = (int)HttpContext.Session.GetInt32("AccountTypeID");
 
+            //custApplication table stuff
+            custApp.CustNRIC = a360.NRIC;
+            
+            custApp.CustProofOfResidence = HttpContext.Session.GetString("FilePathResidence");
+            // Check if foreign
+            if (Convert.ToBoolean(ViewData["IsSingaporean"]) == true)
+            {
+                custApp.CustNRICFront = HttpContext.Session.GetString("FilePathFront");
+                custApp.CustNRICBack = HttpContext.Session.GetString("FilePathBack");
+            }
+            else
+            {
+                custApp.CustForeignPassFront = HttpContext.Session.GetString("FilePathFront");
+                custApp.CustForeignPassBack = HttpContext.Session.GetString("FilePathBack");
+                custApp.CustPassport = HttpContext.Session.GetString("FilePathPassport");
+            }
+            
+
             // Main applicant
-            if (HttpContext.Session.GetString("JAC") == null)
+            if (JointAC == null)
             {
                 Random rnd = new Random();
                 int rndNum = rnd.Next(1000, 9999);
@@ -656,12 +679,56 @@ namespace OCBC_Joint_Account_Application.Controllers
 
                 newApplication.Status = "Pending";
                 newApplication.JointApplicantID = null;
+                newApplication.JointApplicantCode = JAC;
+
+                custApp.JointApplicantName = a360.JointApplicantName;
+                custApp.JointApplicantNRIC = a360.JointApplicantNRIC;
             }
             // Joint applicant
             else
             {
-                newApplication.Status = "Successful";
+                List<Application> mainApplication = applicationContext.GetApplicationByJointApplicantionCode(JointAC);
+                // Setting applicationID with JAC
+                foreach (Application a in mainApplication)
+                {
+                    custApp.ApplicationID = a.ApplicationID;
+                    a.JointApplicantID = newApplication.ApplicationID;
+                    // Status
+                    applicationContext.Update(a);
+                    newApplication.JointApplicantID = a.ApplicationID;
+                    
+                }
+                
+
+                if (custApp.JointApplicantNRIC == a360.NRIC)
+                {
+                    newApplication.Status = "Successful";
+                    mainApplication[0].Status = "Successful";
+                }
+                else
+                {
+                    ViewData["VerificationError"] = "Something went wrong. Please check your details and restart this process or call XXXX XXXXX";
+                    return View(a360);
+                }
+
             }
+
+
+
+            // Database portion
+            // Customer table
+            // if not scan || not new singpass
+            if (HttpContext.Session.GetString("ApplyMethod") == "Scan" || HttpContext.Session.GetString("CustSingpass") == "newCustomer")
+            {
+                customerContext.Add(a360);
+            }
+
+            //Application Table
+            applicationContext.Add(newApplication);
+
+
+            custApplicationContext.Add(custApp);
+
 
             // Create Bank Account && CustomerAccounts once status = successful.
 
@@ -683,8 +750,8 @@ namespace OCBC_Joint_Account_Application.Controllers
                .Property(Send.FromName, "OCBC Bank")
                .Property(Send.Subject, "360 Account Joint-Account Application")
                .Property(Send.TextPart, "")
-               .Property(Send.HtmlPart, "<div style='text-align: center; margin: 0 20% 0 20%'><img style='height: 150px' src='https://i.ibb.co/X28mfrZ/ocbc-logo-330-160.png'><h1><b>360 Account Joint-Account Application</b></h1><hr><div style='text-align: left; font-weight: lighter;'><h3 style='font-weight: lighter; margin-top: 40px'>Dear "+ sj + " " + jan +"</h3><h3 style='font-weight: lighter; margin-top: 40px'>"+ sal + " " + name +" has initiated a Joint-Account application and is requesting you to complete it. Simply click on this <a href='https://localhost:44381/Account360/ApplyOnline?AT=2&JAC="+ jac + "'>link</a> to complete your application.</h3><h3 style='font-weight: lighter; margin-top: 40px'>If you do not know this person, call 1800 363 333 at once.</h3><h3 style='font-weight: lighter; margin-top: 40px'>Yours sincerely<br><b>OCBC Bank</b></h3></div></div>")
-               .Property(Send.Recipients, new JArray { new JObject { {"Email", email} } });
+               .Property(Send.HtmlPart, "<div style='text-align: center; margin: 0 20% 0 20%'><img style='height: 150px' src='https://i.ibb.co/X28mfrZ/ocbc-logo-330-160.png'><h1><b>360 Account Joint-Account Application</b></h1><hr><div style='text-align: left; font-weight: lighter;'><h3 style='font-weight: lighter; margin-top: 40px'>Dear " + sj + " " + jan + "</h3><h3 style='font-weight: lighter; margin-top: 40px'>" + sal + " " + name + " has initiated a Joint-Account application and is requesting you to complete it. Simply click on this <a href='https://localhost:44381/Account360/ApplyOnline?AT=2&JAC=" + jac + "'>link</a> to complete your application.</h3><h3 style='font-weight: lighter; margin-top: 40px'>If you do not know this person, call 1800 363 333 at once.</h3><h3 style='font-weight: lighter; margin-top: 40px'>Yours sincerely<br><b>OCBC Bank</b></h3></div></div>")
+               .Property(Send.Recipients, new JArray { new JObject { { "Email", email } } });
             MailjetResponse response = await client.PostAsync(request);
             if (response.IsSuccessStatusCode)
             {
@@ -702,7 +769,7 @@ namespace OCBC_Joint_Account_Application.Controllers
 
         public void checkJAC(string JAC)
         {
-            if(HttpContext.Session.GetString("JAC") != null)
+            if (HttpContext.Session.GetString("JAC") != null)
             {
                 foreach (Application a in applicationContext.GetApplicationByJointApplicantionCode(JAC))
                 {
@@ -753,8 +820,8 @@ namespace OCBC_Joint_Account_Application.Controllers
                 foreach (Customer c in customerContext.GetCustomerByNRIC(a.CustNRIC))
                 {
                     Name = c.CustName;
-                    NRIC = a.CustNRIC;                
-                }           
+                    NRIC = a.CustNRIC;
+                }
             }
 
             var resetQR =
@@ -777,7 +844,7 @@ namespace OCBC_Joint_Account_Application.Controllers
             request1.AddHeader("x-apikey", "f3e68097c1a4127f4472d8730dcb3399f2d14");
             request1.AddHeader("content-type", "application/json");
             request1.AddParameter("application/json", resetQR, ParameterType.RequestBody);
-            IRestResponse response = client1.Execute(request1);       
+            IRestResponse response = client1.Execute(request1);
         }
 
         public bool ResponseQR()
@@ -793,7 +860,7 @@ namespace OCBC_Joint_Account_Application.Controllers
 
             if (qr.hasScanned == true && qr.toRedirect == true && qr.continueMobile == false)
             {
-                if(qr.custNRIC != null)
+                if (qr.custNRIC != null)
                 {
                     HttpContext.Session.SetString("ApplyMethod", "QR");
                     HttpContext.Session.SetString("iBankingLogin", qr.custNRIC);

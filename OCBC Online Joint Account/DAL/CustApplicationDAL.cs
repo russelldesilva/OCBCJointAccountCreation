@@ -26,31 +26,31 @@ namespace OCBC_Online_Joint_Account.DAL
         }
         // INSERT INTO CustApplication (CustNRIC, ApplicationId, CustNRICFront, CustNRICBack, CustProofOfResidence, CustPassport, CustForeignPassFront, CustForeignPassBack, JointApplicantName, JointApplicantNRIC) VALUES
 
-        public int Add(Account360ViewModel a360)
+        public int Add(CustApplication custApp)
         {
             SqlCommand cmd = conn.CreateCommand();
 
-            cmd.CommandText = @"INSERT INTO CustApplication (CustNRIC, ApplicationId, CustNRICFront, CustNRICBack, CustProofOfResidence, CustPassport, CustForeignPassFront, CustForeignPassBack, JointApplicantName, JointApplicantNRIC) VALUES
-                VALUES(@CustNRIC, @ApplicationId, @CustNRICFront, @CustNRICBack, @CustProofOfResidence, @CustPassport, @CustForeignPassFront, @CustForeignPassBack, @JointApplicantName, @JointApplicantNRIC)";
+            cmd.CommandText = @"INSERT INTO CustApplication (CustNRIC, ApplicationId, CustNRICFront, CustNRICBack, CustProofOfResidence, JointApplicantName, JointApplicantNRIC) VALUES (@CustNRIC, @ApplicationId, @CustNRICFront, @CustNRICBack, @CustProofOfResidence, @JointApplicantName, @JointApplicantNRIC)";
 
-            cmd.Parameters.AddWithValue("@CustNRIC", a360.NRIC);
-            cmd.Parameters.AddWithValue("@ApplicationId", a360.Salutation);
-            cmd.Parameters.AddWithValue("@CustNRICFront", null);
-            cmd.Parameters.AddWithValue("@CustNRICBack", null);
-            cmd.Parameters.AddWithValue("@CustProofOfResidence", null);
-            cmd.Parameters.AddWithValue("@CustPassport", null);
-            cmd.Parameters.AddWithValue("@CustForeignPassFront", null);
-            cmd.Parameters.AddWithValue("@CustForeignPassBack", null);
-            cmd.Parameters.AddWithValue("@JointApplicantName", null);
-            cmd.Parameters.AddWithValue("@JointApplicantNRIC", null);
+            cmd.Parameters.AddWithValue("@CustNRIC", custApp.CustNRIC);
+            cmd.Parameters.AddWithValue("@ApplicationId", custApp.ApplicationID);
+            cmd.Parameters.AddWithValue("@CustProofOfResidence", !string.IsNullOrEmpty(custApp.CustProofOfResidence) ? custApp.CustProofOfResidence : (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@CustNRICFront", !string.IsNullOrEmpty(custApp.CustNRICFront) ? custApp.CustNRICFront : (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@CustNRICBack", !string.IsNullOrEmpty(custApp.CustNRICBack) ? custApp.CustNRICBack : (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@CustForeignPassFront", !string.IsNullOrEmpty(custApp.CustForeignPassFront) ? custApp.CustForeignPassFront : (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@CustForeignPassBack", !string.IsNullOrEmpty(custApp.CustForeignPassBack) ? custApp.CustForeignPassBack : (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@CustPassport", !string.IsNullOrEmpty(custApp.CustPassport) ? custApp.CustPassport : (object)DBNull.Value);
+
+            cmd.Parameters.AddWithValue("@JointApplicantName", !string.IsNullOrEmpty(custApp.JointApplicantName) ? custApp.JointApplicantName : (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@JointApplicantNRIC", !string.IsNullOrEmpty(custApp.JointApplicantNRIC) ? custApp.JointApplicantNRIC : (object)DBNull.Value);
 
             conn.Open();
 
-            //a360.NRIC = (string)cmd.ExecuteScalar();
+            custApp.ApplicationID = (int)cmd.ExecuteScalar();
 
             conn.Close();
 
-            return 1;
+            return custApp.ApplicationID;
         }
     }
 }

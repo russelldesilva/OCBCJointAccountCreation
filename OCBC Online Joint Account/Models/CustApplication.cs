@@ -9,9 +9,9 @@ namespace OCBC_Joint_Account_Application.Models
 {
     public class CustApplication
     {
-        public int CustID { get; set; }
+        public string CustNRIC { get; set; }
         public int ApplicationID { get; set; }
-        public string CustProofOfResidence { get; set; }
+        public string? CustProofOfResidence { get; set; }
         public string? CustNRICFront { get; set; }
         public string? CustNRICBack { get; set; }
         public string? CustPassport { get; set; }
