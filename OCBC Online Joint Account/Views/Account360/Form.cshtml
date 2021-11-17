@@ -125,7 +125,7 @@
                         </select>
                     </div>
                     <div class="col-md-6 textbox-right">
-                        <label class="textbox-title">Maritial Status</label>
+                        <label class="textbox-title">Marital Status</label>
                         <select asp-for="MaritialStatus" class="form-textbox" asp-items="@ViewData["MaritialStatus"] as List<SelectListItem>" required>
                             <option value="" hidden></option>
                         </select>
@@ -136,7 +136,7 @@
                     <label class="textbox-title">Address</label>
                     <input asp-for="Address" class="form-textbox-full" type="text" required><br />
                     <label class="form-checkbox" for="mailingaddress"> Use NRIC address as mailing address </label><br>
-                    <input asp-for="NRICIsMailingAddresses" id="mailingaddress" name="mailingaddress" type="checkbox"><br />
+                    <input asp-for="NRICIsMailingAddresses" id="mailingaddress" value="true" type="checkbox"><br />
                 </div>
                 <div class="margin">
                     <h3><b>Contact Information</b></h3>
@@ -204,8 +204,10 @@
                         </label><br>
                         <input asp-for="TaxResidencyList[i].Country" hidden />
                     }
-                    <input asp-for="TaxResidence" hidden/>
-                    </div>
+                    <input asp-for="TaxResidence" hidden />
+                </div>
+                @if (Context.Session.GetString("ApplyMethod") != "Scan")
+                {
                     <div class="margin consent">
                         <div class="hl"></div>
                         <h3><b>YOUR MARKETING CONSENT</b></h3>
@@ -236,18 +238,20 @@
                             </span><br>
                         </label>
                     </div>
-                    <div class="margin">
-                        @if (Context.Session.GetString("JAC") != null)
-                        {
-                            <input class="resend" type="submit" value="Next" asp-controller="Account360" asp-action="Verify">
-                        }
-                        else
-                        {
-                            <input class="resend" type="submit" value="Next" asp-controller="Account360" asp-action="Form">
-                        }
+                }
 
-                    </div>
+                <div class="margin">
+                    @if (Context.Session.GetString("JAC") != null)
+                    {
+                        <input class="resend" type="submit" value="Next" asp-controller="Account360" asp-action="Verify">
+                    }
+                    else
+                    {
+                        <input class="resend" type="submit" value="Next" asp-controller="Account360" asp-action="Form">
+                    }
+
                 </div>
+            </div>
     </form>
     <h4 style="color:red">@ViewData["Error"]</h4>
 </div>

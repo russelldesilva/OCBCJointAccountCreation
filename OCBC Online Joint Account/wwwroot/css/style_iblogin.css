@@ -8,15 +8,16 @@
     position: absolute;
     top: 0;
     left: 0;
+    z-index:-2;
 }
 
 .login-building img {
     position: fixed;
     right: 0;
-    /*max-height:1024px;*/
     min-width: 100%;
     width: auto;
     height: 100%;
+    z-index:-1;
 }
 
 .inner-wrap {
@@ -62,39 +63,38 @@
 .textbox-title {
     padding-top: 5px;
     padding-bottom: 2px;
+    font-weight: bold;
 }
 
 .no-pin {
     margin-top: 40px;
+    font-size:12px;
 }
 
 .form-textbox {
-    border-color: transparent;
-    border-bottom-color: gray;
-    border-width: 1px;
-    height: 10px;
-    width: 300px;
-    font-size: 18px;
-    margin: 0 50px 0 10px;
-    padding-bottom: 3px;
-    font-weight: 400;
-}
-
-.form-textbox-small {
-    border-color: transparent;
-    border-bottom-color: gray;
-    border-width: 1px;
-    height: 10px;
+    border: transparent;
+    border-bottom: black solid 1px;
     width: 300px;
     font-size: 15px;
-    margin: 0 50px 0 10px;
-    padding-bottom: 3px;
-    font-weight: 400;
+    margin-left: 10px;
+    color: black;
+    padding-left: 1px;
+    margin-bottom:5px;
 }
 
 .ss {
     padding-top: 5px;
     padding-bottom: 5px;
+    background: url(../image/secure-lock-icon.png) no-repeat;
+    display: block;
+    float: left;
+    height: 16px;
+    margin-top: 5px;
+    margin-left: 10.5px;
+    width: 100%;
+    background-size: contain;
+    padding-left: 20px;
+    line-height: 7px;
 }
 
 .form-title {

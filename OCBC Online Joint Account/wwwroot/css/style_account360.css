@@ -313,7 +313,7 @@ footer li {
     border-bottom-color: gray;
     border-width: 1px;
     height: 50px;
-    width: 300px;
+    width: 270px;
     font-size: 18px;
     margin: 0 50px 0 0;
     padding-bottom: 8px;
@@ -331,13 +331,22 @@ footer li {
     color: black;
 }
 
+.form-text-small {
+    border-color: transparent;
+    height: 50px;
+    font-size: 15px;
+    padding-bottom: 8px;
+    margin: -30px -5px;
+    font-weight: 400;
+    color: black;
+}
 
 .form-textbox-full {
     border-color: transparent;
     border-bottom-color: gray;
     border-width: 1px;
     height: 50px;
-    width: 660px;
+    width: 570px;
     font-size: 18px;
     margin: 0 50px 0 0;
     padding-bottom: 8px;

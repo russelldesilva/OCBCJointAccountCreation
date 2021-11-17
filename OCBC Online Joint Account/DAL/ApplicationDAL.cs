@@ -57,15 +57,33 @@ namespace OCBC_Joint_Account_Application.DAL
         {
             SqlCommand cmd = conn.CreateCommand();
             cmd.CommandText = @"INSERT INTO Application (CustNRIC, AccountTypeId, Status, 
-                                                   CreationDate, JointApplicationCode)
+                                                   CreationDate, JointApplicationCode, JointApplicationID)
                                                 OUTPUT INSERTED.ApplicationID
                                                 VALUES(@nric, @typeID, @status,
-                                                @date, @code)";
+                                                @date, @code, @jointID)";
             cmd.Parameters.AddWithValue("@nric", application.CustNRIC);
             cmd.Parameters.AddWithValue("@typeID",  application.AccountTypeID);
             cmd.Parameters.AddWithValue("@status", application.Status);
+            cmd.Parameters.AddWithValue("@date", DateTime.Now);
+            cmd.Parameters.AddWithValue("@code", application.JointApplicantCode);
+            cmd.Parameters.AddWithValue("@jointID", application.JointApplicantID);
+            conn.Open();
+            application.ApplicationID = (int)cmd.ExecuteScalar();
+            conn.Close();
+            return application.ApplicationID;
+        }
+
+        public int Update(Application application)
+        {
+            SqlCommand cmd = conn.CreateCommand();
+            cmd.CommandText = @"Update Application SET CustNRIC = @nric, AccountTypeId = @typeID, Status = @status, 
+                                                   CreationDate = @date, JointApplicationCode = @code, JointApplicationID = @jointID";
+            cmd.Parameters.AddWithValue("@nric", application.CustNRIC);
+            cmd.Parameters.AddWithValue("@typeID", application.AccountTypeID);
+            cmd.Parameters.AddWithValue("@status", application.Status);
             cmd.Parameters.AddWithValue("@date", application.CreationDate);
             cmd.Parameters.AddWithValue("@code", application.JointApplicantCode);
+            cmd.Parameters.AddWithValue("@jointID", application.JointApplicantID);
             conn.Open();
             application.ApplicationID = (int)cmd.ExecuteScalar();
             conn.Close();
