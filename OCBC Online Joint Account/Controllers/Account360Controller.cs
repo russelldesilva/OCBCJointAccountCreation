@@ -376,17 +376,10 @@ namespace OCBC_Joint_Account_Application.Controllers
 
         public ActionResult Upload()
         {
-
             checkJAC(HttpContext.Session.GetString("JAC"));
             HttpContext.Session.SetString("ApplyMethod", "Scan");
-            ViewData["SingaporeanSelection"] = singaporean;
 
-            CustApplication custApplication = new CustApplication
-            {
-                Singaporean = singaporean[0]
-            };
-
-            return View("Upload", custApplication);
+            return View("Upload");
         }
 
         [HttpPost]
@@ -395,8 +388,6 @@ namespace OCBC_Joint_Account_Application.Controllers
         {
             checkJAC(HttpContext.Session.GetString("JAC"));
             HttpContext.Session.SetString("ApplyMethod", "Scan");
-
-            
 
             string uploadedNRICFront = "";
             string uploadedNRICBack = "";
