@@ -204,8 +204,10 @@
                         </label><br>
                         <input asp-for="TaxResidencyList[i].Country" hidden />
                     }
-                    <input asp-for="TaxResidence" hidden/>
-                    </div>
+                    <input asp-for="TaxResidence" hidden />
+                </div>
+                @if (Context.Session.GetString("ApplyMethod") != "Scan")
+                {
                     <div class="margin consent">
                         <div class="hl"></div>
                         <h3><b>YOUR MARKETING CONSENT</b></h3>
@@ -236,18 +238,20 @@
                             </span><br>
                         </label>
                     </div>
-                    <div class="margin">
-                        @if (Context.Session.GetString("JAC") != null)
-                        {
-                            <input class="resend" type="submit" value="Next" asp-controller="Account360" asp-action="Verify">
-                        }
-                        else
-                        {
-                            <input class="resend" type="submit" value="Next" asp-controller="Account360" asp-action="Form">
-                        }
+                }
 
-                    </div>
+                <div class="margin">
+                    @if (Context.Session.GetString("JAC") != null)
+                    {
+                        <input class="resend" type="submit" value="Next" asp-controller="Account360" asp-action="Verify">
+                    }
+                    else
+                    {
+                        <input class="resend" type="submit" value="Next" asp-controller="Account360" asp-action="Form">
+                    }
+
                 </div>
+            </div>
     </form>
     <h4 style="color:red">@ViewData["Error"]</h4>
 </div>
