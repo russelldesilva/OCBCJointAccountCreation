@@ -651,9 +651,8 @@ namespace OCBC_Joint_Account_Application.Controllers
                 Random rnd = new Random();
                 int rndNum = rnd.Next(1000, 9999);
                 string JAC = "J" + DateTime.Today.Day + rndNum + a360.NRIC.Substring(5, 3);
-
+                //Email API
                 RunAsync(a360.Salutation, a360.FullName, a360.Email, JAC, a360.SalutationJoint, a360.JointApplicantName).Wait();
-
 
                 newApplication.Status = "Pending";
                 newApplication.JointApplicantID = null;
@@ -685,11 +684,7 @@ namespace OCBC_Joint_Account_Application.Controllers
                .Property(Send.Subject, "360 Account Joint-Account Application")
                .Property(Send.TextPart, "")
                .Property(Send.HtmlPart, "<div style='text-align: center; margin: 0 20% 0 20%'><img style='height: 150px' src='https://i.ibb.co/X28mfrZ/ocbc-logo-330-160.png'><h1><b>360 Account Joint-Account Application</b></h1><hr><div style='text-align: left; font-weight: lighter;'><h3 style='font-weight: lighter; margin-top: 40px'>Dear "+ sj + " " + jan +"</h3><h3 style='font-weight: lighter; margin-top: 40px'>"+ sal + " " + name +" has initiated a Joint-Account application and is requesting you to complete it. Simply click on this <a href='https://localhost:44381/Account360/ApplyOnline?AT=2&JAC="+ jac + "'>link</a> to complete your application.</h3><h3 style='font-weight: lighter; margin-top: 40px'>If you do not know this person, call 1800 363 333 at once.</h3><h3 style='font-weight: lighter; margin-top: 40px'>Yours sincerely<br><b>OCBC Bank</b></h3></div></div>")
-               .Property(Send.Recipients, new JArray {
-            new JObject {
-             {"Email", email}
-             }
-                });
+               .Property(Send.Recipients, new JArray { new JObject { {"Email", email} } });
             MailjetResponse response = await client.PostAsync(request);
             if (response.IsSuccessStatusCode)
             {
