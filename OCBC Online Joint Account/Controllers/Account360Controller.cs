@@ -155,17 +155,17 @@ namespace OCBC_Joint_Account_Application.Controllers
             Random rnd = new Random();
             int OTP = rnd.Next(100000, 999999);
 
-            //Disable to save money
+          /**
             //OTP API by Twilio
-            /*var accountSid = "AC900a65cf35b142ba9d231968f7975595";
+            var accountSid = "AC900a65cf35b142ba9d231968f7975595";
             var authToken = "900f7cf484248daa85bccb918be28908";
             TwilioClient.Init(accountSid, authToken);
             var messageOptions = new CreateMessageOptions(new PhoneNumber("+65" + mobileNum));
             messageOptions.MessagingServiceSid = "MG9dc1a6ffbac9048864eaadfda51637fc";
             messageOptions.Body = "Your OCBC OTP is " + OTP;
             var message = MessageResource.Create(messageOptions);
-            Console.WriteLine(message.Body);**/
-          
+            Console.WriteLine(message.Body);
+          **/
             HttpContext.Session.SetInt32("OTP", OTP);
 
             ViewData["A"] = OTP;
@@ -666,6 +666,12 @@ namespace OCBC_Joint_Account_Application.Controllers
             // Create Bank Account && CustomerAccounts once status = successful.
 
             return RedirectToAction("Index", "Home");
+        }
+
+        public ActionResult Success()
+        {
+            HttpContext.Session.SetString("PageType", "Account360");
+            return View();
         }
 
         /**==========================

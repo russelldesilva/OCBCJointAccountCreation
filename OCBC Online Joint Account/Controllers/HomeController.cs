@@ -28,7 +28,11 @@ namespace OCBC_Joint_Account_Application.Controllers
         {
             HttpContext.Session.SetString("PageType", "OCBC");
             HttpContext.Session.SetString("Applicant", "");
-
+            if(HttpContext.Session.GetString("JAC") != null)
+            {
+                HttpContext.Session.SetString("JAC", null);
+            }
+           
             return View();      
         }
 

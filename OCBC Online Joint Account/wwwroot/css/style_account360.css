@@ -398,6 +398,12 @@ footer li {
     display: block;
 }
 
+.consent h5 {
+    margin-top: 20px;
+    font-weight: lighter;
+    display: block;
+}
+
 .consent input {
     margin-top: 30px;
 }
