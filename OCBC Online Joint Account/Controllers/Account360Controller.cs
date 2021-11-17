@@ -835,14 +835,16 @@ namespace OCBC_Joint_Account_Application.Controllers
                 Random rnd = new Random();
                 int rndNum1 = rnd.Next(100000000, 999999999);
                 int rndNum2 = rnd.Next(100000000, 999999999);
-                int rndNum3 = rnd.Next(10, 99);
-                string JAC = "J" + DateTime.Today.Day + rndNum1 + rndNum2 + rndNum3 + a360.NRIC.Substring(5, 3);
+                string JAC = "J" + DateTime.Today.Day + rndNum1 + rndNum2 + a360.NRIC.Substring(5, 3);
+
+                TempData["JAC"] = JAC;
                 //Email API
                 RunAsync(a360.Salutation, a360.FullName, a360.Email, JAC, a360.SalutationJoint, a360.JointApplicantName).Wait();
 
                 newApplication.Status = "Pending";
                 newApplication.JointApplicantID = null;
                 newApplication.JointApplicantCode = JAC;
+
 
                 custApp.JointApplicantName = a360.JointApplicantName;
                 custApp.JointApplicantNRIC = a360.JointApplicantNRIC;
@@ -871,17 +873,18 @@ namespace OCBC_Joint_Account_Application.Controllers
                 else
                 {
                     ViewData["VerificationError"] = "Something went wrong. Please check your details and restart this process or call XXXX XXXXX";
-                    return View(a360);
+                    return View(a360);  
                 }
 
             }
 
-
+            Console.WriteLine(HttpContext.Session.GetString("ApplyMethod"));
+            
 
             // Database portion
             // Customer table
             // if not scan || not new singpass
-            if (HttpContext.Session.GetString("ApplyMethod") == "Scan" || HttpContext.Session.GetString("CustSingpass") == "newCustomer")
+            if (HttpContext.Session.GetString("ApplyMethod") == "Scan" || Convert.ToString(TempData["CustSingpass"]) == "newCustomer")
             {
                 customerContext.Add(a360);
             }
@@ -889,6 +892,17 @@ namespace OCBC_Joint_Account_Application.Controllers
             //Application Table
             applicationContext.Add(newApplication);
 
+            // To add the application ID for custApplication
+            if (JointAC == null)
+            {
+                string JAC = Convert.ToString(TempData["JAC"]);
+                List<Application> mainApplication = applicationContext.GetApplicationByJointApplicantionCode(JAC);
+                // Setting applicationID with JAC
+                foreach (Application a in mainApplication)
+                {
+                    custApp.ApplicationID = a.ApplicationID;
+                }
+            }
 
             custApplicationContext.Add(custApp);
 
