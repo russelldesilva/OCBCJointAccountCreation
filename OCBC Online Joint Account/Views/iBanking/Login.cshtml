@@ -33,6 +33,9 @@
                                 <input id="pin" class="form-textbox" type="text" asp-for="iBPin" required>
                             </div>
                             <div class="row spacing">
+                                <p style="color:red">@ViewData["iBankingError"]</p>
+                            </div>
+                            <div class="row spacing">
                                 <div class="col-md-7 no-pin">
                                     <a href="https://internet.ocbc.com/internet-banking/inbregistration/index">No Access Code/PIN? Click here.</a>
                                 </div>
