@@ -107,8 +107,8 @@ namespace OCBC_Joint_Account_Application.DAL
             cmd.Parameters.AddWithValue("@Occupation", a360.Occupation);
             cmd.Parameters.AddWithValue("@EmployerName", a360.Employer);
             cmd.Parameters.AddWithValue("@Income", a360.AnnualIncome);
-            cmd.Parameters.AddWithValue("@iBUsername", null);
-            cmd.Parameters.AddWithValue("@iBPin", null);
+            cmd.Parameters.AddWithValue("@iBUsername", DBNull.Value);
+            cmd.Parameters.AddWithValue("@iBPin", DBNull.Value);
 
             conn.Open();
 
@@ -121,15 +121,16 @@ namespace OCBC_Joint_Account_Application.DAL
 
         // For existing customers
 
-        public string Update(Account360ViewModel a360)
+        public int Update(Account360ViewModel a360)
         {
             SqlCommand cmd = conn.CreateCommand();
 
-            cmd.CommandText = @"UPDATE Staff SET CustNRIC = @CustNRIC, Salutation = @Salutation, FullName = @FullName, DateOfBirth = @DateOfBirth, CountryOfBirth = @CountryOfBirth, Nationality = @Nationality, 
-                Gender = @Gender, MaritialStatus = @MaritialStatus, Address = @Address, EmailAddress = @EmailAddress, ContactNo = @ContactNo, Occupation = @Occupation, EmployerName = @EmployerName, Income = @Income,
-                iBUsername = @iBUsername, iBPin = @iBPin";
+            cmd.CommandText = @"UPDATE Customer SET Salutation = @Salutation, CustName = @CustName, 
+                DateOfBirth = @DateOfBirth, CountryOfBirth = @CountryOfBirth, Nationality = @Nationality, Gender = @Gender, 
+                MaritalStatus = @MaritalStatus, Address = @Address, Email = @Email, ContactNo = @ContactNo, 
+                Occupation = @Occupation, EmployerName = @EmployerName, Income = @Income WHERE CustNRIC = @CustNRIC ";
 
-            cmd.Parameters.AddWithValue("@CustNRIC", a360.NRIC);
+            
             cmd.Parameters.AddWithValue("@Salutation", a360.Salutation);
             cmd.Parameters.AddWithValue("@CustName", a360.FullName);
             cmd.Parameters.AddWithValue("@DateOfBirth", a360.DateOfBirth);
@@ -143,14 +144,15 @@ namespace OCBC_Joint_Account_Application.DAL
             cmd.Parameters.AddWithValue("@Occupation", a360.Occupation);
             cmd.Parameters.AddWithValue("@EmployerName", a360.Employer);
             cmd.Parameters.AddWithValue("@Income", a360.AnnualIncome);
-            cmd.Parameters.AddWithValue("@iBUsername", null);
-            cmd.Parameters.AddWithValue("@iBPin", null);
+            cmd.Parameters.AddWithValue("@CustNRIC", a360.NRIC);
 
             conn.Open();
 
-            conn.Close();
+            int count = cmd.ExecuteNonQuery();
 
-            return a360.NRIC;
+            //Close the database connection
+            conn.Close();
+            return count;
         }
     }
 }

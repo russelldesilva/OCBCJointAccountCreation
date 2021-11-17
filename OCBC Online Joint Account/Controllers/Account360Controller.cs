@@ -615,8 +615,25 @@ namespace OCBC_Joint_Account_Application.Controllers
             a360 = HttpContext.Session.GetObjectFromJson<Account360ViewModel>("ApplicantsDetails");
 
             // Only scan and new singpass is add rest update
-            customerContext.Add(a360);
-            return View("Index", "Home");
+            // Convert gender to single char
+            if (a360.Gender == "Male")
+            {
+                a360.Gender = "M";
+            }
+            else
+            {
+                a360.Gender = "F";
+            }
+            // if not scan || not new singpass
+            if (HttpContext.Session.GetString("ApplyMethod") != "Scan" && HttpContext.Session.GetString("CustSingpass") != "newCustomer")
+            {
+                customerContext.Update(a360);
+            }
+            else
+            {
+                customerContext.Add(a360);
+            }
+            return RedirectToAction("Index", "Home");
         }
 
         /**==========================
