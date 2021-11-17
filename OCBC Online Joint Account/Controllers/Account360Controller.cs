@@ -269,7 +269,31 @@ namespace OCBC_Joint_Account_Application.Controllers
                 ac360.DateOfBirth = iBankingDetails.DateOfBirth;
                 ac360.Employer = iBankingDetails.EmployerName;
                 ac360.Occupation = iBankingDetails.Occupation;
-                ac360.AnnualIncome = iBankingDetails.Income;
+                int tempIncome = Convert.ToInt32(iBankingDetails.Income);
+                if (tempIncome < 30000)
+                {
+                    ac360.AnnualIncome = "1";
+                }
+                else if (tempIncome >= 30000 && tempIncome <= 49999)
+                {
+                    ac360.AnnualIncome = "2";
+                }
+                else if (tempIncome >= 50000 && tempIncome <= 99999)
+                {
+                    ac360.AnnualIncome = "3";
+                }
+                else if (tempIncome >= 100000 && tempIncome <= 149999)
+                {
+                    ac360.AnnualIncome = "4";
+                }
+                else if (tempIncome >= 150000 && tempIncome <= 199999)
+                {
+                    ac360.AnnualIncome = "5";
+                }
+                else if (tempIncome >= 200000)
+                {
+                    ac360.AnnualIncome = "6";
+                }
                 return View(ac360);
             }
 
