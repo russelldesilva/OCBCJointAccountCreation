@@ -111,6 +111,7 @@ namespace OCBC_Joint_Account_Application.Controllers
         public ActionResult ApplyOnline(int? AT, string? JAC)
         {
             HttpContext.Session.SetString("PageType", "Account360");
+            HttpContext.Session.SetInt32("AccountTypeID", 2);
      
             if (JAC != null)
             {
@@ -603,15 +604,11 @@ namespace OCBC_Joint_Account_Application.Controllers
             {
                 ac360.Occupation = Occupation[(Convert.ToInt32(ac360.Occupation) - 1)].Text;
                 ac360.AnnualIncome = AnnualIncome[(Convert.ToInt32(ac360.AnnualIncome) - 1)].Text;
-                //ac360.DateOfBirth = Convert.ToDateTime(ac360.DateOfBirth.ToString("dd/MM/yyyy"));
 
             }
             ViewData["DateOfBirth"] = ac360.DateOfBirth.Date.ToString("d");
 
             HttpContext.Session.SetObjectAsJson("ApplicantsDetails", ac360);
-            //ac360.Occupation = Occupation[Convert.ToInt32(ac360.Occupation)-1].Text;
-            //ac360.AnnualIncome = AnnualIncome[Convert.ToInt32(ac360.AnnualIncome)-1].Text;
-            //ac360.DateOfBirth = ac360.DateOfBirth.Date;
             return View(ac360);
         }
 
@@ -621,7 +618,7 @@ namespace OCBC_Joint_Account_Application.Controllers
         {
             a360 = HttpContext.Session.GetObjectFromJson<Account360ViewModel>("ApplicantsDetails");
 
-            // Only scan and new singpass is add rest update
+            // Only scan and new singpass is add, rest update
             // Convert gender to single char
             if (a360.Gender == "Male")
             {
@@ -640,6 +637,26 @@ namespace OCBC_Joint_Account_Application.Controllers
             {
                 customerContext.Add(a360);
             }
+
+            // Add application table
+            Application newApplication = new Application();
+            newApplication.CustNRIC = a360.NRIC;
+            newApplication.AccountTypeID = (int)HttpContext.Session.GetInt32("AccountTypeID");
+
+            // Main applicant
+            if (HttpContext.Session.GetString("JAC") == null)
+            {
+                newApplication.Status = "Pending";
+                newApplication.JointApplicantID = null;
+            }
+            // Joint applicant
+            else
+            {
+                newApplication.Status = "Successful";
+            }
+
+            // Create Bank Account && CustomerAccounts once status = successful.
+
             return RedirectToAction("Index", "Home");
         }
 
