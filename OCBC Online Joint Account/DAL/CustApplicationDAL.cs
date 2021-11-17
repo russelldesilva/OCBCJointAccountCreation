@@ -26,11 +26,11 @@ namespace OCBC_Online_Joint_Account.DAL
         }
         // INSERT INTO CustApplication (CustNRIC, ApplicationId, CustNRICFront, CustNRICBack, CustProofOfResidence, CustPassport, CustForeignPassFront, CustForeignPassBack, JointApplicantName, JointApplicantNRIC) VALUES
 
-        public int Add(CustApplication custApp)
+        public string Add(CustApplication custApp)
         {
             SqlCommand cmd = conn.CreateCommand();
 
-            cmd.CommandText = @"INSERT INTO CustApplication (CustNRIC, ApplicationId, CustNRICFront, CustNRICBack, CustProofOfResidence, JointApplicantName, JointApplicantNRIC) VALUES (@CustNRIC, @ApplicationId, @CustNRICFront, @CustNRICBack, @CustProofOfResidence, @JointApplicantName, @JointApplicantNRIC)";
+            cmd.CommandText = @"INSERT INTO CustApplication (CustNRIC, ApplicationId, CustNRICFront, CustNRICBack, CustProofOfResidence, CustPassport, CustForeignPassFront, CustForeignPassBack, JointApplicantName, JointApplicantNRIC) VALUES (@CustNRIC, @ApplicationId, @CustNRICFront, @CustNRICBack, @CustProofOfResidence, @CustPassport, @CustForeignPassFront, @CustForeignPassBack, @JointApplicantName, @JointApplicantNRIC)";
 
             cmd.Parameters.AddWithValue("@CustNRIC", custApp.CustNRIC);
             cmd.Parameters.AddWithValue("@ApplicationId", custApp.ApplicationID);
@@ -46,11 +46,11 @@ namespace OCBC_Online_Joint_Account.DAL
 
             conn.Open();
 
-            custApp.ApplicationID = (int)cmd.ExecuteScalar();
+            custApp.CustNRIC = (string)cmd.ExecuteScalar();
 
             conn.Close();
 
-            return custApp.ApplicationID;
+            return custApp.CustNRIC;
         }
     }
 }
