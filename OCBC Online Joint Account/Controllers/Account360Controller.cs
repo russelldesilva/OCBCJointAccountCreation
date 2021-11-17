@@ -41,8 +41,6 @@ namespace OCBC_Joint_Account_Application.Controllers
         private List<SelectListItem> Occupation = new List<SelectListItem>();
         private List<SelectListItem> YearsInEmployment = new List<SelectListItem>();
         private List<TaxResidency> TaxResidencyList = new List<TaxResidency>();
-        private List<string> singaporean = new List<string> { "I am a Singaporean Citizen/Permanent Resident", "I am a Foreigner working/studying or residing in Singapore" };
-
         public Account360Controller()
         {
             //Populate Salutation
@@ -354,14 +352,9 @@ namespace OCBC_Joint_Account_Application.Controllers
         {
             checkJAC(HttpContext.Session.GetString("JAC"));
             HttpContext.Session.SetString("ApplyMethod", "Scan");
-            ViewData["SingaporeanSelection"] = singaporean;
-
-            CustApplication custApplication = new CustApplication
-            {
-                Singaporean = singaporean[0]
-            };
-            
-            return View("Upload", custApplication);
+            ViewData["IsSingaporean"] = true;
+        
+            return View("Upload");
         }
 
         [HttpPost]
@@ -370,18 +363,14 @@ namespace OCBC_Joint_Account_Application.Controllers
         {
             checkJAC(HttpContext.Session.GetString("JAC"));
             HttpContext.Session.SetString("ApplyMethod", "Scan");
-            ViewData["SingaporeanSelection"] = singaporean;
+
+            
 
             string uploadedNRICFront = "";
             string uploadedNRICBack = "";
             string uploadedResidentialProof = "";
 
-            CustApplication custApplication1 = new CustApplication
-            {
-                Singaporean = singaporean[0]
-            };
 
-            ViewData["UploadMessage"] = "File uploaded successfully.";
             if (custApplication.CustProofOfResidenceUpload != null && custApplication.CustProofOfResidenceUpload.Length > 0)
             {
                 try
@@ -545,6 +534,142 @@ namespace OCBC_Joint_Account_Application.Controllers
             HttpContext.Session.SetObjectAsJson("Scan", clientOCR);
 
             return RedirectToAction("Form");
+        }
+
+        /**==========================
+            UploadForeign.CSHTML
+        ==========================**/
+        public ActionResult UploadForeign()
+        {
+            checkJAC(HttpContext.Session.GetString("JAC"));
+            HttpContext.Session.SetString("ApplyMethod", "Scan");
+            ViewData["IsSingaporean"] = true;
+
+            return View("UploadForeign");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UploadForeign(CustApplication custApplication)
+        {
+            checkJAC(HttpContext.Session.GetString("JAC"));
+            HttpContext.Session.SetString("ApplyMethod", "Scan");
+
+            string uploadedForeignPassFront = "";
+            string uploadedForeignPassBack = "";
+            string uploadedResidentialProof = "";
+            string uploadedPassport = "";
+
+            if (custApplication.CustProofOfResidenceUpload != null && custApplication.CustProofOfResidenceUpload.Length > 0)
+            {
+                try
+                {
+                    string fileExt = Path.GetExtension(custApplication.CustProofOfResidenceUpload.FileName);
+                    uploadedResidentialProof = String.Format("residence_proof" + fileExt);
+                    string savePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\applicationdocs\\", uploadedResidentialProof);
+                    HttpContext.Session.SetString("FilePathResidence", savePath);
+                    using (var fileSteam = new FileStream(savePath, FileMode.Create))
+                    {
+                        await custApplication.CustProofOfResidenceUpload.CopyToAsync(fileSteam);
+                    }
+                    ViewData["UploadColor"] = "lime";
+                    ViewData["UploadMessage"] = "Upload Successful!";
+                }
+                catch (IOException)
+                {
+                    ViewData["UploadColor"] = "red";
+                    ViewData["UploadMessage"] = "Upload Failed!";
+                    return View("Upload", custApplication);
+                }
+                catch (Exception ex)
+                {
+                    ViewData["UploadMessage"] = ex.Message;
+                    return View("Upload", custApplication);
+                }
+            }
+            if (custApplication.CustForeignPassFrontUpload != null && custApplication.CustForeignPassFrontUpload.Length > 0)
+            {
+                try
+                {
+                    string fileExt = Path.GetExtension(custApplication.CustForeignPassFrontUpload.FileName);
+                    uploadedForeignPassFront = String.Format("foreign_pass_front" + fileExt);
+                    string savePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\applicationdocs\\", uploadedForeignPassFront);
+                    HttpContext.Session.SetString("FilePathFront", savePath);
+                    using (var fileSteam = new FileStream(savePath, FileMode.Create))
+                    {
+                        await custApplication.CustForeignPassFrontUpload.CopyToAsync(fileSteam);
+                    }
+                    ViewData["UploadColor"] = "lime";
+                    ViewData["UploadMessage"] = "Upload Successful!";
+                }
+                catch (IOException)
+                {
+                    ViewData["UploadColor"] = "red";
+                    ViewData["UploadMessage"] = "Upload Failed!";
+                    return View("Upload", custApplication);
+                }
+                catch (Exception ex)
+                {
+                    ViewData["UploadMessage"] = ex.Message;
+                    return View("Upload", custApplication);
+                }
+            }
+            if (custApplication.CustForeignPassBackUpload != null && custApplication.CustForeignPassBackUpload.Length > 0)
+            {
+                try
+                {
+                    string fileExt = Path.GetExtension(custApplication.CustForeignPassBackUpload.FileName);
+                    uploadedForeignPassBack = String.Format("foreign_pass_back" + fileExt);
+                    string savePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\applicationdocs\\", uploadedForeignPassBack);
+                    HttpContext.Session.SetString("FilePathBack", savePath);
+                    using (var fileSteam = new FileStream(savePath, FileMode.Create))
+                    {
+                        await custApplication.CustForeignPassBackUpload.CopyToAsync(fileSteam);
+                    }
+                    ViewData["UploadColor"] = "lime";
+                    ViewData["UploadMessage"] = "Upload Successful!";
+                }
+                catch (IOException)
+                {
+                    ViewData["UploadColor"] = "red";
+                    ViewData["UploadMessage"] = "Upload Failed!";
+                    return View("Upload", custApplication);
+                }
+                catch (Exception ex)
+                {
+                    ViewData["UploadMessage"] = ex.Message;
+                    return View("Upload", custApplication);
+                }
+            }
+            if (custApplication.CustPassportUpload != null && custApplication.CustPassportUpload.Length > 0)
+            {
+                try
+                {
+                    string fileExt = Path.GetExtension(custApplication.CustPassportUpload.FileName);
+                    uploadedPassport = String.Format("passport" + fileExt);
+                    string savePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\applicationdocs\\", uploadedPassport);
+                    HttpContext.Session.SetString("FilePathResidence", savePath);
+                    using (var fileSteam = new FileStream(savePath, FileMode.Create))
+                    {
+                        await custApplication.CustPassportUpload.CopyToAsync(fileSteam);
+                    }
+                    ViewData["UploadColor"] = "lime";
+                    ViewData["UploadMessage"] = "Upload Successful!";
+                }
+                catch (IOException)
+                {
+                    ViewData["UploadColor"] = "red";
+                    ViewData["UploadMessage"] = "Upload Failed!";
+                    return View("Upload", custApplication);
+                }
+                catch (Exception ex)
+                {
+                    ViewData["UploadMessage"] = ex.Message;
+                    return View("Upload", custApplication);
+                }
+            }
+
+            return View();
         }
 
         /**==========================
