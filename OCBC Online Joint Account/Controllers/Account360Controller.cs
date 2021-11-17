@@ -119,10 +119,11 @@ namespace OCBC_Joint_Account_Application.Controllers
             if (JAC != null)
             {
                 HttpContext.Session.SetString("JAC", JAC);
+                checkJAC(HttpContext.Session.GetString("JAC"));
                 InsertQRForJointApplicant(AT, JAC);
                 return RedirectToAction("ApplyOnline", "Account360");
             }
-            checkJAC(HttpContext.Session.GetString("JAC"));
+         
             if (ResponseQR() == true)
             {
                 return RedirectToAction("JointApplicant", "Account360");
@@ -818,10 +819,6 @@ namespace OCBC_Joint_Account_Application.Controllers
 
             ////Set clientOCR object to the "Scan" string to be used in Form.cshtml to parse the data from the OCR read
             HttpContext.Session.SetObjectAsJson("Scan", clientOCR);
-
-
-
-
             return RedirectToAction("Form");
         }
 
@@ -831,8 +828,44 @@ namespace OCBC_Joint_Account_Application.Controllers
 
         public ActionResult JointApplicant()
         {
-            if (HttpContext.Session.GetString("JAC") != null)
+            if (HttpContext.Session.GetString("JAC") != null && HttpContext.Session.GetString("ApplyMethod") == "QR" || HttpContext.Session.GetString("ApplyMethod") == "iBanking")
             {
+                Account360ViewModel ac360 = new Account360ViewModel();
+                foreach (Customer c in customerContext.GetCustomerByNRIC(HttpContext.Session.GetString("iBankingLogin")))
+                {
+                    ac360.NRIC = c.CustNRIC;
+                    ac360.Salutation = c.Salutation;
+                    ac360.FullName = c.CustName;
+                    ac360.EmailAddress = c.Email;
+                    ac360.MobileNum = c.ContactNo;
+                    if (c.Gender == "M")
+                    {
+                        ac360.Gender = "Male";
+                    }
+                    else
+                    {
+                        ac360.Gender = "Female";
+                    }
+                    ac360.MaritialStatus = c.MaritialStatus;
+                    ac360.Address = c.Address;
+                    ac360.CountryOfBirth = c.CountryOfBirth;
+                    ac360.Nationality = c.Nationality;
+                    ac360.DateOfBirth = c.DateOfBirth;
+                    ac360.Employer = c.EmployerName;
+                    ac360.Occupation = c.Occupation;
+                    ac360.AnnualIncome = c.Income;
+                }
+
+                foreach (Customer c in customerContext.GetCustomerByNRIC(HttpContext.Session.GetString("MainApplicantNRIC")))
+                {
+                    ac360.SalutationJoint = c.Salutation;
+                    ac360.JointApplicantName = c.CustName;
+                    ac360.Email = c.Email;
+                    ac360.JointApplicantNRIC = c.CustNRIC;
+                    ac360.ContactNo = c.ContactNo;
+                }
+
+                 HttpContext.Session.SetObjectAsJson("ApplicantsDetails", ac360);
                 return RedirectToAction("Verify", "Account360");
             }
 
@@ -893,15 +926,15 @@ namespace OCBC_Joint_Account_Application.Controllers
             ResetQR();
             HttpContext.Session.SetString("PageType", "Account360");
             checkJAC(HttpContext.Session.GetString("JAC")); // Check Main or Joint       
-
+            
             Account360ViewModel ac360 = new Account360ViewModel();
             ac360 = HttpContext.Session.GetObjectFromJson<Account360ViewModel>("ApplicantsDetails");
             if (HttpContext.Session.GetString("ApplyMethod") != "QR" && HttpContext.Session.GetString("ApplyMethod") != "iBanking")
             {
                 ac360.Occupation = Occupation[(Convert.ToInt32(ac360.Occupation) - 1)].Text;
                 ac360.AnnualIncome = AnnualIncome[(Convert.ToInt32(ac360.AnnualIncome) - 1)].Text;
-
             }
+
             ViewData["DateOfBirth"] = ac360.DateOfBirth.Date.ToString("d");
 
             HttpContext.Session.SetObjectAsJson("ApplicantsDetails", ac360);
@@ -1017,6 +1050,7 @@ namespace OCBC_Joint_Account_Application.Controllers
 
             // add Application Tabl
             
+            //Application Table
 
             // To add the application ID for custApplication
             if (JointAC == null)
@@ -1041,6 +1075,12 @@ namespace OCBC_Joint_Account_Application.Controllers
         public ActionResult Success()
         {
             HttpContext.Session.SetString("PageType", "Account360");
+            Account360ViewModel ac360 = new Account360ViewModel();
+            ac360 = HttpContext.Session.GetObjectFromJson<Account360ViewModel>("ApplicantsDetails");
+
+            ViewData["Name"] = ac360.JointApplicantName;
+            ViewData["Email"] = ac360.Email;
+            ViewData["ContactNo"] = ac360.ContactNo;
             return View();
         }
 
@@ -1172,7 +1212,8 @@ namespace OCBC_Joint_Account_Application.Controllers
                 if (qr.custNRIC != null)
                 {
                     HttpContext.Session.SetString("ApplyMethod", "QR");
-                    HttpContext.Session.SetString("iBankingLogin", "G7916416Q");
+                    HttpContext.Session.SetString("iBankingLogin", qr.custNRIC);
+                    HttpContext.Session.SetString("MainApplicantNRIC", qr.mainApplicantNRIC);
                 }
                 return true;
             }
