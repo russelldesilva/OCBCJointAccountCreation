@@ -65,8 +65,24 @@ namespace OCBC_Joint_Account_Application.DAL
             cmd.Parameters.AddWithValue("@typeID",  application.AccountTypeID);
             cmd.Parameters.AddWithValue("@status", application.Status);
             cmd.Parameters.AddWithValue("@date", DateTime.Now);
-            cmd.Parameters.AddWithValue("@code", application.JointApplicantCode);
-            cmd.Parameters.AddWithValue("@jointID", application.JointApplicantID);
+            if (application.JointApplicantCode == null)
+            {
+                cmd.Parameters.AddWithValue("@code", DBNull.Value);
+            }
+            else
+            {
+                cmd.Parameters.AddWithValue("@code", application.JointApplicantCode);
+            }
+            
+            if (application.JointApplicantID == null)
+            {
+                cmd.Parameters.AddWithValue("@jointID", DBNull.Value);
+            }
+            else
+            {
+                cmd.Parameters.AddWithValue("@jointID", application.JointApplicantID);
+            }
+            
             conn.Open();
             application.ApplicationID = (int)cmd.ExecuteScalar();
             conn.Close();
@@ -77,17 +93,21 @@ namespace OCBC_Joint_Account_Application.DAL
         {
             SqlCommand cmd = conn.CreateCommand();
             cmd.CommandText = @"Update Application SET CustNRIC = @nric, AccountTypeId = @typeID, Status = @status, 
-                                                   CreationDate = @date, JointApplicationCode = @code, JointApplicationID = @jointID";
+                                        JointApplicationCode = @code, JointApplicationID = @jointID WHERE JointApplicationCode = @code";
             cmd.Parameters.AddWithValue("@nric", application.CustNRIC);
             cmd.Parameters.AddWithValue("@typeID", application.AccountTypeID);
             cmd.Parameters.AddWithValue("@status", application.Status);
-            cmd.Parameters.AddWithValue("@date", application.CreationDate);
             cmd.Parameters.AddWithValue("@code", application.JointApplicantCode);
             cmd.Parameters.AddWithValue("@jointID", application.JointApplicantID);
             conn.Open();
             application.ApplicationID = (int)cmd.ExecuteScalar();
             conn.Close();
             return application.ApplicationID;
+        }
+
+        public int GetApplicationID(string JAC)
+        {
+            return 1;
         }
     }
 }
