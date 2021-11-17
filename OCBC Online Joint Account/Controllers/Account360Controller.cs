@@ -251,7 +251,22 @@ namespace OCBC_Joint_Account_Application.Controllers
             // Else if iBanking run code to pull from iBanking
             else if (HttpContext.Session.GetString("ApplyMethod") == "iBanking")
             {
-                return View();
+                Customer iBankingDetails = HttpContext.Session.GetObjectFromJson<Customer>("iBankingDetails");
+                ac360.NRIC = iBankingDetails.CustNRIC;
+                ac360.Salutation = iBankingDetails.Salutation;
+                ac360.FullName = iBankingDetails.CustName;
+                ac360.EmailAddress = iBankingDetails.Email;
+                ac360.MobileNum = iBankingDetails.ContactNo;
+                ac360.Gender = iBankingDetails.Gender;
+                ac360.MaritialStatus = iBankingDetails.MaritialStatus;
+                ac360.Address = iBankingDetails.Address;
+                ac360.CountryOfBirth = iBankingDetails.CountryOfBirth;
+                ac360.Nationality = iBankingDetails.Nationality;
+                ac360.DateOfBirth = iBankingDetails.DateOfBirth;
+                ac360.Employer = iBankingDetails.EmployerName;
+                ac360.Occupation = iBankingDetails.Occupation;
+                ac360.AnnualIncome = iBankingDetails.Income;
+                return View(ac360);
             }
 
             // Else if Scan run code to pull from Scan
@@ -603,15 +618,11 @@ namespace OCBC_Joint_Account_Application.Controllers
             {
                 ac360.Occupation = Occupation[(Convert.ToInt32(ac360.Occupation) - 1)].Text;
                 ac360.AnnualIncome = AnnualIncome[(Convert.ToInt32(ac360.AnnualIncome) - 1)].Text;
-                //ac360.DateOfBirth = Convert.ToDateTime(ac360.DateOfBirth.ToString("dd/MM/yyyy"));
 
             }
             ViewData["DateOfBirth"] = ac360.DateOfBirth.Date.ToString("d");
 
             HttpContext.Session.SetObjectAsJson("ApplicantsDetails", ac360);
-            //ac360.Occupation = Occupation[Convert.ToInt32(ac360.Occupation)-1].Text;
-            //ac360.AnnualIncome = AnnualIncome[Convert.ToInt32(ac360.AnnualIncome)-1].Text;
-            //ac360.DateOfBirth = ac360.DateOfBirth.Date;
             return View(ac360);
         }
 

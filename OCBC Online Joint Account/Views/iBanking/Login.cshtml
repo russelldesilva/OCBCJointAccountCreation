@@ -1,4 +1,4 @@
-﻿
+﻿@model OCBC_Joint_Account_Application.Models.Customer
 @{
     ViewData["Title"] = "Login";
 }
@@ -28,16 +28,16 @@
                             </div>
                             <div class="row spacing">
                                 <label class="textbox-title" for="access-code">Access Code</label>
-                                <input id="access-code" class="form-textbox" type="text" required>
+                                <input id="access-code" class="form-textbox" type="text" asp-for="iBUsername" required>
                                 <label class="textbox-title" for="pin">PIN</label>
-                                <input id="pin" class="form-textbox" type="text" required>
+                                <input id="pin" class="form-textbox" type="text" asp-for="iBPin" required>
                             </div>
                             <div class="row spacing">
-                                <div class="col no-pin">
+                                <div class="col-md-7 no-pin">
                                     <a href="https://internet.ocbc.com/internet-banking/inbregistration/index">No Access Code/PIN? Click here.</a>
                                 </div>
-                                <div class="col">
-                                    <input class="login-btn" type="submit" value="Login" asp-controller="Account360" asp-action="Form">
+                                <div class="col-md-5">
+                                    <input class="login-btn" type="submit" value="Login" asp-controller="iBanking" asp-action="Login">
                                 </div>
                             </div>
                             <div class="row align-items-center sign-up-now">
