@@ -85,29 +85,6 @@
     </div>
     <a asp-action="UploadForeign">Foreign File Upload</a>
     <input type="submit" class="btn btn-primary" asp-action="Upload" value="Next" />
-
-    <div class="container" style="margin-top: 60px;">
-        @foreach (var item in ViewData["SingaporeanSelection"] as List<string>)
-        {
-            <label class="col-form-label">
-                <input asp-for="Singaporean" type="radio" value="@item" class="form-check-input" />
-                <span style="font-weight:normal; padding-right:20px">@item</span>
-            </label>
-        }
-        <br />
-        <input style="margin-top: 60px;" type="submit" class="resend" asp-action="Upload" value="Next" />
-        <div class="form-group form-check-inline">
-        </div>
-    </div>
 </form>
 
-</div>-->
-<!-- Radio button -->
-<div class="form-group form-check-inline">
-    @foreach (var item in ViewData["SingaporeanSelection"] as List<string>)
-    {
-        <label class="col-form-label">
-            <input asp-for="Singaporean" type="radio" value="@item" class="form-check-input" />
-            <span style="font-weight:normal; padding-right:20px">@item</span>
-        </label>}
-</div>
+
