@@ -983,6 +983,9 @@ namespace OCBC_Joint_Account_Application.Controllers
                 foreach (Application a in mainApplication)
                 {
                     custApp.ApplicationID = a.ApplicationID;
+                    // newApplicationn.ApplicationID is 0
+                    // no where sets the applicationID
+                    // Need to fix logic below
                     a.JointApplicantID = newApplication.ApplicationID;
                     // Status
                     applicationContext.Update(a);
