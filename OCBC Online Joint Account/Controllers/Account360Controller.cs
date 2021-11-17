@@ -597,14 +597,14 @@ namespace OCBC_Joint_Account_Application.Controllers
             HttpContext.Session.SetString("PageType", "Account360");
             checkJAC(HttpContext.Session.GetString("JAC")); // Check Main or Joint       
 
-            Account360ViewModel ac360 = new Account360ViewModel();   
+            Account360ViewModel ac360 = new Account360ViewModel();
             ac360 = HttpContext.Session.GetObjectFromJson<Account360ViewModel>("ApplicantsDetails");
             if (HttpContext.Session.GetString("ApplyMethod") != "QR" && HttpContext.Session.GetString("ApplyMethod") != "iBanking")
             {
                 ac360.Occupation = Occupation[(Convert.ToInt32(ac360.Occupation) - 1)].Text;
                 ac360.AnnualIncome = AnnualIncome[(Convert.ToInt32(ac360.AnnualIncome) - 1)].Text;
                 //ac360.DateOfBirth = Convert.ToDateTime(ac360.DateOfBirth.ToString("dd/MM/yyyy"));
-                
+
             }
             ViewData["DateOfBirth"] = ac360.DateOfBirth.Date.ToString("d");
 
@@ -732,10 +732,6 @@ namespace OCBC_Joint_Account_Application.Controllers
             return false;
         }
 
-        public void Submit()
-        {
-
-        }
     }
 }
 
