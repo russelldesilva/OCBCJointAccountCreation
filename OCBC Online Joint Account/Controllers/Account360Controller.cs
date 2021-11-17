@@ -912,7 +912,6 @@ namespace OCBC_Joint_Account_Application.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Verify(Account360ViewModel a360)
         {
-            a360 = HttpContext.Session.GetObjectFromJson<Account360ViewModel>("ApplicantsDetails");
 
             string JointAC = HttpContext.Session.GetString("JAC");
 
@@ -954,7 +953,15 @@ namespace OCBC_Joint_Account_Application.Controllers
                 custApp.CustForeignPassBack = HttpContext.Session.GetString("FilePathBack");
                 custApp.CustPassport = HttpContext.Session.GetString("FilePathPassport");
             }
-            
+
+            // Add to customer table
+            if (HttpContext.Session.GetString("ApplyMethod") == "Scan" || Convert.ToString(TempData["CustSingpass"]) == "newCustomer")
+            {
+                customerContext.Add(a360);
+            }
+
+
+            newApplication.Status = "Pending";
 
             // Main applicant
             if (JointAC == null)
@@ -967,13 +974,14 @@ namespace OCBC_Joint_Account_Application.Controllers
                 //Email API
                 RunAsync(a360.Salutation, a360.FullName, a360.Email, JAC, a360.SalutationJoint, a360.JointApplicantName).Wait();
 
-                newApplication.Status = "Pending";
-                newApplication.JointApplicantID = null;
                 newApplication.JointApplicantCode = JAC;
+
 
 
                 custApp.JointApplicantName = a360.JointApplicantName;
                 custApp.JointApplicantNRIC = a360.JointApplicantNRIC;
+
+                applicationContext.Add(newApplication);
             }
             // Joint applicant
             else
@@ -983,20 +991,15 @@ namespace OCBC_Joint_Account_Application.Controllers
                 foreach (Application a in mainApplication)
                 {
                     custApp.ApplicationID = a.ApplicationID;
-                    // newApplicationn.ApplicationID is 0
-                    // no where sets the applicationID
-                    // Need to fix logic below
-                    a.JointApplicantID = newApplication.ApplicationID;
-                    // Status
                     applicationContext.Update(a);
                     newApplication.JointApplicantID = a.ApplicationID;
-                    
+                    a.JointApplicantID = applicationContext.Add(newApplication);
+                    applicationContext.Update(a);
                 }
                 
 
                 if (custApp.JointApplicantNRIC == a360.NRIC)
                 {
-                    newApplication.Status = "Successful";
                     mainApplication[0].Status = "Successful";
                 }
                 else
@@ -1007,19 +1010,13 @@ namespace OCBC_Joint_Account_Application.Controllers
 
             }
 
-            Console.WriteLine(HttpContext.Session.GetString("ApplyMethod"));
             
 
-            // Database portion
-            // Customer table
-            // if not scan || not new singpass
-            if (HttpContext.Session.GetString("ApplyMethod") == "Scan" || Convert.ToString(TempData["CustSingpass"]) == "newCustomer")
-            {
-                customerContext.Add(a360);
-            }
 
-            //Application Table
-            applicationContext.Add(newApplication);
+            
+
+            // add Application Tabl
+            
 
             // To add the application ID for custApplication
             if (JointAC == null)
