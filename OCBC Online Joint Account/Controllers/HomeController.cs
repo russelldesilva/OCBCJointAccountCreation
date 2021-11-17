@@ -30,7 +30,7 @@ namespace OCBC_Joint_Account_Application.Controllers
             HttpContext.Session.SetString("Applicant", "");
             if(HttpContext.Session.GetString("JAC") != null)
             {
-                HttpContext.Session.SetString("JAC", null);
+                HttpContext.Session.Remove("JAC");
             }
            
             return View();      
