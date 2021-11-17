@@ -374,6 +374,7 @@ namespace OCBC_Joint_Account_Application.Controllers
 
         public ActionResult Upload()
         {
+
             checkJAC(HttpContext.Session.GetString("JAC"));
             HttpContext.Session.SetString("ApplyMethod", "Scan");
             ViewData["IsSingaporean"] = true;
