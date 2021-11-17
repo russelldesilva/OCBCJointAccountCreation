@@ -21,6 +21,7 @@ namespace OCBC_Joint_Account_Application.Controllers
         public ActionResult Login(string customer)
         {
             TempData["CustSingpass"] = customer;
+         
             HttpContext.Session.SetString("PageType", "Singpass");
             HttpContext.Session.Remove("Applicant");
             return View();

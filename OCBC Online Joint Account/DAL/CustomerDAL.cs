@@ -137,7 +137,6 @@ namespace OCBC_Joint_Account_Application.DAL
             cmd.Parameters.AddWithValue("@Income", a360.AnnualIncome);
             cmd.Parameters.AddWithValue("@iBUsername", DBNull.Value);
             cmd.Parameters.AddWithValue("@iBPin", DBNull.Value);
-
             conn.Open();
             a360.NRIC = (string)cmd.ExecuteScalar();
             conn.Close();

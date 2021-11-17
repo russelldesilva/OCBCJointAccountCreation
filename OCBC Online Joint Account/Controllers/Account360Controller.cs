@@ -110,7 +110,6 @@ namespace OCBC_Joint_Account_Application.Controllers
         /**==========================
               APPLYONLINE.CSHTML
          ==========================**/
-
         public ActionResult ApplyOnline(int? AT, string JAC)
         {
             HttpContext.Session.SetString("PageType", "Account360");
@@ -119,11 +118,10 @@ namespace OCBC_Joint_Account_Application.Controllers
             if (JAC != null)
             {
                 HttpContext.Session.SetString("JAC", JAC);
-                checkJAC(HttpContext.Session.GetString("JAC"));
                 InsertQRForJointApplicant(AT, JAC);
                 return RedirectToAction("ApplyOnline", "Account360");
             }
-         
+            checkJAC(HttpContext.Session.GetString("JAC"));
             if (ResponseQR() == true)
             {
                 return RedirectToAction("JointApplicant", "Account360");
@@ -168,6 +166,7 @@ namespace OCBC_Joint_Account_Application.Controllers
             Console.WriteLine(message.Body);
           **/
             HttpContext.Session.SetInt32("OTP", OTP);
+            ViewData["MobileNum"] = mobileNum;
 
             ViewData["A"] = OTP;
             return View();
@@ -252,8 +251,7 @@ namespace OCBC_Joint_Account_Application.Controllers
                     }
                 }
                 return View(ac360);
-            }
-            // Else if iBanking run code to pull from iBanking
+            }  // Else if iBanking run code to pull from iBanking
             else if (HttpContext.Session.GetString("ApplyMethod") == "iBanking")
             {
                 Customer iBankingDetails = HttpContext.Session.GetObjectFromJson<Customer>("iBankingDetails");
@@ -296,9 +294,7 @@ namespace OCBC_Joint_Account_Application.Controllers
                     ac360.AnnualIncome = "6";
                 }
                 return View(ac360);
-            }
-
-            // Else if Scan run code to pull from Scan
+            } // Else if Scan run code to pull from Scan
             else if (HttpContext.Session.GetString("ApplyMethod") == "Scan")
             {
                 // Get data from OCR
@@ -325,13 +321,9 @@ namespace OCBC_Joint_Account_Application.Controllers
                 {
                     ac360.Nationality = "British, UK";
                 }
-                
-
                 return View(ac360);
             }
-
-            // Else show some error
-            else
+            else // Else show some error
             {
                 return View();
             }
@@ -527,11 +519,9 @@ namespace OCBC_Joint_Account_Application.Controllers
                             clientOCR.CountryOfBirth = ocr_text;
                         }
                         //Console.WriteLine("Value: " + ocr_text);
-
                     }
                 }
             }
-
 
             // NRIC BACK OCR API - DO NOT DELETE. COMMENTING OUT TO REDUCE API CALL USAGE.
             var client2 = new RestClient("https://app.nanonets.com/api/v2/OCR/Model/8ee8790a-92db-48d7-adf0-c9512997b60a/LabelFile/");
@@ -540,8 +530,6 @@ namespace OCBC_Joint_Account_Application.Controllers
             request2.AddHeader("accept", "Multipart/form-data");
             request2.AddFile("file", ".\\wwwroot\\applicationdocs\\" + uploadedNRICBack);
             IRestResponse response2 = client2.Execute(request2);
-
-
             Dictionary<string, object> obj2 = (Dictionary<string, object>)OCBC_Online_Joint_Account.Models.JSONHelper.Deserialize(response2.Content);
 
             foreach (var item in obj2.Keys)
@@ -564,7 +552,6 @@ namespace OCBC_Joint_Account_Application.Controllers
 
             ////Set clientOCR object to the "Scan" string to be used in Form.cshtml to parse the data from the OCR read
             HttpContext.Session.SetObjectAsJson("Scan", clientOCR);
-
             return RedirectToAction("Form");
         }
 
@@ -576,7 +563,6 @@ namespace OCBC_Joint_Account_Application.Controllers
             checkJAC(HttpContext.Session.GetString("JAC"));
             HttpContext.Session.SetString("ApplyMethod", "Scan");
             ViewData["IsSingaporean"] = true;
-
             return View("UploadForeign");
         }
 
@@ -739,9 +725,7 @@ namespace OCBC_Joint_Account_Application.Controllers
             request2.AddFile("file", ".\\wwwroot\\applicationdocs\\" + uploadedForeignPassBack);
             IRestResponse response2 = client2.Execute(request2);
 
-
             Dictionary<string, object> obj2 = (Dictionary<string, object>)OCBC_Online_Joint_Account.Models.JSONHelper.Deserialize(response2.Content);
-
             foreach (var item in obj2.Keys)
             {
                 if (item == "result")
@@ -784,7 +768,6 @@ namespace OCBC_Joint_Account_Application.Controllers
             request3.AddFile("file", ".\\wwwroot\\applicationdocs\\" + uploadedPassport);
             IRestResponse response3 = client3.Execute(request3);
 
-
             Dictionary<string, object> obj3 = (Dictionary<string, object>)OCBC_Online_Joint_Account.Models.JSONHelper.Deserialize(response3.Content);
 
             foreach (var item in obj3.Keys)
@@ -816,7 +799,6 @@ namespace OCBC_Joint_Account_Application.Controllers
                     }
                 }
             }
-
             ////Set clientOCR object to the "Scan" string to be used in Form.cshtml to parse the data from the OCR read
             HttpContext.Session.SetObjectAsJson("Scan", clientOCR);
             return RedirectToAction("Form");
@@ -919,7 +901,6 @@ namespace OCBC_Joint_Account_Application.Controllers
         /**==========================
                VERIFY.CSHTML
        ==========================**/
-
         public ActionResult Verify()
         {
             ResetQR();
@@ -944,7 +925,6 @@ namespace OCBC_Joint_Account_Application.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Verify(Account360ViewModel a360)
         {
-
             string JointAC = HttpContext.Session.GetString("JAC");
 
             // Only scan and new singpass is add, rest update
@@ -957,7 +937,7 @@ namespace OCBC_Joint_Account_Application.Controllers
             {
                 a360.Gender = "F";
             }
-
+    
             // Add application table
             Application newApplication = new Application();
 
@@ -991,7 +971,6 @@ namespace OCBC_Joint_Account_Application.Controllers
                 customerContext.Add(a360);
             }
 
-
             newApplication.Status = "Pending";
 
             // Main applicant
@@ -1006,16 +985,11 @@ namespace OCBC_Joint_Account_Application.Controllers
                 RunAsync(a360.Salutation, a360.FullName, a360.Email, JAC, a360.SalutationJoint, a360.JointApplicantName).Wait();
 
                 newApplication.JointApplicantCode = JAC;
-
-
-
                 custApp.JointApplicantName = a360.JointApplicantName;
                 custApp.JointApplicantNRIC = a360.JointApplicantNRIC;
-
                 applicationContext.Add(newApplication);
             }
-            // Joint applicant
-            else
+            else // Joint applicant
             {
                 List<Application> mainApplication = applicationContext.GetApplicationByJointApplicantionCode(JointAC);
                 // Setting applicationID with JAC
@@ -1038,17 +1012,10 @@ namespace OCBC_Joint_Account_Application.Controllers
                     ViewData["VerificationError"] = "Something went wrong. Please check your details and restart this process or call XXXX XXXXX";
                     return View(a360);  
                 }
-
-            }
-
-            
-
-
-            
-
-            // add Application Tabl
-            
-            //Application Table
+            } 
+            // Add Application Tabl
+           
+            // Application Table
 
             // To add the application ID for custApplication
             if (JointAC == null)
@@ -1061,9 +1028,7 @@ namespace OCBC_Joint_Account_Application.Controllers
                     custApp.ApplicationID = a.ApplicationID;
                 }
             }
-
             custApplicationContext.Add(custApp);
-
 
             // Create Bank Account && CustomerAccounts once status = successful.
 
@@ -1085,7 +1050,6 @@ namespace OCBC_Joint_Account_Application.Controllers
         /**==========================
                     METHODS
         ==========================**/
-
         static async Task RunAsync(string sal, string name, string email, string jac, string sj, string jan)
         {
             MailjetClient client = new MailjetClient("883c10fe26db15ef52b5ff8f0a4965fb", "2f42f3a81ad1fa32fe50ebf5274be5e0");
@@ -1113,7 +1077,6 @@ namespace OCBC_Joint_Account_Application.Controllers
                 Console.ReadLine();
             }
         }
-
         public void checkJAC(string JAC)
         {
             if (HttpContext.Session.GetString("JAC") != null)
@@ -1128,7 +1091,6 @@ namespace OCBC_Joint_Account_Application.Controllers
                 }
             }
         }
-
         public void ResetQR()
         {
             //QR: Reset QR settings
@@ -1154,11 +1116,9 @@ namespace OCBC_Joint_Account_Application.Controllers
             request.AddParameter("application/json", resetQR, ParameterType.RequestBody);
             IRestResponse response = client.Execute(request);
         }
-
         public void InsertQRForJointApplicant(int? AT, string JAC)
         {
             //QR: Reset QR settings
-
             string Name = "";
             string NRIC = "";
 
@@ -1193,7 +1153,6 @@ namespace OCBC_Joint_Account_Application.Controllers
             request1.AddParameter("application/json", resetQR, ParameterType.RequestBody);
             IRestResponse response = client1.Execute(request1);
         }
-
         public bool ResponseQR()
         {
             //QR: Wait for response from iBanking App
@@ -1217,7 +1176,6 @@ namespace OCBC_Joint_Account_Application.Controllers
             }
             return false;
         }
-
     }
 }
 
