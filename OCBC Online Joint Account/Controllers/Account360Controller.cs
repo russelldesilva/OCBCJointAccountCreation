@@ -310,14 +310,18 @@ namespace OCBC_Joint_Account_Application.Controllers
             mainApplication.AnnualIncome = a360.AnnualIncome;
             mainApplication.JointApplicantCode = $"J{DateTime.Today.Day}{DateTime.Today.Month}{mainApplication.NRIC.Substring(5, 3)}";
             mainApplication.SelfEmployeed = a360.SelfEmployeed;
+            mainApplication.TaxResidence = "";
+
+            string temp = "";
             foreach (TaxResidency country in a360.TaxResidencyList)
             {
                 if (country.Selected)
                 {
-                    mainApplication.TaxResidence += country.Country + ", ";
+                    temp += country.Country + ", ";
                 }
             }
-            mainApplication.TaxResidence.Substring(0, mainApplication.TaxResidence.Length - 2);
+            temp = temp.Substring(0, temp.Length - 2);
+            mainApplication.TaxResidence = temp;
 
             HttpContext.Session.SetObjectAsJson("ApplicantsDetails", mainApplication);
 
@@ -605,9 +609,9 @@ namespace OCBC_Joint_Account_Application.Controllers
             ViewData["DateOfBirth"] = ac360.DateOfBirth.Date.ToString("d");
 
             HttpContext.Session.SetObjectAsJson("ApplicantsDetails", ac360);
-            ac360.Occupation = Occupation[Convert.ToInt32(ac360.Occupation)-1].Text;
-            ac360.AnnualIncome = AnnualIncome[Convert.ToInt32(ac360.AnnualIncome)-1].Text;
-            ac360.DateOfBirth = ac360.DateOfBirth.Date;
+            //ac360.Occupation = Occupation[Convert.ToInt32(ac360.Occupation)-1].Text;
+            //ac360.AnnualIncome = AnnualIncome[Convert.ToInt32(ac360.AnnualIncome)-1].Text;
+            //ac360.DateOfBirth = ac360.DateOfBirth.Date;
             return View(ac360);
         }
 
