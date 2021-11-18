@@ -215,19 +215,21 @@ footer li {
 }
 
 /**QR*/
-.qr {
-    margin-top: 50px;
+
+.qr{
+    margin-top: 80px;
 }
 
 .qr .qr-code {
+    margin-top: -50px;
     text-align: right;
     margin-left: -80px;
 }
 
 .qr h1 {
     margin-bottom: 50px;
-    text-align: center;
-    font-size: 18px;
+    text-align: left;
+    font-size: 22px;
     color: rgb(92, 92, 92);
     font-weight: bold;
 }
