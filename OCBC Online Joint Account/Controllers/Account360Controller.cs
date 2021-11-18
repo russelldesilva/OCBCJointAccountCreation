@@ -1071,9 +1071,21 @@ namespace OCBC_Joint_Account_Application.Controllers
             HttpContext.Session.SetString("PageType", "Account360");
             Account360ViewModel ac360 = new Account360ViewModel();
             ac360 = HttpContext.Session.GetObjectFromJson<Account360ViewModel>("ApplicantsDetails");
-
-            
-
+            if (HttpContext.Session.GetString("JAC") != null)
+            {
+                foreach (Application a in applicationContext.GetApplicationByJointApplicantionCode(HttpContext.Session.GetString("JAC")))
+                {
+                    if (a.Status == "Successful")
+                    {
+                        ViewData["Status"] = "Successful";
+                    }
+                    else if (a.Status == "To Review")
+                    {
+                        ViewData["Status"] = "To Review";
+                    }
+                }
+                ViewData["Time"] = DateTime.Today;
+            }
             ViewData["Name"] = ac360.JointApplicantName;
             ViewData["Email"] = ac360.Email;
             ViewData["ContactNo"] = ac360.ContactNo;
