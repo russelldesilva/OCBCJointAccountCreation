@@ -1133,6 +1133,8 @@ namespace OCBC_Joint_Account_Application.Controllers
             Account360ViewModel ac360 = new Account360ViewModel();
             ac360 = HttpContext.Session.GetObjectFromJson<Account360ViewModel>("ApplicantsDetails");
 
+            
+
             ViewData["Name"] = ac360.JointApplicantName;
             ViewData["Email"] = ac360.Email;
             ViewData["ContactNo"] = ac360.ContactNo;
