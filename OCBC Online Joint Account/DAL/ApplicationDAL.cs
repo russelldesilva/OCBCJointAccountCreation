@@ -93,11 +93,18 @@ namespace OCBC_Joint_Account_Application.DAL
         {
             SqlCommand cmd = conn.CreateCommand();
             cmd.CommandText = @"Update Application SET CustNRIC = @nric, AccountTypeId = @typeID, Status = @status, 
-                                        JointApplicationCode = @code, JointApplicationID = @jointID WHERE JointApplicationCode = @code";
+                                        JointApplicationCode = @code, JointApplicationID = @jointID WHERE CustNRIC = @nric";
             cmd.Parameters.AddWithValue("@nric", application.CustNRIC);
             cmd.Parameters.AddWithValue("@typeID", application.AccountTypeID);
             cmd.Parameters.AddWithValue("@status", application.Status);
-            cmd.Parameters.AddWithValue("@code", application.JointApplicantCode);
+            if (application.JointApplicantCode == null)
+            {
+                cmd.Parameters.AddWithValue("@code", DBNull.Value);
+            }
+            else
+            {
+                cmd.Parameters.AddWithValue("@code", application.JointApplicantCode);
+            }
             cmd.Parameters.AddWithValue("@jointID", application.JointApplicantID);
             conn.Open();
             int count = cmd.ExecuteNonQuery();
@@ -105,9 +112,24 @@ namespace OCBC_Joint_Account_Application.DAL
             return count;
         }
 
-        public string GetiUsername()
+        public string GetiUsername(int jointAppID)
         {
-            return null;
+            SqlCommand cmd = conn.CreateCommand();
+
+            cmd.CommandText = @"SELECT iBUsername FROM Application a INNER JOIN Customer c ON a.CustNRIC = c.CustNRIC WHERE JointApplicationID = @selectedJointApplicationID";
+            cmd.Parameters.AddWithValue("@selectedJointApplicationID", jointAppID);
+
+            conn.Open();
+            SqlDataReader reader = cmd.ExecuteReader();
+            reader.Read();
+
+            string iBusername = !reader.IsDBNull(0) ? reader.GetString(0) : null;
+
+            reader.Close();
+
+            conn.Close();
+            
+            return iBusername;
         }
     }
 }
