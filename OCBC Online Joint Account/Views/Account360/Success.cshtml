@@ -6,21 +6,23 @@
 
 @if (Context.Session.GetString("JAC") != null)
 {
-    <div style="margin: 50px 25% 0 25%; text-align: center;">
-        <img src="~/image/tick-symbol.png" style="height: 110px">
-        <div style="margin-top: 40px">
-            <h1 style="font-size: 32px;font-weight: bold;">Successful</h1>
-        </div>
-        <div style="margin-top: 80px">
-            <h1 style="font-size: 29px;font-weight: bold;">Please wait for your bank to inform you.</h1>
-            <h1 style="font-size: 22px;font-weight: lighter; margin-top: 30px;">You have successfully create your application.</h1>
-        </div>
-
-        <form>
-            <div style="margin-top: 60px;">
-                <input class="resend" type="submit" value="Close" asp-controller="Home" asp-action="Index">
+    <div style="padding: 0 25% 0 25%; border-width: 3px; border-color: black; text-align: center; margin-top: 50px;">
+        <h1 style="font-size: 30px; text-transform: uppercase; font-weight: bolder;">OCBC Online Joint-Account Opening</h1>
+        <div style="border-style: solid; border-width: 1px; border-color: black; margin-top: 50px;">
+            <div style="background-color: green;color: whitesmoke; padding: 10px 20px 5px 20px;">
+                <h2 style="font-size: 20px;">We have received your application</h2>
             </div>
-        </form>
+            <div style="margin-top: 80px; text-align: center;">
+                <h3 style="font-size: 20px; font-weight: lighter;">Your account opening is</h3>
+                <h1 style="font-weight: bolder; text-transform: uppercase;">@ViewData["Status"]</h1>
+                <h3 style="font-size: 20px; font-weight: lighter; margin-top: 50px;">Thank you for choosing OCBC 360 Joint-Account</h3>
+                <h4>@ViewData["Time"]</h4>
+            </div>
+            <div style="background-color: whitesmoke; padding: 20px 30px 20px 30px; margin: 70px 15px 15px 15px; text-align: left;">
+                <h6 style="font-weight: lighter">What's Next?</h6>
+                <h6 style="font-weight: lighter">(1) You will receive an SMS and Email informing you of your account details and setting up your iBanking </h6>
+            </div>
+        </div>
     </div>
 }
 else
