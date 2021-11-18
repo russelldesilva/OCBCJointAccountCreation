@@ -154,17 +154,17 @@ namespace OCBC_Joint_Account_Application.Controllers
             Random rnd = new Random();
             int OTP = rnd.Next(100000, 999999);
 
-          /**
-            //OTP API by Twilio
-            var accountSid = "AC900a65cf35b142ba9d231968f7975595";
-            var authToken = "900f7cf484248daa85bccb918be28908";
-            TwilioClient.Init(accountSid, authToken);
-            var messageOptions = new CreateMessageOptions(new PhoneNumber("+65" + mobileNum));
-            messageOptions.MessagingServiceSid = "MG9dc1a6ffbac9048864eaadfda51637fc";
-            messageOptions.Body = "Your OCBC OTP is " + OTP;
-            var message = MessageResource.Create(messageOptions);
-            Console.WriteLine(message.Body);
-          **/
+            /**
+              //OTP API by Twilio
+              var accountSid = "AC900a65cf35b142ba9d231968f7975595";
+              var authToken = "900f7cf484248daa85bccb918be28908";
+              TwilioClient.Init(accountSid, authToken);
+              var messageOptions = new CreateMessageOptions(new PhoneNumber("+65" + mobileNum));
+              messageOptions.MessagingServiceSid = "MG9dc1a6ffbac9048864eaadfda51637fc";
+              messageOptions.Body = "Your OCBC OTP is " + OTP;
+              var message = MessageResource.Create(messageOptions);
+              Console.WriteLine(message.Body);
+            **/
             HttpContext.Session.SetInt32("OTP", OTP);
             ViewData["MobileNum"] = mobileNum;
 
@@ -365,6 +365,10 @@ namespace OCBC_Joint_Account_Application.Controllers
 
             HttpContext.Session.SetObjectAsJson("ApplicantsDetails", mainApplication);
 
+            if (HttpContext.Session.GetString("JAC") != null)
+            {
+                return RedirectToAction("Verify", "Account360");
+            }
             return RedirectToAction("JointApplicant", "Account360");
         }
 
@@ -906,7 +910,7 @@ namespace OCBC_Joint_Account_Application.Controllers
             ResetQR();
             HttpContext.Session.SetString("PageType", "Account360");
             checkJAC(HttpContext.Session.GetString("JAC")); // Check Main or Joint       
-            
+
             Account360ViewModel ac360 = new Account360ViewModel();
             ac360 = HttpContext.Session.GetObjectFromJson<Account360ViewModel>("ApplicantsDetails");
             if (HttpContext.Session.GetString("ApplyMethod") != "QR" && HttpContext.Session.GetString("ApplyMethod") != "iBanking")
@@ -916,6 +920,20 @@ namespace OCBC_Joint_Account_Application.Controllers
             }
 
             ViewData["DateOfBirth"] = ac360.DateOfBirth.Date.ToString("d");
+
+            List<Application> mainApplication = applicationContext.GetApplicationByJointApplicantionCode(HttpContext.Session.GetString("JAC"));
+            // Setting applicationID with JAC
+            foreach (Application a in mainApplication)
+            {
+                foreach (Customer c in customerContext.GetCustomerByNRIC(a.CustNRIC))
+                {
+                    ac360.SalutationJoint = c.Salutation;
+                    ac360.JointApplicantName = c.CustName;
+                    ac360.JointApplicantNRIC = c.CustNRIC;
+                    ac360.Email = c.Email;
+                    ac360.ContactNo = c.ContactNo;
+                }
+            }
 
             HttpContext.Session.SetObjectAsJson("ApplicantsDetails", ac360);
             return View(ac360);
@@ -927,17 +945,21 @@ namespace OCBC_Joint_Account_Application.Controllers
         {
             string JointAC = HttpContext.Session.GetString("JAC");
 
+            // This line of code to purely get the date of birth because it does not exisit in the post page of verify
+            Account360ViewModel ac360 = new Account360ViewModel();
+            ac360 = HttpContext.Session.GetObjectFromJson<Account360ViewModel>("ApplicantsDetails");
+
             // Only scan and new singpass is add, rest update
             // Convert gender to single char
-            if (a360.Gender == "Male")
+            if (ac360.Gender == "Male")
             {
-                a360.Gender = "M";
+                ac360.Gender = "M";
             }
             else
             {
-                a360.Gender = "F";
+                ac360.Gender = "F";
             }
-    
+
             // Add application table
             Application newApplication = new Application();
 
@@ -950,7 +972,7 @@ namespace OCBC_Joint_Account_Application.Controllers
 
             //custApplication table stuff
             custApp.CustNRIC = a360.NRIC;
-            
+
             custApp.CustProofOfResidence = HttpContext.Session.GetString("FilePathResidence");
             // Check if foreign
             if (Convert.ToBoolean(ViewData["IsSingaporean"]) == true)
@@ -968,7 +990,7 @@ namespace OCBC_Joint_Account_Application.Controllers
             // Add to customer table
             if (HttpContext.Session.GetString("ApplyMethod") == "Scan" || Convert.ToString(TempData["CustSingpass"]) == "newCustomer")
             {
-                customerContext.Add(a360);
+                customerContext.Add(ac360);
             }
 
             newApplication.Status = "Pending";
@@ -996,25 +1018,23 @@ namespace OCBC_Joint_Account_Application.Controllers
                 foreach (Application a in mainApplication)
                 {
                     custApp.ApplicationID = a.ApplicationID;
-                    applicationContext.Update(a);
                     newApplication.JointApplicantID = a.ApplicationID;
                     a.JointApplicantID = applicationContext.Add(newApplication);
                     applicationContext.Update(a);
                 }
-                
 
-                if (custApp.JointApplicantNRIC == a360.NRIC)
+
+                if (custApp.JointApplicantNRIC == ac360.NRIC)
                 {
                     mainApplication[0].Status = "Successful";
                 }
                 else
                 {
                     ViewData["VerificationError"] = "Something went wrong. Please check your details and restart this process or call XXXX XXXXX";
-                    return View(a360);  
+                    return View(ac360);
                 }
-            } 
-            // Add Application Tabl
-           
+            }
+
             // Application Table
 
             // To add the application ID for custApplication
@@ -1029,6 +1049,7 @@ namespace OCBC_Joint_Account_Application.Controllers
                 }
             }
             custApplicationContext.Add(custApp);
+
 
             // Create Bank Account && CustomerAccounts once status = successful.
 

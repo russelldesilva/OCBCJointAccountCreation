@@ -241,15 +241,15 @@
                 }
 
                 <div class="margin">
-                    @if (Context.Session.GetString("JAC") != null)
-                    {
-                        <input class="resend" type="submit" value="Next" asp-controller="Account360" asp-action="Verify">
-                    }
-                    else
-                    {
+                    @*@if (Context.Session.GetString("JAC") != null)
+                            {
+                                <input class="resend" type="submit" value="Next" asp-controller="Account360" asp-action="Verify">
+                            }
+                            else
+                            {
                         <input class="resend" type="submit" value="Next" asp-controller="Account360" asp-action="Form">
-                    }
-
+                            }*@
+                    <input class="resend" type="submit" value="Next" asp-controller="Account360" asp-action="Form">
                 </div>
             </div>
     </form>
