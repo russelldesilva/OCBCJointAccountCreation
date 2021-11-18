@@ -43,53 +43,90 @@
     </div>
 </div>
 <form asp-action="UploadForeign" enctype="multipart/form-data">
-    <div class="container d-flex">
-        <div class="container col-md-8" style="max-width:65%; margin-left:0; margin-top: 150px">
-            <div class="container">
-                <div class="row">
-                    <div class="card text-center col-md-6 shadow-sm">
-                        <div class="card-body d-flex flex-column">
-                            <img class="card-img-top" src="~/image/no-image.png" alt="Card image cap">
-                            <h5 class="card-title">Foreign Pass (Front)</h5>
-                            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                            <input type="file" asp-for="CustForeignPassFrontUpload" accept="image/png, image/gif, image/jpeg" required style="margin-bottom:20px;" /><!--Upload btn-->
-                        </div>
+
+    <div class="container-fluid " style="margin-top: 100px">
+        <h1 style="font-size: 17px; font-weight: bolder; color: black; margin-top: 50px">
+            Upload Documents for Foreigners:
+        </h1>
+        <div class="row" style="margin-top: 50px;">
+            <div class="col-md-8">
+                <div class="row" style="margin-top: 30px">
+                    <div class="col-md-1" style="text-align: right;">
+                        <img src="~/image/img-file-icon.png" style="height:55px;">
                     </div>
-                    <div class="card text-center col-md-6 shadow-sm">
-                        <div class="card-body d-flex flex-column">
-                            <img class="card-img-top" src="~/image/no-image.png" alt="Card image cap">
-                            <h5 class="card-title">Foreign Pass (Back)</h5>
-                            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                            <input type="file" asp-for="CustForeignPassBackUpload" accept="image/png, image/gif, image/jpeg" required style="margin-bottom:20px;" /><!--Upload btn-->
-                        </div>
+                    <div class="col-md-7">
+                        <h1 style="font-size: 17px; font-weight: bolder; color: black ;">
+                            Photo Identity (Front)
+                        </h1>
+                        <h2 style="font-size: 17px; font-weight: lighter; color: black ;">
+                            Please make sure full front of Identity Card is in frame.
+                        </h2>
+                    </div>
+                    <div class="col-md-4">
+                        <input type="file" asp-for="CustForeignPassFrontUpload" accept="image/png, image/gif, image/jpeg" required style="margin-bottom:20px;" /><!--Upload btn-->
                     </div>
                 </div>
-                <div class="row">
-                    <div class="card text-center col-md-6 shadow-sm">
-                        <div class="card-body d-flex flex-column">
-                            <img class="card-img-top" src="~/image/no-image.png" alt="Card image cap">
-                            <h5 class="card-title">Residential Address</h5>
-                            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                            <input type="file" asp-for="CustProofOfResidenceUpload" accept="image/png, image/gif, image/jpeg" required style="margin-bottom:20px;" /><!--Upload btn-->
-                        </div>
+
+                <div class="row" style="margin-top: 30px">
+                    <div class="col-md-1" style="text-align: right;">
+                        <img src="~/image/img-file-icon.png" style="height:55px;">
                     </div>
-                    <div class="card text-center col-md-6 shadow-sm">
-                        <div class="card-body d-flex flex-column">
-                            <img class="card-img-top" src="~/image/no-image.png" alt="Card image cap">
-                            <h5 class="card-title">Passport</h5>
-                            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                            <input type="file" asp-for="CustPassportUpload" accept="image/png, image/gif, image/jpeg" required style="margin-bottom:20px;" /><!--Upload btn-->
-                        </div>
+                    <div class="col-md-7">
+                        <h1 style="font-size: 17px; font-weight: bolder; color: black ;">
+                            Photo Identity (Back)
+                        </h1>
+                        <h2 style="font-size: 17px; font-weight: lighter; color: black ;">
+                            Please make sure full back of Identity Card is in frame.
+                        </h2>
                     </div>
+                    <div class="col-md-4">
+                        <input type="file" asp-for="CustForeignPassBackUpload" accept="image/png, image/gif, image/jpeg" required style="margin-bottom:20px;" /><!--Upload btn-->
+                    </div>
+                </div>
+                <div class="row" style="margin-top: 30px">
+                    <div class="col-md-1" style="text-align: right;">
+                        <img src="~/image/img-file-icon.png" style="height:55px;">
+                    </div>
+                    <div class="col-md-7">
+                        <h1 style="font-size: 17px; font-weight: bolder; color: black ;">
+                            Residential Address
+                        </h1>
+                        <h2 style="font-size: 17px; font-weight: lighter; color: black ;">
+                            Only Utilities, Phone Bill is accepted. <br>
+                            Please make sure the full document is in frame.
+                        </h2>
+                    </div>
+                    <div class="col-md-4">
+                        <input type="file" asp-for="CustProofOfResidenceUpload" accept="image/png, image/gif, image/jpeg" required style="margin-bottom:20px;" /><!--Upload btn-->
+                    </div>
+                </div>
+                <div class="row" style="margin-top: 30px">
+                    <div class="col-md-1" style="text-align: right;">
+                        <img src="~/image/img-file-icon.png" style="height:55px;">
+                    </div>
+                    <div class="col-md-7">
+                        <h1 style="font-size: 17px; font-weight: bolder; color: black ;">
+                            Passport
+                        </h1>
+                        <h2 style="font-size: 17px; font-weight: lighter; color: black ;">
+                            Please make sure the full passport is in frame.
+                        </h2>
+                    </div>
+                    <div class="col-md-4">
+                        <input type="file" asp-for="CustPassportUpload" accept="image/png, image/gif, image/jpeg" required style="margin-bottom:20px;" /><!--Upload btn-->
+                    </div>
+                </div>
+
+                <div style="margin-top: 60px; text-align:left;">
+                    <a style="color: black; font-weight: bolder; font-size: 17px;" asp-action="Upload">Singaporean Document Upload</a>
+                    <br /><br />
+                    <input type="submit" class="btn btn-primary" asp-action="UploadForeign" value="Next" style=" margin-left: 50px; height: 50px; background-color: transparent; border-color: red; font-weight: bold; padding: 10px 30px 10px 30px; color: red; font-size: 17px;" />
                 </div>
             </div>
-        </div>
-        <div class="container col-md-4">
-            @{
-                @await Html.PartialAsync("_AccountInfoCard.cshtml"); }
+            <div class="col-md-4" style="margin-top: -250px">
+                @{
+                    @await Html.PartialAsync("_AccountInfoCard.cshtml"); }
+            </div>
         </div>
     </div>
-    <br />
-    <a asp-action="Upload">Singaporean File Upload</a>
-    <input type="submit" class="btn btn-primary" asp-action="UploadForeign" value="Next" />
 </form>

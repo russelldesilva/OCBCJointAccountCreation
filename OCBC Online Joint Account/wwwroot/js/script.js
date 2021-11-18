@@ -12,3 +12,10 @@ $("div").on("click", "#ButtonDisable_Click", function () {
         $("#ButtonDisabled").modal("hide");
     }, 1000);
 });
+
+
+$(".pb-3").show();
+setTimeout(function () {
+    $(".loader").fadeOut("slow");
+}, 3000);
+
