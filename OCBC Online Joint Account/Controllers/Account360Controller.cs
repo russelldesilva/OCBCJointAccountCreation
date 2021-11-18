@@ -1000,9 +1000,10 @@ namespace OCBC_Joint_Account_Application.Controllers
                 string JAC = "J" + DateTime.Today.Day + rndNum1 + a360.NRIC.Substring(5, 3);
 
                 TempData["JAC"] = JAC;
-                //Email API
-                RunAsync(a360.Salutation, a360.FullName, a360.Email, JAC, a360.SalutationJoint, a360.JointApplicantName).Wait();
 
+                //Email API
+                //RunAsync(a360.Salutation, a360.FullName, a360.Email, JAC, a360.SalutationJoint, a360.JointApplicantName).Wait();
+                TempData["EmailAPI"] = "https://localhost:44381/Account360/ApplyOnline?AT=2&JAC=" + JAC;
                 newApplication.JointApplicantCode = JAC;
                 custApp.JointApplicantName = a360.JointApplicantName;
                 custApp.JointApplicantNRIC = a360.JointApplicantNRIC;
@@ -1078,9 +1079,6 @@ namespace OCBC_Joint_Account_Application.Controllers
             }
 
             custApplicationContext.Add(custApp);
-
-
-
             return RedirectToAction("Success", "Account360");
         }
 
