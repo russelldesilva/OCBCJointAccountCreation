@@ -188,9 +188,28 @@ namespace OCBC_Joint_Account_Application.Controllers
             checkJAC(HttpContext.Session.GetString("JAC"));
             HttpContext.Session.SetString("PageType", "Account360");
 
+            
             if (a360.OTP == HttpContext.Session.GetInt32("OTP"))
             {
-                return RedirectToAction("Form", "Account360");
+                if (Convert.ToString(TempData["CustSingpass"]) == "existingCustomer")
+                {
+                    TempData["Singpass"] = "existingCustomer";
+                    // joint
+                    if (HttpContext.Session.GetString("JAC") != null)
+                    {
+                        return RedirectToAction("Verify", "Account360");
+                    }
+                    // main
+                    else
+                    {
+                        return RedirectToAction("JointApplicant", "Account360");
+                    }
+                }
+                else
+                {
+                    TempData["Singpass"] = "newCustomer";
+                    return RedirectToAction("Form", "Account360");
+                }
             }
 
             ViewData["Invalid"] = "Invalid OTP";
@@ -260,6 +279,7 @@ namespace OCBC_Joint_Account_Application.Controllers
                         ac360.EmailAddress = sp.Email;
                         ac360.MobileNum = sp.MobileNum;
                         ac360.Address = sp.RegisteredAddress;
+                        ac360.Employer = sp.EmployerName;
                     }
                 }
                 return View(ac360);
@@ -784,7 +804,7 @@ namespace OCBC_Joint_Account_Application.Controllers
 
         public ActionResult JointApplicant()
         {
-            if (HttpContext.Session.GetString("JAC") != null && (HttpContext.Session.GetString("ApplyMethod") == "QR" || HttpContext.Session.GetString("ApplyMethod") == "iBanking"))
+            if (HttpContext.Session.GetString("JAC") != null && (HttpContext.Session.GetString("ApplyMethod") == "QR" || HttpContext.Session.GetString("ApplyMethod") == "iBanking" || Convert.ToString(TempData["custSingpass"]) == "existingCustomer"))
             {
                 checkJAC(HttpContext.Session.GetString("JAC"));
                 Account360ViewModel ac360 = new Account360ViewModel();
@@ -838,8 +858,9 @@ namespace OCBC_Joint_Account_Application.Controllers
         {
             Account360ViewModel ac360 = new Account360ViewModel();
 
-            if (HttpContext.Session.GetString("ApplyMethod") == "QR" || HttpContext.Session.GetString("ApplyMethod") == "iBanking")
+            if (HttpContext.Session.GetString("ApplyMethod") == "QR" || HttpContext.Session.GetString("ApplyMethod") == "iBanking" || Convert.ToString(TempData["CustSingpass"]) == "existingCustomer")
             {
+                TempData["CustSingass"] = "existingCustomer";
                 foreach (Customer c in customerContext.GetCustomerByNRIC(HttpContext.Session.GetString("iBankingLogin")))
                 {
                     ac360.NRIC = c.CustNRIC;
@@ -883,7 +904,7 @@ namespace OCBC_Joint_Account_Application.Controllers
 
             Account360ViewModel ac360 = new Account360ViewModel();
             ac360 = HttpContext.Session.GetObjectFromJson<Account360ViewModel>("ApplicantsDetails");
-            if (HttpContext.Session.GetString("ApplyMethod") != "QR" && HttpContext.Session.GetString("ApplyMethod") != "iBanking")
+            if (HttpContext.Session.GetString("ApplyMethod") != "QR" && HttpContext.Session.GetString("ApplyMethod") != "iBanking" && Convert.ToString(TempData["custSingpass"]) != "existingCustomer" )
             {
                 ac360.Occupation = Occupation[(Convert.ToInt32(ac360.Occupation) - 1)].Text;
                 ac360.AnnualIncome = AnnualIncome[(Convert.ToInt32(ac360.AnnualIncome) - 1)].Text;
@@ -1043,7 +1064,6 @@ namespace OCBC_Joint_Account_Application.Controllers
                 
             }
 
-            // Application Table
 
             // To add the application ID for custApplication
             if (JointAC == null)
@@ -1060,8 +1080,6 @@ namespace OCBC_Joint_Account_Application.Controllers
             custApplicationContext.Add(custApp);
 
 
-
-            // Create Bank Account && CustomerAccounts once status = successful.
 
             return RedirectToAction("Success", "Account360");
         }
