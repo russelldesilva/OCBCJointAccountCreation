@@ -105,5 +105,9 @@ namespace OCBC_Joint_Account_Application.DAL
             return count;
         }
 
+        public string GetiUsername()
+        {
+            return null;
+        }
     }
 }

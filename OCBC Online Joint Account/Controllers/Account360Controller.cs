@@ -403,7 +403,7 @@ namespace OCBC_Joint_Account_Application.Controllers
                     string fileExt = Path.GetExtension(custApplication.CustProofOfResidenceUpload.FileName);
                     uploadedResidentialProof = String.Format("residence_proof" + fileExt);
                     string savePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\applicationdocs\\", uploadedResidentialProof);
-                    HttpContext.Session.SetString("FilePathResidence", savePath);
+                    HttpContext.Session.SetString("FilePathResidence", uploadedResidentialProof);
                     using (var fileSteam = new FileStream(savePath, FileMode.Create))
                     {
                         await custApplication.CustProofOfResidenceUpload.CopyToAsync(fileSteam);
@@ -430,7 +430,7 @@ namespace OCBC_Joint_Account_Application.Controllers
                     string fileExt = Path.GetExtension(custApplication.CustNRICFrontUpload.FileName);
                     uploadedNRICFront = String.Format("nric_front" + fileExt);
                     string savePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\applicationdocs\\", uploadedNRICFront);
-                    HttpContext.Session.SetString("FilePathFront", savePath);
+                    HttpContext.Session.SetString("FilePathFront", uploadedNRICFront);
                     using (var fileSteam = new FileStream(savePath, FileMode.Create))
                     {
                         await custApplication.CustNRICFrontUpload.CopyToAsync(fileSteam);
@@ -457,7 +457,7 @@ namespace OCBC_Joint_Account_Application.Controllers
                     string fileExt = Path.GetExtension(custApplication.CustNRICBackUpload.FileName);
                     uploadedNRICBack = String.Format("nric_back" + fileExt);
                     string savePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\applicationdocs\\", uploadedNRICBack);
-                    HttpContext.Session.SetString("FilePathBack", savePath);
+                    HttpContext.Session.SetString("FilePathBack", uploadedNRICBack);
                     using (var fileSteam = new FileStream(savePath, FileMode.Create))
                     {
                         await custApplication.CustNRICBackUpload.CopyToAsync(fileSteam);
@@ -589,7 +589,7 @@ namespace OCBC_Joint_Account_Application.Controllers
                     string fileExt = Path.GetExtension(custApplication.CustProofOfResidenceUpload.FileName);
                     uploadedResidentialProof = String.Format("residence_proof" + fileExt);
                     string savePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\applicationdocs\\", uploadedResidentialProof);
-                    HttpContext.Session.SetString("FilePathResidence", savePath);
+                    HttpContext.Session.SetString("FilePathResidence", uploadedResidentialProof);
                     using (var fileSteam = new FileStream(savePath, FileMode.Create))
                     {
                         await custApplication.CustProofOfResidenceUpload.CopyToAsync(fileSteam);
@@ -616,7 +616,7 @@ namespace OCBC_Joint_Account_Application.Controllers
                     string fileExt = Path.GetExtension(custApplication.CustForeignPassFrontUpload.FileName);
                     uploadedForeignPassFront = String.Format("foreign_pass_front" + fileExt);
                     string savePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\applicationdocs\\", uploadedForeignPassFront);
-                    HttpContext.Session.SetString("FilePathFront", savePath);
+                    HttpContext.Session.SetString("FilePathFront", uploadedForeignPassFront);
                     using (var fileSteam = new FileStream(savePath, FileMode.Create))
                     {
                         await custApplication.CustForeignPassFrontUpload.CopyToAsync(fileSteam);
@@ -643,7 +643,7 @@ namespace OCBC_Joint_Account_Application.Controllers
                     string fileExt = Path.GetExtension(custApplication.CustForeignPassBackUpload.FileName);
                     uploadedForeignPassBack = String.Format("foreign_pass_back" + fileExt);
                     string savePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\applicationdocs\\", uploadedForeignPassBack);
-                    HttpContext.Session.SetString("FilePathBack", savePath);
+                    HttpContext.Session.SetString("FilePathBack", uploadedForeignPassBack);
                     using (var fileSteam = new FileStream(savePath, FileMode.Create))
                     {
                         await custApplication.CustForeignPassBackUpload.CopyToAsync(fileSteam);
@@ -670,7 +670,7 @@ namespace OCBC_Joint_Account_Application.Controllers
                     string fileExt = Path.GetExtension(custApplication.CustPassportUpload.FileName);
                     uploadedPassport = String.Format("passport" + fileExt);
                     string savePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\applicationdocs\\", uploadedPassport);
-                    HttpContext.Session.SetString("FilePathResidence", savePath);
+                    HttpContext.Session.SetString("FilePathResidence", uploadedPassport);
                     using (var fileSteam = new FileStream(savePath, FileMode.Create))
                     {
                         await custApplication.CustPassportUpload.CopyToAsync(fileSteam);
@@ -921,17 +921,20 @@ namespace OCBC_Joint_Account_Application.Controllers
 
             ViewData["DateOfBirth"] = ac360.DateOfBirth.Date.ToString("d");
 
-            List<Application> mainApplication = applicationContext.GetApplicationByJointApplicantionCode(HttpContext.Session.GetString("JAC"));
-            // Setting applicationID with JAC
-            foreach (Application a in mainApplication)
+            if (HttpContext.Session.GetString("JAC") != null)
             {
-                foreach (Customer c in customerContext.GetCustomerByNRIC(a.CustNRIC))
+                List<Application> mainApplication = applicationContext.GetApplicationByJointApplicantionCode(HttpContext.Session.GetString("JAC"));
+                // Setting applicationID with JAC
+                foreach (Application a in mainApplication)
                 {
-                    ac360.SalutationJoint = c.Salutation;
-                    ac360.JointApplicantName = c.CustName;
-                    ac360.JointApplicantNRIC = c.CustNRIC;
-                    ac360.Email = c.Email;
-                    ac360.ContactNo = c.ContactNo;
+                    foreach (Customer c in customerContext.GetCustomerByNRIC(a.CustNRIC))
+                    {
+                        ac360.SalutationJoint = c.Salutation;
+                        ac360.JointApplicantName = c.CustName;
+                        ac360.JointApplicantNRIC = c.CustNRIC;
+                        ac360.Email = c.Email;
+                        ac360.ContactNo = c.ContactNo;
+                    }
                 }
             }
 
@@ -1023,7 +1026,7 @@ namespace OCBC_Joint_Account_Application.Controllers
                     applicationContext.Update(a);
                 }
 
-
+                /*
                 if (custApp.JointApplicantNRIC == ac360.NRIC)
                 {
                     mainApplication[0].Status = "Successful";
@@ -1033,6 +1036,33 @@ namespace OCBC_Joint_Account_Application.Controllers
                     ViewData["VerificationError"] = "Something went wrong. Please check your details and restart this process or call XXXX XXXXX";
                     return View(ac360);
                 }
+                
+                
+                // Setting applicationID with JAC
+                foreach (Application a in mainApplication)
+                {
+                    foreach (Customer c in customerContext.GetCustomerByNRIC(a.CustNRIC))
+                    {
+                        ac360.SalutationJoint = c.Salutation;
+                        ac360.JointApplicantName = c.CustName;
+                        ac360.JointApplicantNRIC = c.CustNRIC;
+                        ac360.Email = c.Email;
+                        ac360.ContactNo = c.ContactNo;
+                    }
+                }
+
+                foreach (Application a in mainApplication)
+                {
+                    foreach (Customer c in customerContext.GetCustomerByNRIC(a.CustNRIC))
+                    {
+                        ac360.SalutationJoint = c.Salutation;
+                        ac360.JointApplicantName = c.CustName;
+                        ac360.JointApplicantNRIC = c.CustNRIC;
+                        ac360.Email = c.Email;
+                        ac360.ContactNo = c.ContactNo;
+                    }
+                }
+                */
             }
 
             // Application Table
@@ -1048,7 +1078,9 @@ namespace OCBC_Joint_Account_Application.Controllers
                     custApp.ApplicationID = a.ApplicationID;
                 }
             }
+
             custApplicationContext.Add(custApp);
+
 
 
             // Create Bank Account && CustomerAccounts once status = successful.
