@@ -100,14 +100,10 @@ namespace OCBC_Joint_Account_Application.DAL
             cmd.Parameters.AddWithValue("@code", application.JointApplicantCode);
             cmd.Parameters.AddWithValue("@jointID", application.JointApplicantID);
             conn.Open();
-            application.ApplicationID = (int)cmd.ExecuteScalar();
+            int count = cmd.ExecuteNonQuery();
             conn.Close();
-            return application.ApplicationID;
+            return count;
         }
 
-        public int GetApplicationID(string JAC)
-        {
-            return 1;
-        }
     }
 }
