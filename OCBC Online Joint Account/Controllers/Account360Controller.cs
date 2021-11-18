@@ -233,6 +233,8 @@ namespace OCBC_Joint_Account_Application.Controllers
 
             Account360ViewModel ac360 = new Account360ViewModel();
             ac360.TaxResidencyList = TaxResidencyList;
+            
+
             // Check for Singpass then run code to pull from singpass
             if (HttpContext.Session.GetString("ApplyMethod") == "Singpass")
             {
@@ -262,50 +264,9 @@ namespace OCBC_Joint_Account_Application.Controllers
                     }
                 }
                 return View(ac360);
-            }  // Else if iBanking run code to pull from iBanking
-            else if (HttpContext.Session.GetString("ApplyMethod") == "iBanking")
-            {
-                Customer iBankingDetails = HttpContext.Session.GetObjectFromJson<Customer>("iBankingDetails");
-                ac360.NRIC = iBankingDetails.CustNRIC;
-                ac360.Salutation = iBankingDetails.Salutation;
-                ac360.FullName = iBankingDetails.CustName;
-                ac360.EmailAddress = iBankingDetails.Email;
-                ac360.MobileNum = iBankingDetails.ContactNo;
-                ac360.Gender = iBankingDetails.Gender;
-                ac360.MaritialStatus = iBankingDetails.MaritialStatus;
-                ac360.Address = iBankingDetails.Address;
-                ac360.CountryOfBirth = iBankingDetails.CountryOfBirth;
-                ac360.Nationality = iBankingDetails.Nationality;
-                ac360.DateOfBirth = iBankingDetails.DateOfBirth;
-                ac360.Employer = iBankingDetails.EmployerName;
-                ac360.Occupation = iBankingDetails.Occupation;
-                int tempIncome = Convert.ToInt32(iBankingDetails.Income);
-                if (tempIncome < 30000)
-                {
-                    ac360.AnnualIncome = "1";
-                }
-                else if (tempIncome >= 30000 && tempIncome <= 49999)
-                {
-                    ac360.AnnualIncome = "2";
-                }
-                else if (tempIncome >= 50000 && tempIncome <= 99999)
-                {
-                    ac360.AnnualIncome = "3";
-                }
-                else if (tempIncome >= 100000 && tempIncome <= 149999)
-                {
-                    ac360.AnnualIncome = "4";
-                }
-                else if (tempIncome >= 150000 && tempIncome <= 199999)
-                {
-                    ac360.AnnualIncome = "5";
-                }
-                else if (tempIncome >= 200000)
-                {
-                    ac360.AnnualIncome = "6";
-                }
-                return View(ac360);
-            } // Else if Scan run code to pull from Scan
+            }  
+            
+            // Else if Scan run code to pull from Scan
             else if (HttpContext.Session.GetString("ApplyMethod") == "Scan")
             {
                 // Get data from OCR
@@ -956,6 +917,9 @@ namespace OCBC_Joint_Account_Application.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Verify(Account360ViewModel a360)
         {
+            Console.WriteLine(HttpContext.Session.GetString("ApplyMethod"));
+            Console.WriteLine(Convert.ToString(TempData["CustSingpass"]));
+
             string JointAC = HttpContext.Session.GetString("JAC");
 
             // This line of code to purely get the date of birth because it does not exisit in the post page of verify
@@ -1003,7 +967,6 @@ namespace OCBC_Joint_Account_Application.Controllers
             // Add to customer table
             if (HttpContext.Session.GetString("ApplyMethod") == "Scan" || Convert.ToString(TempData["CustSingpass"]) == "newCustomer")
             {
-                Console.WriteLine("TSET");
                 customerContext.Add(ac360);
             }
 
@@ -1109,7 +1072,21 @@ namespace OCBC_Joint_Account_Application.Controllers
             HttpContext.Session.SetString("PageType", "Account360");
             Account360ViewModel ac360 = new Account360ViewModel();
             ac360 = HttpContext.Session.GetObjectFromJson<Account360ViewModel>("ApplicantsDetails");
-
+            if (HttpContext.Session.GetString("JAC") != null)
+            {
+                foreach (Application a in applicationContext.GetApplicationByJointApplicantionCode(HttpContext.Session.GetString("JAC")))
+                {
+                    if (a.Status == "Successful")
+                    {
+                        ViewData["Status"] = "Successful";
+                    }
+                    else if (a.Status == "To Review")
+                    {
+                        ViewData["Status"] = "To Review";
+                    }
+                }
+                ViewData["Time"] = DateTime.Today;
+            }
             ViewData["Name"] = ac360.JointApplicantName;
             ViewData["Email"] = ac360.Email;
             ViewData["ContactNo"] = ac360.ContactNo;
