@@ -93,7 +93,7 @@ namespace OCBC_Joint_Account_Application.DAL
         {
             SqlCommand cmd = conn.CreateCommand();
             cmd.CommandText = @"Update Application SET CustNRIC = @nric, AccountTypeId = @typeID, Status = @status, 
-                                        JointApplicationCode = @code, JointApplicationID = @jointID WHERE JointApplicationCode = @code";
+                                        JointApplicationCode = @code, JointApplicationID = @jointID WHERE CustNRIC = @nric";
             cmd.Parameters.AddWithValue("@nric", application.CustNRIC);
             cmd.Parameters.AddWithValue("@typeID", application.AccountTypeID);
             cmd.Parameters.AddWithValue("@status", application.Status);
