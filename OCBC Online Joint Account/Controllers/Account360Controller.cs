@@ -1014,9 +1014,9 @@ namespace OCBC_Joint_Account_Application.Controllers
                 // Setting applicationID with JAC
                 foreach (Application a in mainApplication)
                 {
-                    custApp.ApplicationID = applicationContext.GetApplicationIDByNRIC(a360.NRIC);
                     newApplication.JointApplicantID = a.ApplicationID;
                     a.JointApplicantID = applicationContext.Add(newApplication);
+                    custApp.ApplicationID = (int)a.JointApplicantID;
                     applicationContext.Update(a);
 
                     // Getting iUsername of main applicant                                               // Getting iUsername of joint applicant
