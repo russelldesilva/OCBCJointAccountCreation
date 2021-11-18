@@ -131,5 +131,25 @@ namespace OCBC_Joint_Account_Application.DAL
             
             return iBusername;
         }
+
+        public int GetApplicationIDByNRIC(string NRIC)
+        {
+            SqlCommand cmd = conn.CreateCommand();
+
+            cmd.CommandText = @"SELECT ApplicationID FROM Application WHERE CustNRIC = @selectedNRIC";
+            cmd.Parameters.AddWithValue("@selectedNRIC", NRIC);
+
+            conn.Open();
+            SqlDataReader reader = cmd.ExecuteReader();
+            reader.Read();
+
+            int appID = reader.GetInt32(0);
+
+            reader.Close();
+
+            conn.Close();
+
+            return appID;
+        }
     }
 }
