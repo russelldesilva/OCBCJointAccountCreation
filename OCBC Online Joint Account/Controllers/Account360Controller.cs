@@ -130,9 +130,13 @@ namespace OCBC_Joint_Account_Application.Controllers
                 return RedirectToAction("ApplyOnline", "Account360");
             }
             checkJAC(HttpContext.Session.GetString("JAC"));
-            if (ResponseQR() == true)
+            if (ResponseQR() == "ContinueOnWeb")
             {
                 return RedirectToAction("JointApplicant", "Account360");
+            }
+            else if(ResponseQR() == "ContinueOnMobile")
+            {
+                return RedirectToAction("ContinueOnMobile", "Account360");
             }
             return View();
         }
@@ -1020,6 +1024,7 @@ namespace OCBC_Joint_Account_Application.Controllers
             // Add to customer table
             if (HttpContext.Session.GetString("ApplyMethod") == "Scan" || Convert.ToString(TempData["CustSingpass"]) == "newCustomer")
             {
+                Console.WriteLine("TSET");
                 customerContext.Add(ac360);
             }
 
@@ -1124,6 +1129,12 @@ namespace OCBC_Joint_Account_Application.Controllers
             ViewData["Name"] = ac360.JointApplicantName;
             ViewData["Email"] = ac360.Email;
             ViewData["ContactNo"] = ac360.ContactNo;
+            return View();
+        }
+
+        public ActionResult ContinueOnMobile()
+        {
+            HttpContext.Session.SetString("PageType", "Account360");
             return View();
         }
 
@@ -1233,9 +1244,10 @@ namespace OCBC_Joint_Account_Application.Controllers
             request1.AddParameter("application/json", resetQR, ParameterType.RequestBody);
             IRestResponse response = client1.Execute(request1);
         }
-        public bool ResponseQR()
+        public string ResponseQR()
         {
             //QR: Wait for response from iBanking App
+            string conti = null;
             var client = new RestClient("https://pfdocbcdb-5763.restdb.io/rest/qr-response/6191214a9402c24f00017a99");
             var request = new RestRequest(Method.GET);
             request.AddHeader("cache-control", "no-cache");
@@ -1252,9 +1264,13 @@ namespace OCBC_Joint_Account_Application.Controllers
                     HttpContext.Session.SetString("iBankingLogin", qr.custNRIC);
                     HttpContext.Session.SetString("MainApplicantNRIC", qr.mainApplicantNRIC);
                 }
-                return true;
+                conti = "ContinueOnWeb";
             }
-            return false;
+            else if(qr.hasScanned == true && qr.toRedirect == false && qr.continueMobile == true)
+            {
+                conti = "ContinueOnMobile";
+            }
+            return conti;
         }
         /*
          *	AUTHENTICATE
