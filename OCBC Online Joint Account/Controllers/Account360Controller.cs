@@ -1098,7 +1098,7 @@ namespace OCBC_Joint_Account_Application.Controllers
                         ViewData["Status"] = "To Review";
                     }
                 }
-                ViewData["Time"] = DateTime.Today;
+                ViewData["Time"] = DateTime.Now;
             }
             ViewData["Name"] = ac360.JointApplicantName;
             ViewData["Email"] = ac360.Email;
