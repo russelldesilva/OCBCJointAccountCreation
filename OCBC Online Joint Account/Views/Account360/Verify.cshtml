@@ -87,12 +87,16 @@
 </div>
 @*<h2>Code: @TempData["Code"]</h2>*@
 
-<div class="container-fluid verify">
+<div class="container-fluid">
     <form method="post">
         <div class="row">
             <div class="col-md-8">
-                <div class="cover">
-                    <h2>Verify Information</h2>
+                <div class="verify">
+                    <div class="hl"></div>
+                    <h2>VERIFY</h2>
+                    <h3>Thank you for completing the form! Review your entries below before submitting.</h3>
+                    <div class="hl"></div>
+                    <h2>PERSONAL INFORMATION</h2>
                     <label>Salutation</label>
                     <h1><input asp-for="Salutation" class="form-text" type="text" readonly></h1>
                     <label>Name</label>
@@ -119,11 +123,14 @@
                     {
                         <label>Address on NRIC is also mailing address </label>
                     }
-                    <label>Country(s) of tax residency: </label>
-                    <h1><input asp-for="TaxResidence" class="form-text-small" readonly /></h1>
-                </div>
-                <div class="cover">
-                    <h2>Employment Information</h2>
+                    @if (Context.Session.GetString("ApplyMethod") != "QR" && Context.Session.GetString("ApplyMethod") != "iBanking")
+                    {
+                        <label>Country(s) of tax residency: </label>
+                        <h1><input asp-for="TaxResidence" class="form-text" readonly /></h1>
+                    }
+
+                    <div style="border-bottom: 3px solid; width: 100px; border-width: 5px; border-color: red; margin: 60px 0 10px;"></div>
+                    <h2>EMPLOYMENT INFORMATION</h2>
                     <label>Occupation</label>
                     <h1><input asp-for="Occupation" class="form-text" type="text" readonly></h1>
                     <label>Annual Income</label>
@@ -137,23 +144,32 @@
                     {
                         <h1><input asp-for="Employer" class="form-text" type="text" readonly></h1>
                     }
-                    <label>Years in Employment</label>
-                    <h1><input asp-for="YearsInEmployment" class="form-text" type="text" required></h1>
+                    @if (Context.Session.GetString("ApplyMethod") != "QR" && Context.Session.GetString("ApplyMethod") != "iBanking")
+                    {
+                        <label>Years in Employment</label>
+                        <h1><input asp-for="YearsInEmployment" class="form-text" type="text" readonly></h1>
+                    }
+                    <div style="border-bottom: 3px solid; width: 100px; border-width: 5px; border-color: red; margin: 60px 0 10px;"></div>
+                    @if (Context.Session.GetString("JAC") == null)
+                    {
+                        <h2>JOINT APPLICANT INFORMATION</h2>
+                    }
+                    else
+                    {
+                        <h2>MAIN APPLICANT INFORMATION</h2>
+                    }
+
+                    <label>Salutation</label>
+                    <h1><input asp-for="SalutationJoint" class="form-text" type="text" readonly></h1>
+                    <label>Name</label>
+                    <h1><input asp-for="JointApplicantName" class="form-text" type="text" readonly></h1>
+                    <label>NRIC</label>
+                    <h1><input asp-for="JointApplicantNRIC" class="form-text" type="text" readonly></h1>
+                    <label>Email</label>
+                    <h1><input asp-for="Email" class="form-text" type="text" readonly></h1>
+                    <label>Contact Number</label>
+                    <h1><input asp-for="ContactNo" class="form-text" type="text" readonly></h1>
                 </div>
-                @if (Context.Session.GetString("JAC") == null)
-                {
-                    <div class="cover">
-                        <h2>Verify Joint Applicant Information</h2>
-                        <label>Salutation</label>
-                        <h1><input asp-for="SalutationJoint" class="form-text" type="text" readonly></h1>
-                        <label>Name</label>
-                        <h1><input asp-for="JointApplicantName" class="form-text" type="text" readonly></h1>
-                        <label>Email</label>
-                        <h1><input asp-for="Email" class="form-text" type="text" readonly></h1>
-                        <label>Contact Number</label>
-                        <h1><input asp-for="ContactNo" class="form-text" type="text" readonly></h1>
-                    </div>
-                }
             </div>
             <div class="col-md-4">
                 @{

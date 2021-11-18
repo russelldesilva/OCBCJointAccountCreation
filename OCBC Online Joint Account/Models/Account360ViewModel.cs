@@ -38,6 +38,7 @@ namespace OCBC_Joint_Account_Application.Models
         public bool SelfEmployeed { get; set; }
         public List<TaxResidency> TaxResidencyList { get; set; }
         public string TaxResidence { get; set; }
+        public string JointApplicantCode { get; set; }
 
 
         // Joint Applicant data
@@ -45,8 +46,7 @@ namespace OCBC_Joint_Account_Application.Models
         public string JointApplicantName { get; set; }
         public string Email { get; set; }
         public string ContactNo { get; set; }
-        public string MainApplicantName { get; set; }
-        public string JointApplicantCode { get; set; }
-        public int JointApplicantID { get; set; }
+        public string JointApplicantNRIC { get; set; }
+        
     }
 }
