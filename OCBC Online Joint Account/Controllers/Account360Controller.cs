@@ -258,6 +258,7 @@ namespace OCBC_Joint_Account_Application.Controllers
                         ac360.EmailAddress = sp.Email;
                         ac360.MobileNum = sp.MobileNum;
                         ac360.Address = sp.RegisteredAddress;
+                        ac360.Employer = sp.EmployerName;
                     }
                 }
                 return View(ac360);
