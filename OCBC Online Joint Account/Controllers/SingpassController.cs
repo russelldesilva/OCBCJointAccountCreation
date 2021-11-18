@@ -38,7 +38,7 @@ namespace OCBC_Joint_Account_Application.Controllers
                     if (HttpContext.Session.GetString("CustSingpass") == "existingCustomer")
                     {
                         Console.WriteLine(singpassLogin.NRIC);
-                        //TempData["CustSingpass"] = "existingCustomer";
+                        TempData["CustSingpass"] = "existingCustomer";
                         HttpContext.Session.SetString("iBankingLogin", singpassLogin.NRIC);
                     }
                     HttpContext.Session.SetString("Applicant", singpassLogin.NRIC);               

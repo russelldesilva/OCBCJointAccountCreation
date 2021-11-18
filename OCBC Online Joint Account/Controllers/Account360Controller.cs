@@ -127,7 +127,7 @@ namespace OCBC_Joint_Account_Application.Controllers
             checkJAC(HttpContext.Session.GetString("JAC"));
             if (ResponseQR() == "ContinueOnWeb")
             {
-                return RedirectToAction("JointApplicant", "Account360");
+                return RedirectToAction("Identity", "Account360");
             }
             else if(ResponseQR() == "ContinueOnMobile")
             {
@@ -169,11 +169,22 @@ namespace OCBC_Joint_Account_Application.Controllers
 
             //Get Mobile Number
             string mobileNum = null;
-            foreach (Singpass sp in singpassContext.GetSingpassByNRIC(HttpContext.Session.GetString("Applicant")))
+            if (HttpContext.Session.GetString("ApplyMethod") == "iBanking" || HttpContext.Session.GetString("ApplyMethod") == "QR")
             {
-                mobileNum = sp.MobileNum;
+                foreach (Customer c in customerContext.GetCustomerByNRIC(HttpContext.Session.GetString("iBankingLogin")))
+                {
+                    mobileNum = c.ContactNo;
+                }
             }
-
+            else
+            {
+                foreach (Singpass sp in singpassContext.GetSingpassByNRIC(HttpContext.Session.GetString("Applicant")))
+                {
+                    mobileNum = sp.MobileNum;
+                }
+            }
+     
+          
             //Generate 6-digit OTP
             Random rnd = new Random();
             int OTP = rnd.Next(100000, 999999);
@@ -206,7 +217,7 @@ namespace OCBC_Joint_Account_Application.Controllers
             if (a360.OTP == HttpContext.Session.GetInt32("OTP"))
             {
                 Console.WriteLine("HttpContext: " + HttpContext.Session.GetString("CustSingpass"));
-                if (HttpContext.Session.GetString("CustSingpass") == "existingCustomer")
+                if (HttpContext.Session.GetString("CustSingpass") == "existingCustomer" || HttpContext.Session.GetString("ApplyMethod") == "iBanking" || HttpContext.Session.GetString("ApplyMethod") == "QR")
                 {
                     return RedirectToAction("JointApplicant", "Account360");
                 }

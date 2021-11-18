@@ -44,6 +44,7 @@ namespace OCBC_Joint_Account_Application.Controllers
                 {
                     HttpContext.Session.SetString("ApplyMethod", "iBanking");
                     HttpContext.Session.SetString("iBankingLogin", c.CustNRIC);
+                    
                     if(HttpContext.Session.GetString("JAC") != null)
                     {
                         foreach (Application a in applicationContext.GetApplicationByJointApplicantionCode(HttpContext.Session.GetString("JAC")))
@@ -51,7 +52,8 @@ namespace OCBC_Joint_Account_Application.Controllers
                             HttpContext.Session.SetString("MainApplicantNRIC", a.CustNRIC);
                         }
                     }
-                    return RedirectToAction("JointApplicant", "Account360");
+                    return RedirectToAction("Identity", "Account360");
+                   
                 }
             }
             ViewData["iBankingError"] = "Access code or password incorrect!";
