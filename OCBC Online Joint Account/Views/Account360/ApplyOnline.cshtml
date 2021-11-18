@@ -25,7 +25,9 @@
                 <h4>Open your account instantly when you apply with Myinfo via Singpass login.</h4>
             </div>
             <div class="col-md-3">
-                <a href="~/Singpass/Login/?customer=existingCustomer"><input type="submit" class="btn myinfo-btn" value="Apply with MyInfo"></a>
+                <form method="post">
+                    <input type="submit" class="btn myinfo-btn" value="Apply with MyInfo" asp-action="ExistingCustomer">
+                </form>
             </div>
         </div>
         <div class="row">
@@ -65,7 +67,9 @@
                 <h4>Open your account instantly when you apply with Myinfo via Singpass login.</h4>
             </div>
             <div class="col-md-3">
-                <a href="~/Singpass/Login/?customer=newCustomer"><input type="submit" class="btn myinfo-btn" value="Apply with MyInfo"></a>
+                <form method="post">
+                    <input type="submit" class="btn myinfo-btn" value="Apply with MyInfo" asp-action="NewCustomer">
+                </form>
             </div>
         </div>
         <div class="row">

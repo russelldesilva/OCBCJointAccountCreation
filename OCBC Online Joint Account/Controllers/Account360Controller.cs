@@ -136,6 +136,20 @@ namespace OCBC_Joint_Account_Application.Controllers
             return View();
         }
 
+
+        [HttpPost]
+        public ActionResult ExistingCustomer()
+        {
+            HttpContext.Session.SetString("sp", "existing");
+            return RedirectToAction("Login", "Singpass");
+        }
+
+        [HttpPost]
+        public ActionResult NewCustomer()
+        {
+            ViewData["sp"] = "newCustomer";
+            return RedirectToAction("Login", "Singpass");
+        }
         /**==========================
               IDENTITY.CSHTML
         ==========================**/
