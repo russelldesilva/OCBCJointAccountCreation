@@ -49,10 +49,6 @@ namespace OCBC_Joint_Account_Application.Controllers
         private List<TaxResidency> TaxResidencyList = new List<TaxResidency>();
         private List<string> singaporean = new List<string> { "I am a Singaporean Citizen/Permanent Resident", "I am a Foreigner working/studying or residing in Singapore" };
 
-        // From your Face subscription in the Azure portal, get your subscription key and endpoint.
-        const string SUBSCRIPTION_KEY = "PASTE_YOUR_FACE_SUBSCRIPTION_KEY_HERE";
-        const string ENDPOINT = "PASTE_YOUR_FACE_ENDPOINT_HERE";
-
         public Account360Controller()
         {
             //Populate Salutation
@@ -237,6 +233,8 @@ namespace OCBC_Joint_Account_Application.Controllers
 
             Account360ViewModel ac360 = new Account360ViewModel();
             ac360.TaxResidencyList = TaxResidencyList;
+            
+
             // Check for Singpass then run code to pull from singpass
             if (HttpContext.Session.GetString("ApplyMethod") == "Singpass")
             {
@@ -265,50 +263,9 @@ namespace OCBC_Joint_Account_Application.Controllers
                     }
                 }
                 return View(ac360);
-            }  // Else if iBanking run code to pull from iBanking
-            else if (HttpContext.Session.GetString("ApplyMethod") == "iBanking")
-            {
-                Customer iBankingDetails = HttpContext.Session.GetObjectFromJson<Customer>("iBankingDetails");
-                ac360.NRIC = iBankingDetails.CustNRIC;
-                ac360.Salutation = iBankingDetails.Salutation;
-                ac360.FullName = iBankingDetails.CustName;
-                ac360.EmailAddress = iBankingDetails.Email;
-                ac360.MobileNum = iBankingDetails.ContactNo;
-                ac360.Gender = iBankingDetails.Gender;
-                ac360.MaritialStatus = iBankingDetails.MaritialStatus;
-                ac360.Address = iBankingDetails.Address;
-                ac360.CountryOfBirth = iBankingDetails.CountryOfBirth;
-                ac360.Nationality = iBankingDetails.Nationality;
-                ac360.DateOfBirth = iBankingDetails.DateOfBirth;
-                ac360.Employer = iBankingDetails.EmployerName;
-                ac360.Occupation = iBankingDetails.Occupation;
-                int tempIncome = Convert.ToInt32(iBankingDetails.Income);
-                if (tempIncome < 30000)
-                {
-                    ac360.AnnualIncome = "1";
-                }
-                else if (tempIncome >= 30000 && tempIncome <= 49999)
-                {
-                    ac360.AnnualIncome = "2";
-                }
-                else if (tempIncome >= 50000 && tempIncome <= 99999)
-                {
-                    ac360.AnnualIncome = "3";
-                }
-                else if (tempIncome >= 100000 && tempIncome <= 149999)
-                {
-                    ac360.AnnualIncome = "4";
-                }
-                else if (tempIncome >= 150000 && tempIncome <= 199999)
-                {
-                    ac360.AnnualIncome = "5";
-                }
-                else if (tempIncome >= 200000)
-                {
-                    ac360.AnnualIncome = "6";
-                }
-                return View(ac360);
-            } // Else if Scan run code to pull from Scan
+            }  
+            
+            // Else if Scan run code to pull from Scan
             else if (HttpContext.Session.GetString("ApplyMethod") == "Scan")
             {
                 // Get data from OCR
@@ -567,26 +524,6 @@ namespace OCBC_Joint_Account_Application.Controllers
                     break;
                 }
             }
-
-            //Face recognition API
-            // Authenticate.
-            IFaceClient fclient = Authenticate(ENDPOINT, SUBSCRIPTION_KEY);
-
-            // Detect - get features from faces.
-            // DetectFaceExtract(fclient, IMAGE_BASE_URL, RECOGNITION_MODEL4).Wait();
-            // Find Similar - find a similar face from a list of faces.
-            //FindSimilar(client, IMAGE_BASE_URL, RECOGNITION_MODEL4).Wait();
-            // Verify - compare two images if the same person or not.
-            //Verify(fclient, IMAGE_BASE_URL, RECOGNITION_MODEL4).Wait();
-
-            // Identify - recognize a face(s) in a person group (a person group is created in this example).
-            //IdentifyInPersonGroup(client, IMAGE_BASE_URL, RECOGNITION_MODEL4).Wait();
-            // LargePersonGroup - create, then get data.
-            //LargePersonGroup(client, IMAGE_BASE_URL, RECOGNITION_MODEL4).Wait();
-            // Group faces - automatically group similar faces.
-            //Group(client, IMAGE_BASE_URL, RECOGNITION_MODEL4).Wait();
-            // FaceList - create a face list, then get data
-
             ////Set clientOCR object to the "Scan" string to be used in Form.cshtml to parse the data from the OCR read
             HttpContext.Session.SetObjectAsJson("Scan", clientOCR);
             return RedirectToAction("Form");
@@ -979,6 +916,9 @@ namespace OCBC_Joint_Account_Application.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Verify(Account360ViewModel a360)
         {
+            Console.WriteLine(HttpContext.Session.GetString("ApplyMethod"));
+            Console.WriteLine(Convert.ToString(TempData["CustSingpass"]));
+
             string JointAC = HttpContext.Session.GetString("JAC");
 
             // This line of code to purely get the date of birth because it does not exisit in the post page of verify
@@ -1026,7 +966,6 @@ namespace OCBC_Joint_Account_Application.Controllers
             // Add to customer table
             if (HttpContext.Session.GetString("ApplyMethod") == "Scan" || Convert.ToString(TempData["CustSingpass"]) == "newCustomer")
             {
-                Console.WriteLine("TSET");
                 customerContext.Add(ac360);
             }
 
@@ -1280,51 +1219,6 @@ namespace OCBC_Joint_Account_Application.Controllers
                 conti = "ContinueOnMobile";
             }
             return conti;
-        }
-        /*
-         *	AUTHENTICATE
-         *	Uses subscription key and region to create a client.
-         */
-        public static IFaceClient Authenticate(string endpoint, string key)
-        {
-            return new FaceClient(new ApiKeyServiceClientCredentials(key)) { Endpoint = endpoint };
-        }
-        /* 
-         * DETECT FACES
-         * Detects features from faces and IDs them.
-         */
-        public static async Task DetectFaceExtract(IFaceClient client, string url, string recognitionModel)
-        {
-            Console.WriteLine("========DETECT FACES========");
-            Console.WriteLine();
-
-            // Create a list of images
-            List<string> imageFileNames = new List<string>
-                    {
-                        "detection1.jpg",    // single female with glasses
-                        // "detection2.jpg", // (optional: single man)
-                        // "detection3.jpg", // (optional: single male construction worker)
-                        // "detection4.jpg", // (optional: 3 people at cafe, 1 is blurred)
-                        "detection5.jpg",    // family, woman child man
-                        "detection6.jpg"     // elderly couple, male female
-                    };
-
-            foreach (var imageFileName in imageFileNames)
-            {
-                IList<DetectedFace> detectedFaces;
-
-                // Detect faces with all attributes from image url.
-                detectedFaces = await client.Face.DetectWithUrlAsync($"{url}{imageFileName}",
-                        returnFaceAttributes: new List<FaceAttributeType> { FaceAttributeType.Accessories, FaceAttributeType.Age,
-                FaceAttributeType.Blur, FaceAttributeType.Emotion, FaceAttributeType.Exposure, FaceAttributeType.FacialHair,
-                FaceAttributeType.Gender, FaceAttributeType.Glasses, FaceAttributeType.Hair, FaceAttributeType.HeadPose,
-                FaceAttributeType.Makeup, FaceAttributeType.Noise, FaceAttributeType.Occlusion, FaceAttributeType.Smile },
-                        // We specify detection model 1 because we are retrieving attributes.
-                        detectionModel: DetectionModel.Detection01,
-                        recognitionModel: recognitionModel);
-
-                Console.WriteLine($"{detectedFaces.Count} face(s) detected from image `{imageFileName}`.");
-            }
         }
     }
 }
