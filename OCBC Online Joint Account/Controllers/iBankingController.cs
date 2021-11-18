@@ -39,7 +39,6 @@ namespace OCBC_Joint_Account_Application.Controllers
             Customer c = customerContext.GetCustomerByiBUsername(customer.iBUsername);
             if (c != null)
             {
-              
                 if (customer.iBPin == c.iBPin)
                 {
                     HttpContext.Session.SetString("ApplyMethod", "iBanking");
@@ -52,6 +51,7 @@ namespace OCBC_Joint_Account_Application.Controllers
                             HttpContext.Session.SetString("MainApplicantNRIC", a.CustNRIC);
                         }
                     }
+                    HttpContext.Session.SetString("Applicant", c.CustNRIC);
                     return RedirectToAction("Identity", "Account360");
                    
                 }

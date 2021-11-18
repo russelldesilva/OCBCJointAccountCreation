@@ -16,17 +16,17 @@
     <div class="row">
         <div class="col-md-8">
             <div class="completion-bar">
-                @if (Convert.ToString(TempData["CustSingpass"]) == "existingCustomer" && Context.Session.GetString("JAC") != null)
+                @if ((Convert.ToString(TempData["CustSingpass"]) == "existingCustomer" || Context.Session.GetString("CustSingpass") == "existingCustomer") && Context.Session.GetString("JAC") != null)
                 {
-                    <div class="completion-bar-3">
-                        <progress value="1" max="3"></progress>
+                    <div class="completion-bar-2">
+                        <progress value="1" max="2"></progress>
                         <h1 class="text-1"><b>Identity Verification</b></h1>
                         <h1 class="text-2">Verify Information</h1>
                         <h2 class="circle circle-1"></h2>
                         <h2 class="circle circle-2"></h2>
                     </div>
                 }
-                else if (Convert.ToString(TempData["CustSingpass"]) == "existingCustomer")
+                else if (Convert.ToString(TempData["CustSingpass"]) == "existingCustomer" || Context.Session.GetString("CustSingpass") == "existingCustomer")
                 {
                     <div class="completion-bar-3">
                         <progress value="1" max="3"></progress>
@@ -38,18 +38,17 @@
                         <h2 class="circle circle-3"></h2>
                     </div>
                 }
-                else if (Context.Session.GetString("JAC") != null)
+                 else if ((Context.Session.GetString("ApplyMethod") == "QR" || Context.Session.GetString("ApplyMethod") == "iBanking") && Context.Session.GetString("JAC") != null)
                 {
-                    <div class="completion-bar-3">
-                        <progress value="1" max="3"></progress>
+                       <div class="completion-bar-2">
+                        <progress value="1" max="2"></progress>
                         <h1 class="text-1"><b>Identity Verification</b></h1>
-                        <h1 class="text-2">Joint-Applicant Information</h1>
-                        <h1 class="text-3">Verify Information</h1>
+                        <h1 class="text-2">Verify Information</h1>
                         <h2 class="circle circle-1"></h2>
                         <h2 class="circle circle-2"></h2>
-                        <h2 class="circle circle-3"></h2>
                     </div>
                 }
+
                 else if (Context.Session.GetString("ApplyMethod") == "Singpass")
                 {
                     <progress value="1" max="4"></progress>
@@ -74,6 +73,18 @@
                         <h2 class="circle circle-3"></h2>
                     </div>
                 }
+                else if (Context.Session.GetString("JAC") != null)
+                {
+                    <div class="completion-bar-3">
+                        <progress value="1" max="3"></progress>
+                        <h1 class="text-1"><b>Identity Verification</b></h1>
+                        <h1 class="text-2">Joint-Applicant Information</h1>
+                        <h1 class="text-3">Verify Information</h1>
+                        <h2 class="circle circle-1"></h2>
+                        <h2 class="circle circle-2"></h2>
+                        <h2 class="circle circle-3"></h2>
+                    </div>
+                }
 
             </div>
             <h1 class="page-title">Before we proceed, allow us to do a quick verification on your identity.</h1>
@@ -86,7 +97,7 @@
             <div class="sms-otp">
                 <form method="post">
                     <h5>Enter the OTP sent to +65 @ViewData["MobileNum"] </h5>
-                    <input class="textbox" type="text" placeholder="OTP" asp-for="OTP" required value="@ViewData["A"]">
+                    <input class="textbox" type="text" placeholder="OTP" asp-for="OTP" required>
                     <input class="resend" type="submit" value="Submit">
                     <h4>@ViewData["Invalid"]</h4>
                 </form>
