@@ -18,39 +18,41 @@
     <div class="container-fluid">
         <div class="vl-360"><h2>For OCBC Customers</h2></div>
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-4 col-sm-12">
                 <h3>I have a SingPass account</h3>
             </div>
-            <div class="col-md-5">
+            <div class="col-md-5 col-sm-12">
                 <h4>Open your account instantly when you apply with Myinfo via Singpass login.</h4>
             </div>
-            <div class="col-md-3">
-                <a href="~/Singpass/Login/?customer=existingCustomer"><input type="submit" class="btn myinfo-btn" value="Apply with MyInfo"></a>
+            <div class="col-md-3 col-sm-12">
+                <form method="post">
+                    <input type="submit" class="btn myinfo-btn" value="Apply with MyInfo" asp-action="ExistingCustomer">
+                </form>
             </div>
         </div>
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-4 col-sm-12">
                 <h3>I have an Internet Banking with OCBC</h3>
             </div>
-            <div class="col-md-5">
+            <div class="col-md-5 col-sm-12">
                 <h4>If you have a current or savings account with us, you can apply instantly via Internet Banking with only a few clicks.</h4>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-3 col-sm-12">
                 <a href="~/iBanking/Login" ><input type="submit" class="btn ibanking-btn" value="Apply with Internet Banking"></a>
             </div>
         </div>
 
         <div class="qr">
-            <h1>Alternatively, you can scan the QR code to complete the application</h1>
+            
             <div class="row">
                 <div class="col-md-6 qr-code">
-                    <img src="~/image/qr.png">
+                    <img src="~/image/qr.png" />
                 </div>
                 <div class="col-md-6">
+                    <h1>Alternatively, you can scan the QR code to complete the application</h1>
                     <h2>1. <a href="https://www.ocbc.com/personal-banking/digital-banking/digital-solutions-and-services">Download the OCBC Digital Banking App</a></h2>
                     <h2>2. Login to Online Banking</h2>
                     <h2>3. Click "Scan and Apply"</h2>
-
                 </div>
             </div>
         </div>
@@ -65,7 +67,9 @@
                 <h4>Open your account instantly when you apply with Myinfo via Singpass login.</h4>
             </div>
             <div class="col-md-3">
-                <a href="~/Singpass/Login/?customer=newCustomer"><input type="submit" class="btn myinfo-btn" value="Apply with MyInfo"></a>
+                <form method="post">
+                    <input type="submit" class="btn myinfo-btn" value="Apply with MyInfo" asp-action="NewCustomer">
+                </form>
             </div>
         </div>
         <div class="row">

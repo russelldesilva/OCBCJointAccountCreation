@@ -20,7 +20,6 @@ namespace OCBC_Joint_Account_Application.Controllers
 
         public ActionResult Login(string customer)
         {
-            TempData["CustSingpass"] = customer;
             HttpContext.Session.SetString("PageType", "Singpass");
             HttpContext.Session.Remove("Applicant");
             return View();
@@ -33,10 +32,13 @@ namespace OCBC_Joint_Account_Application.Controllers
             {
                 if(sp.NRIC == singpassLogin.NRIC)
                 {
-                    if (Convert.ToString(TempData["CustSingpass"]) == "existingCustomer")
+                    Console.WriteLine("HttpContext: " + HttpContext.Session.GetString("CustSingpass"));
+                    Console.WriteLine("ViewData: " + Convert.ToString(ViewData["CustSingpass"]));
+                    Console.WriteLine("TempData: " + Convert.ToString(TempData["CustSingpass"]));
+                    if (HttpContext.Session.GetString("CustSingpass") == "existingCustomer")
                     {
                         Console.WriteLine(singpassLogin.NRIC);
-                        TempData["CustSingpass"] = "existingCustomer";
+                        //TempData["CustSingpass"] = "existingCustomer";
                         HttpContext.Session.SetString("iBankingLogin", singpassLogin.NRIC);
                     }
                     HttpContext.Session.SetString("Applicant", singpassLogin.NRIC);               

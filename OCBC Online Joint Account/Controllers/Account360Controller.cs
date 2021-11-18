@@ -136,6 +136,23 @@ namespace OCBC_Joint_Account_Application.Controllers
             return View();
         }
 
+
+        [HttpPost]
+        public ActionResult ExistingCustomer()
+        {
+            //ViewData["CustSingpass"] = "existingCustomer";
+            //TempData["CustSingpass"] = "existingCustomer";
+            HttpContext.Session.SetString("CustSingpass", "existingCustomer");
+            Console.WriteLine("HttpContext: " + HttpContext.Session.GetString("CustSingpass"));
+            return RedirectToAction("Login", "Singpass");
+        }
+
+        [HttpPost]
+        public ActionResult NewCustomer()
+        {
+            HttpContext.Session.SetString("CustSingpass", "newCustomer");
+            return RedirectToAction("Login", "Singpass");
+        }
         /**==========================
               IDENTITY.CSHTML
         ==========================**/
@@ -188,23 +205,13 @@ namespace OCBC_Joint_Account_Application.Controllers
             
             if (a360.OTP == HttpContext.Session.GetInt32("OTP"))
             {
-                if (Convert.ToString(TempData["CustSingpass"]) == "existingCustomer")
+                Console.WriteLine("HttpContext: " + HttpContext.Session.GetString("CustSingpass"));
+                if (HttpContext.Session.GetString("CustSingpass") == "existingCustomer")
                 {
-                    TempData["Singpass"] = "existingCustomer";
-                    // joint
-                    if (HttpContext.Session.GetString("JAC") != null)
-                    {
-                        return RedirectToAction("Verify", "Account360");
-                    }
-                    // main
-                    else
-                    {
-                        return RedirectToAction("JointApplicant", "Account360");
-                    }
+                    return RedirectToAction("JointApplicant", "Account360");
                 }
                 else
                 {
-                    TempData["Singpass"] = "newCustomer";
                     return RedirectToAction("Form", "Account360");
                 }
             }
@@ -773,42 +780,47 @@ namespace OCBC_Joint_Account_Application.Controllers
 
         public ActionResult JointApplicant()
         {
-            if (HttpContext.Session.GetString("JAC") != null && (HttpContext.Session.GetString("ApplyMethod") == "QR" || HttpContext.Session.GetString("ApplyMethod") == "iBanking" || Convert.ToString(TempData["custSingpass"]) == "existingCustomer"))
+            if (HttpContext.Session.GetString("JAC") != null && (HttpContext.Session.GetString("ApplyMethod") == "QR" || HttpContext.Session.GetString("ApplyMethod") == "iBanking" || HttpContext.Session.GetString("CustSingpass") == "existingCustomer"))
             {
                 checkJAC(HttpContext.Session.GetString("JAC"));
                 Account360ViewModel ac360 = new Account360ViewModel();
-                foreach (Customer c in customerContext.GetCustomerByNRIC(HttpContext.Session.GetString("iBankingLogin")))
+                if (customerContext.GetCustomerByNRIC(HttpContext.Session.GetString("iBankingLogin")) != null)
                 {
-                    ac360.NRIC = c.CustNRIC;
-                    ac360.Salutation = c.Salutation;
-                    ac360.FullName = c.CustName;
-                    ac360.EmailAddress = c.Email;
-                    ac360.MobileNum = c.ContactNo;
-                    if (c.Gender == "M")
+                    foreach (Customer c in customerContext.GetCustomerByNRIC(HttpContext.Session.GetString("iBankingLogin")))
                     {
-                        ac360.Gender = "Male";
+                        ac360.NRIC = c.CustNRIC;
+                        ac360.Salutation = c.Salutation;
+                        ac360.FullName = c.CustName;
+                        ac360.EmailAddress = c.Email;
+                        ac360.MobileNum = c.ContactNo;
+                        if (c.Gender == "M")
+                        {
+                            ac360.Gender = "Male";
+                        }
+                        else
+                        {
+                            ac360.Gender = "Female";
+                        }
+                        ac360.MaritialStatus = c.MaritialStatus;
+                        ac360.Address = c.Address;
+                        ac360.CountryOfBirth = c.CountryOfBirth;
+                        ac360.Nationality = c.Nationality;
+                        ac360.DateOfBirth = c.DateOfBirth;
+                        ac360.Employer = c.EmployerName;
+                        ac360.Occupation = c.Occupation;
+                        ac360.AnnualIncome = c.Income;
                     }
-                    else
-                    {
-                        ac360.Gender = "Female";
-                    }
-                    ac360.MaritialStatus = c.MaritialStatus;
-                    ac360.Address = c.Address;
-                    ac360.CountryOfBirth = c.CountryOfBirth;
-                    ac360.Nationality = c.Nationality;
-                    ac360.DateOfBirth = c.DateOfBirth;
-                    ac360.Employer = c.EmployerName;
-                    ac360.Occupation = c.Occupation;
-                    ac360.AnnualIncome = c.Income;
                 }
-
-                foreach (Customer c in customerContext.GetCustomerByNRIC(HttpContext.Session.GetString("MainApplicantNRIC")))
+                if (HttpContext.Session.GetString("ApplyMethod") == "QR")
                 {
-                    ac360.SalutationJoint = c.Salutation;
-                    ac360.JointApplicantName = c.CustName;
-                    ac360.Email = c.Email;
-                    ac360.JointApplicantNRIC = c.CustNRIC;
-                    ac360.ContactNo = c.ContactNo;
+                    foreach (Customer c in customerContext.GetCustomerByNRIC(HttpContext.Session.GetString("MainApplicantNRIC")))
+                    {
+                        ac360.SalutationJoint = c.Salutation;
+                        ac360.JointApplicantName = c.CustName;
+                        ac360.Email = c.Email;
+                        ac360.JointApplicantNRIC = c.CustNRIC;
+                        ac360.ContactNo = c.ContactNo;
+                    }
                 }
 
                 HttpContext.Session.SetObjectAsJson("ApplicantsDetails", ac360);
@@ -827,9 +839,9 @@ namespace OCBC_Joint_Account_Application.Controllers
         {
             Account360ViewModel ac360 = new Account360ViewModel();
 
-            if (HttpContext.Session.GetString("ApplyMethod") == "QR" || HttpContext.Session.GetString("ApplyMethod") == "iBanking" || Convert.ToString(TempData["CustSingpass"]) == "existingCustomer")
+            if (HttpContext.Session.GetString("ApplyMethod") == "QR" || HttpContext.Session.GetString("ApplyMethod") == "iBanking" || HttpContext.Session.GetString("CustSingpass") == "existingCustomer")
             {
-                TempData["CustSingass"] = "existingCustomer";
+                /*TempData*/ViewData["CustSingass"] = "existingCustomer";
                 foreach (Customer c in customerContext.GetCustomerByNRIC(HttpContext.Session.GetString("iBankingLogin")))
                 {
                     ac360.NRIC = c.CustNRIC;
@@ -873,7 +885,7 @@ namespace OCBC_Joint_Account_Application.Controllers
 
             Account360ViewModel ac360 = new Account360ViewModel();
             ac360 = HttpContext.Session.GetObjectFromJson<Account360ViewModel>("ApplicantsDetails");
-            if (HttpContext.Session.GetString("ApplyMethod") != "QR" && HttpContext.Session.GetString("ApplyMethod") != "iBanking" && Convert.ToString(TempData["custSingpass"]) != "existingCustomer" )
+            if (HttpContext.Session.GetString("ApplyMethod") != "QR" && HttpContext.Session.GetString("ApplyMethod") != "iBanking" && HttpContext.Session.GetString("CustSingpass") != "existingCustomer" )
             {
                 ac360.Occupation = Occupation[(Convert.ToInt32(ac360.Occupation) - 1)].Text;
                 ac360.AnnualIncome = AnnualIncome[(Convert.ToInt32(ac360.AnnualIncome) - 1)].Text;
@@ -954,7 +966,7 @@ namespace OCBC_Joint_Account_Application.Controllers
             }
 
             // Add to customer table
-            if (HttpContext.Session.GetString("ApplyMethod") == "Scan" || Convert.ToString(TempData["CustSingpass"]) == "newCustomer")
+            if (HttpContext.Session.GetString("ApplyMethod") == "Scan" || HttpContext.Session.GetString("CustSingpass") == "newCustomer")
             {
                 customerContext.Add(ac360);
             }
@@ -970,8 +982,23 @@ namespace OCBC_Joint_Account_Application.Controllers
 
                 TempData["JAC"] = JAC;
 
-                //Email API
+                /**
+                 
+                // Email API
                 //RunAsync(a360.Salutation, a360.FullName, a360.Email, JAC, a360.SalutationJoint, a360.JointApplicantName).Wait();
+
+                //Send Unique Link via SMS
+                var accountSid = "AC900a65cf35b142ba9d231968f7975595";
+                var authToken = "900f7cf484248daa85bccb918be28908";
+                TwilioClient.Init(accountSid, authToken);
+                var messageOptions = new CreateMessageOptions(new PhoneNumber("+65" + a360.ContactNo));
+                messageOptions.MessagingServiceSid = "MG9dc1a6ffbac9048864eaadfda51637fc";
+                messageOptions.Body = "OCBC: 360 Account Joint-Application\n\nDear " + a360.JointApplicantName + "\n\nMr " + a360.FullName + " has initiated a Joint-Account application and is requesting you to complete it.\nYou may complete your application via https://localhost:44381/Account360/ApplyOnline?AT=2&JAC=" + JAC + "\n\nIf you don't know this person, call 1800 363 333 at once." ;
+                var message = MessageResource.Create(messageOptions);
+                Console.WriteLine(message.Body);
+
+                **/
+
                 TempData["EmailAPI"] = "https://localhost:44381/Account360/ApplyOnline?AT=2&JAC=" + JAC;
                 newApplication.JointApplicantCode = JAC;
                 custApp.JointApplicantName = a360.JointApplicantName;

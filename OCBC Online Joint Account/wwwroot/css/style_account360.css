@@ -193,6 +193,8 @@ footer li {
 
 .myinfo-btn {
     margin-left: 50px;
+    width: 285px;
+    height: 50px;
     background-image: linear-gradient(to right, rgb(255, 72, 0), red);
     font-weight: bold;
     padding: 10px 30px 10px 30px;
@@ -202,6 +204,8 @@ footer li {
 
 .ibanking-btn {
     margin-left: 50px;
+    width: 285px;
+    height: 50px;
     background-color: transparent;
     border-color: red;
     font-weight: bold;
@@ -211,30 +215,32 @@ footer li {
 }
 
 /**QR*/
-.qr {
-    margin-top: 50px;
+
+.qr{
+    margin-top: 80px;
 }
 
-    .qr .qr-code {
-        text-align: right;
-        margin-left: -80px;
-    }
+.qr .qr-code {
+    margin-top: -50px;
+    text-align: right;
+    margin-left: -80px;
+}
 
-    .qr h1 {
-        margin-bottom: 50px;
-        text-align: center;
-        font-size: 18px;
-        color: rgb(92, 92, 92);
-        font-weight: bold;
-    }
+.qr h1 {
+    margin-bottom: 50px;
+    text-align: left;
+    font-size: 22px;
+    color: rgb(92, 92, 92);
+    font-weight: bold;
+}
 
-    .qr h2 {
-        text-align: left;
-        font-size: 17px;
-        color: rgb(92, 92, 92);
-        font-weight: bold;
-        margin-bottom: 20px;
-    }
+.qr h2 {
+    text-align: left;
+    font-size: 17px;
+    color: rgb(92, 92, 92);
+    font-weight: bold;
+    margin-bottom: 20px;
+}
 
 /**360 Account Page (Identity Verification)*/
 .identity-verification {
@@ -519,9 +525,144 @@ footer li {
         margin: 20px 0 60px;
     }
 
-
     .verify label {
         font-size: 20px;
         margin-top: 30px;
         font-weight: normal;
     }
+
+
+@media screen and (max-width:414px){
+    /**360 Nav Bar*/
+    .vl-navbar {
+        margin-top: -10px;
+        border-right: 8px solid;
+        height: 160px;
+        border-color: red;
+    }
+
+    .navbar-360 h1 {
+        margin: 60px 0 0 -295px;
+        font-size: 18px;
+    }
+
+    .navbar-360 h2 {
+        margin: 3px 0 0 -295px;
+        font-size: 18px;
+        font-weight: lighter;
+    }
+
+    .navbar-logo {
+        margin: -90px 0 0 0;
+        height: 37px;
+    }
+
+    .container-fluid{
+        margin: 0px 5% 0px 5%;
+    }
+
+    .page-title {
+        font-size: 22px;
+        font-weight: bold;
+        color: rgb(95, 95, 95);
+        margin: 80px 0 80px 0;
+    }
+
+    .vl-360 {
+        border-left: 8px solid;
+        height: 30px;
+        border-color: red;
+        margin: 40px 0 60px;
+    }
+
+    .joint-360 h2 {
+        font-size: 20px;
+        font-weight: bold;
+        color: rgb(59, 59, 59);
+        margin-left: 15px;
+    }
+
+    .joint-360 h3 {
+        font-size: 20px;
+        font-weight: bold;
+        color: rgb(93, 93, 93);
+    }
+
+    .joint-360 h4 {
+        font-size: 16px;
+        font-weight: lighter;
+        color: rgb(92, 92, 92);
+        margin-bottom: 40px;
+    }
+
+    .joint-360 h5 {
+        font-size: 15px;
+        font-weight: lighter;
+        color: rgb(92, 92, 92);
+        font-weight: bold;
+    }
+
+    .joint-360 li {
+        font-size: 15px;
+        color: rgb(92, 92, 92);
+    }
+
+    .joint-360 .divider {
+        margin: 80px 0 50px;
+    }
+
+    .myinfo-btn {
+        margin-left: -10px;
+        width: 285px;
+        height: 50px;
+        background-image: linear-gradient(to right, rgb(255, 72, 0), red);
+        font-weight: bold;
+        padding: 10px 30px 10px 30px;
+        color: white;
+        font-size: 17px;
+        margin-bottom: 40px;
+    }
+
+    .ibanking-btn {
+        margin-left: -10px;
+        width: 285px;
+        height: 50px;
+        background-color: transparent;
+        border-color: red;
+        font-weight: bold;
+        padding: 10px 30px 10px 30px;
+        color: red;
+        font-size: 17px;
+        margin-bottom: 40px;
+    }
+
+    /**QR*/
+
+    .qr {
+        margin-top: 80px;
+    }
+
+    .qr .qr-code {
+        margin-top: -50px;
+        text-align: right;
+        margin-left: 0px;
+    }
+
+    .qr h1 {
+        margin-left: 40px;
+        margin-bottom: 50px;
+        text-align: left;
+        font-size: 17px;
+        color: rgb(92, 92, 92);
+        font-weight: bold;
+    }
+
+    .qr h2 {
+        margin-left: 40px;
+        text-align: left;
+        font-size: 14px;
+        color: rgb(92, 92, 92);
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+}
