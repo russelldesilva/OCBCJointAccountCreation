@@ -206,40 +206,37 @@
                     }
                     <input asp-for="TaxResidence" hidden />
                 </div>
-                @if (Context.Session.GetString("ApplyMethod") != "Scan")
-                {
-                    <div class="margin consent">
-                        <div class="hl"></div>
-                        <h3><b>YOUR MARKETING CONSENT</b></h3>
-                        <h4>I am aware that, by signing up for this product or service, I am consenting to Oversea-Chinese Banking Corporation Limited and its related corporations (OCBC Group) - as well as their agents and authorised service providers - to collect, use and disclose my personal data, and to share this data with their business partners for marketing and promotional purposes. These purposes include the “Additional Purposes” set out in the OCBC Data Protection Policy, available at www.ocbc.com/policies or any OCBC Bank branch.</h4>
-                        <h4>For avoidance of doubt, I am also aware that the above consent overrides any earlier withdrawal of such consent; should I wish to withdraw my consent later, I shall use the form available at www.ocbc.com/consent-withdrawal-form or any OCBC Bank branch.</h4>
-                        <label for="consent">
-                            <input type="checkbox" id="consent" name="consent" value="Consent" required>
-                            <span class="form-checkbox-2"> In addition, by checking the box, I also consent to OCBC Group contacting me via SMS, telephone call and other phone number-based messaging about products and services offered by OCBC Group, its business partners and agents, regardless of my registration(s) with the Do Not Call registry.</span><br>
-                        </label>
-                    </div>
-                    <div class="margin consent">
-                        <div class="hl"></div>
-                        <h3><b>ADVISORY FROM SINGAPORE POLICE FORCE</b></h3>
-                        <h4>
-                            <b>WARNING Your bank account should be for your own use and you are responsible for all transactions made through your bank account.</b>
-                        </h4>
-                        <h4>You may be facilitating criminal activities such as money laundering and/or unlicensed money lending if you:</h4>
-                        <h4>
-                            knowingly allow other people to operate, access and/or control of your bank account; and/or
-                            knowingly receive money from strangers, dubious sources, or other unverified sources.
-                            You can be prosecuted for the relevant offences if your bank account is used to receive or transfer money linked to criminal activities. These offences carry a punishment of a fine and/or imprisonment.
-                        </h4>
-                        <h4>You should make the necessary application to your bank if you wish to authorise the operation, access and/or control of your bank account to a third party. A failure to do so would subject your bank account to additional risk mitigation measures and, in some cases, your bank may terminate or restrict your use of your bank account and other related accounts you may have with your bank.</h4>
-                        <label for="consent-2">
-                            <input type="checkbox" id="consent-2" name="consent2" value="Consent2" required>
-                            <span class="form-checkbox-2">
-                                I acknowledge that I have read and agree to all the above
-                            </span><br>
-                        </label>
-                    </div>
-                }
 
+                <div class="margin consent">
+                    <div class="hl"></div>
+                    <h3><b>YOUR MARKETING CONSENT</b></h3>
+                    <h4>I am aware that, by signing up for this product or service, I am consenting to Oversea-Chinese Banking Corporation Limited and its related corporations (OCBC Group) - as well as their agents and authorised service providers - to collect, use and disclose my personal data, and to share this data with their business partners for marketing and promotional purposes. These purposes include the “Additional Purposes” set out in the OCBC Data Protection Policy, available at www.ocbc.com/policies or any OCBC Bank branch.</h4>
+                    <h4>For avoidance of doubt, I am also aware that the above consent overrides any earlier withdrawal of such consent; should I wish to withdraw my consent later, I shall use the form available at www.ocbc.com/consent-withdrawal-form or any OCBC Bank branch.</h4>
+                    <label for="consent">
+                        <input type="checkbox" id="consent" name="consent" value="Consent" required>
+                        <span class="form-checkbox-2"> In addition, by checking the box, I also consent to OCBC Group contacting me via SMS, telephone call and other phone number-based messaging about products and services offered by OCBC Group, its business partners and agents, regardless of my registration(s) with the Do Not Call registry.</span><br>
+                    </label>
+                </div>
+                <div class="margin consent">
+                    <div class="hl"></div>
+                    <h3><b>ADVISORY FROM SINGAPORE POLICE FORCE</b></h3>
+                    <h4>
+                        <b>WARNING Your bank account should be for your own use and you are responsible for all transactions made through your bank account.</b>
+                    </h4>
+                    <h4>You may be facilitating criminal activities such as money laundering and/or unlicensed money lending if you:</h4>
+                    <h4>
+                        knowingly allow other people to operate, access and/or control of your bank account; and/or
+                        knowingly receive money from strangers, dubious sources, or other unverified sources.
+                        You can be prosecuted for the relevant offences if your bank account is used to receive or transfer money linked to criminal activities. These offences carry a punishment of a fine and/or imprisonment.
+                    </h4>
+                    <h4>You should make the necessary application to your bank if you wish to authorise the operation, access and/or control of your bank account to a third party. A failure to do so would subject your bank account to additional risk mitigation measures and, in some cases, your bank may terminate or restrict your use of your bank account and other related accounts you may have with your bank.</h4>
+                    <label for="consent-2">
+                        <input type="checkbox" id="consent-2" name="consent2" value="Consent2" required>
+                        <span class="form-checkbox-2">
+                            I acknowledge that I have read and agree to all the above
+                        </span><br>
+                    </label>
+                </div>
                 <div class="margin">
                     <input class="resend" type="submit" value="Next" asp-controller="Account360" asp-action="Form">
                 </div>

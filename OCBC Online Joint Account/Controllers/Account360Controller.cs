@@ -33,6 +33,8 @@ namespace OCBC_Joint_Account_Application.Controllers
         private CustomerDAL customerContext = new CustomerDAL();
         private CustApplicationDAL custApplicationContext = new CustApplicationDAL();
         private ApplicationDAL applicationContext = new ApplicationDAL();
+        private BankAccountDAL bankContext = new BankAccountDAL();
+        private CustomerAccountsDAL custAccContext = new CustomerAccountsDAL();
 
         private List<SelectListItem> Salutation = new List<SelectListItem>();
         private List<SelectListItem> CountryOfBirth = new List<SelectListItem>();
@@ -1024,45 +1026,50 @@ namespace OCBC_Joint_Account_Application.Controllers
                     newApplication.JointApplicantID = a.ApplicationID;
                     a.JointApplicantID = applicationContext.Add(newApplication);
                     applicationContext.Update(a);
-                }
 
-                /*
-                if (custApp.JointApplicantNRIC == ac360.NRIC)
-                {
-                    mainApplication[0].Status = "Successful";
-                }
-                else
-                {
-                    ViewData["VerificationError"] = "Something went wrong. Please check your details and restart this process or call XXXX XXXXX";
-                    return View(ac360);
-                }
-                
-                
-                // Setting applicationID with JAC
-                foreach (Application a in mainApplication)
-                {
-                    foreach (Customer c in customerContext.GetCustomerByNRIC(a.CustNRIC))
+                    // Getting iUsername of main applicant                                               // Getting iUsername of joint applicant
+                    if (applicationContext.GetiUsername((int)newApplication.JointApplicantID) != null && applicationContext.GetiUsername((int)a.JointApplicantID) != null)
                     {
-                        ac360.SalutationJoint = c.Salutation;
-                        ac360.JointApplicantName = c.CustName;
-                        ac360.JointApplicantNRIC = c.CustNRIC;
-                        ac360.Email = c.Email;
-                        ac360.ContactNo = c.ContactNo;
+                        newApplication.Status = "Successful";
+                        a.Status = "Successful";
+                        applicationContext.Update(a);
+                        applicationContext.Update(newApplication);
+
+                        //Create the bank account
+                        BankAccount bAcc = new BankAccount();
+                        bAcc.Balance = 0;
+                        bAcc.AccountTypeID = (int)HttpContext.Session.GetInt32("AccountTypeID");
+                        Random rnd = new Random();
+                        int rand1 = rnd.Next(0, 9);
+                        int rand2 = rnd.Next(100000, 999999);
+                        int rand3 = rnd.Next(10000, 99999);
+                        string accNo = rand1.ToString() + rand2.ToString() + rand3.ToString();
+                        bAcc.AccountNo = accNo;
+
+                        // Add to bank account
+                        bankContext.Add(bAcc);
+
+                        // Main applicant
+                        CustomerAccounts mainCustAcc = new CustomerAccounts();
+                        mainCustAcc.CustNRIC = ac360.JointApplicantNRIC;
+                        mainCustAcc.AccountNo = accNo;
+                        custAccContext.Add(mainCustAcc);
+
+                        // Joint applicant
+                        CustomerAccounts jointCustAcc = new CustomerAccounts();
+                        jointCustAcc.CustNRIC = ac360.NRIC;
+                        jointCustAcc.AccountNo = accNo;
+                        custAccContext.Add(jointCustAcc);
+                    }
+                    else
+                    {
+                        newApplication.Status = "To Review";
+                        a.Status = "To Review";
+                        applicationContext.Update(a);
+                        applicationContext.Update(newApplication);
                     }
                 }
-
-                foreach (Application a in mainApplication)
-                {
-                    foreach (Customer c in customerContext.GetCustomerByNRIC(a.CustNRIC))
-                    {
-                        ac360.SalutationJoint = c.Salutation;
-                        ac360.JointApplicantName = c.CustName;
-                        ac360.JointApplicantNRIC = c.CustNRIC;
-                        ac360.Email = c.Email;
-                        ac360.ContactNo = c.ContactNo;
-                    }
-                }
-                */
+                
             }
 
             // Application Table
