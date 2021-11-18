@@ -985,7 +985,7 @@ namespace OCBC_Joint_Account_Application.Controllers
                 TempData["JAC"] = JAC;
 
                 /**
-                 * 
+                 
                 // Email API
                 //RunAsync(a360.Salutation, a360.FullName, a360.Email, JAC, a360.SalutationJoint, a360.JointApplicantName).Wait();
 
