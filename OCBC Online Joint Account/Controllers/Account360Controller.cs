@@ -23,8 +23,6 @@ using System.Globalization;
 using Mailjet.Client;
 using Mailjet.Client.Resources;
 using Newtonsoft.Json.Linq;
-using Microsoft.Azure.CognitiveServices.Vision.Face;
-using Microsoft.Azure.CognitiveServices.Vision.Face.Models;
 using OCBC_Online_Joint_Account.DAL;
 
 namespace OCBC_Joint_Account_Application.Controllers
@@ -47,7 +45,6 @@ namespace OCBC_Joint_Account_Application.Controllers
         private List<SelectListItem> Occupation = new List<SelectListItem>();
         private List<SelectListItem> YearsInEmployment = new List<SelectListItem>();
         private List<TaxResidency> TaxResidencyList = new List<TaxResidency>();
-        private List<string> singaporean = new List<string> { "I am a Singaporean Citizen/Permanent Resident", "I am a Foreigner working/studying or residing in Singapore" };
 
         public Account360Controller()
         {
@@ -399,13 +396,9 @@ namespace OCBC_Joint_Account_Application.Controllers
                     {
                         await custApplication.CustProofOfResidenceUpload.CopyToAsync(fileSteam);
                     }
-                    ViewData["UploadColor"] = "lime";
-                    ViewData["UploadMessage"] = "Upload Successful!";
                 }
                 catch (IOException)
                 {
-                    ViewData["UploadColor"] = "red";
-                    ViewData["UploadMessage"] = "Upload Failed!";
                     return View("Upload", custApplication);
                 }
                 catch (Exception ex)
@@ -426,13 +419,9 @@ namespace OCBC_Joint_Account_Application.Controllers
                     {
                         await custApplication.CustNRICFrontUpload.CopyToAsync(fileSteam);
                     }
-                    ViewData["UploadColor"] = "lime";
-                    ViewData["UploadMessage"] = "Upload Successful!";
                 }
                 catch (IOException)
                 {
-                    ViewData["UploadColor"] = "red";
-                    ViewData["UploadMessage"] = "Upload Failed!";
                     return View("Upload", custApplication);
                 }
                 catch (Exception ex)
@@ -453,13 +442,9 @@ namespace OCBC_Joint_Account_Application.Controllers
                     {
                         await custApplication.CustNRICBackUpload.CopyToAsync(fileSteam);
                     }
-                    ViewData["UploadColor"] = "lime";
-                    ViewData["UploadMessage"] = "Upload Successful!";
                 }
                 catch (IOException)
                 {
-                    ViewData["UploadColor"] = "red";
-                    ViewData["UploadMessage"] = "Upload Failed!";
                     return View("Upload", custApplication);
                 }
                 catch (Exception ex)
@@ -584,13 +569,9 @@ namespace OCBC_Joint_Account_Application.Controllers
                     {
                         await custApplication.CustProofOfResidenceUpload.CopyToAsync(fileSteam);
                     }
-                    ViewData["UploadColor"] = "lime";
-                    ViewData["UploadMessage"] = "Upload Successful!";
                 }
                 catch (IOException)
                 {
-                    ViewData["UploadColor"] = "red";
-                    ViewData["UploadMessage"] = "Upload Failed!";
                     return View("Upload", custApplication);
                 }
                 catch (Exception ex)
@@ -611,13 +592,9 @@ namespace OCBC_Joint_Account_Application.Controllers
                     {
                         await custApplication.CustForeignPassFrontUpload.CopyToAsync(fileSteam);
                     }
-                    ViewData["UploadColor"] = "lime";
-                    ViewData["UploadMessage"] = "Upload Successful!";
                 }
                 catch (IOException)
                 {
-                    ViewData["UploadColor"] = "red";
-                    ViewData["UploadMessage"] = "Upload Failed!";
                     return View("Upload", custApplication);
                 }
                 catch (Exception ex)
@@ -638,13 +615,9 @@ namespace OCBC_Joint_Account_Application.Controllers
                     {
                         await custApplication.CustForeignPassBackUpload.CopyToAsync(fileSteam);
                     }
-                    ViewData["UploadColor"] = "lime";
-                    ViewData["UploadMessage"] = "Upload Successful!";
                 }
                 catch (IOException)
                 {
-                    ViewData["UploadColor"] = "red";
-                    ViewData["UploadMessage"] = "Upload Failed!";
                     return View("Upload", custApplication);
                 }
                 catch (Exception ex)
@@ -665,13 +638,9 @@ namespace OCBC_Joint_Account_Application.Controllers
                     {
                         await custApplication.CustPassportUpload.CopyToAsync(fileSteam);
                     }
-                    ViewData["UploadColor"] = "lime";
-                    ViewData["UploadMessage"] = "Upload Successful!";
                 }
                 catch (IOException)
                 {
-                    ViewData["UploadColor"] = "red";
-                    ViewData["UploadMessage"] = "Upload Failed!";
                     return View("Upload", custApplication);
                 }
                 catch (Exception ex)
