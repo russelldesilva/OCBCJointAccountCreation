@@ -28,6 +28,36 @@
 }
 else
 {
+    <div class="container-fluid ">
+        <div style="margin: 0 20% 0 20%; text-align: center;">
+            <div class="row">
+                <div class="col-md-4">
+                    <lottie-player src="https://assets7.lottiefiles.com/packages/lf20_xvqumrty.json" mode="bounce" background="transparent" speed="1" style="width: 1000px; height: 1000px; margin-left: -380px; margin-top: -120px" autoplay></lottie-player>
+                </div>
+                <div class="col-md-8">
+                    <div style="margin: 200px 0 0 100px;">
+                        <div style="margin: 100px 0px 0px ; text-align: left;">
+                            <h1 style="font-size: 36px; font-weight: bold;">SUCCESSFUL</h1>
+                        </div>
+                        <div style="text-align: left;">
+                            <h1 style="font-size: 25px; font-weight: normal;">Pending continuation from Joint-Applicant</h1>
+                        </div>
+                        <div style="text-align: left; margin-top: 50px;">
+                            <h1 style="font-size: 22px; font-weight: lighter;">
+                                The continuation details has been sent to <b>@ViewData["Name"]</b> through SMS (<b>@ViewData["ContactNo"]</b>) and Email (<b>@ViewData["Email"]</b>).
+                            </h1>
+                        </div>
+                        <form>
+                            <div style="margin-top: 60px; text-align: left; z-index: 0; position: relative;">
+                                <input class="resend" type="submit" value="Close" asp-controller="Home" asp-action="Index">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div style="margin: 50px 25% 0 25%; text-align: center;">
         <img src="~/image/tick-symbol.png" style="height: 110px">
         <div style="margin-top: 40px">
@@ -37,7 +67,6 @@ else
             <h1 style="font-size: 29px;font-weight: bold;">PENDING CONTINUATION FROM JOINT APPLICANT</h1>
             <h1 style="font-size: 22px;font-weight: lighter; margin-top: 30px;">The continuation details has been sent to <b>@ViewData["Name"]</b> through SMS (<b>@ViewData["ContactNo"]</b>) and Email (<b>@ViewData["Email"]</b>).</h1>
         </div>
-
         <form>
             <div style="margin-top: 60px;">
                 <input class="resend" type="submit" value="Close" asp-controller="Home" asp-action="Index">
