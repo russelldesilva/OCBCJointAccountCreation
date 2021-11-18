@@ -193,6 +193,8 @@ footer li {
 
 .myinfo-btn {
     margin-left: 50px;
+    width: 285px;
+    height: 50px;
     background-image: linear-gradient(to right, rgb(255, 72, 0), red);
     font-weight: bold;
     padding: 10px 30px 10px 30px;
@@ -202,6 +204,8 @@ footer li {
 
 .ibanking-btn {
     margin-left: 50px;
+    width: 285px;
+    height: 50px;
     background-color: transparent;
     border-color: red;
     font-weight: bold;
@@ -215,26 +219,26 @@ footer li {
     margin-top: 50px;
 }
 
-    .qr .qr-code {
-        text-align: right;
-        margin-left: -80px;
-    }
+.qr .qr-code {
+    text-align: right;
+    margin-left: -80px;
+}
 
-    .qr h1 {
-        margin-bottom: 50px;
-        text-align: center;
-        font-size: 18px;
-        color: rgb(92, 92, 92);
-        font-weight: bold;
-    }
+.qr h1 {
+    margin-bottom: 50px;
+    text-align: center;
+    font-size: 18px;
+    color: rgb(92, 92, 92);
+    font-weight: bold;
+}
 
-    .qr h2 {
-        text-align: left;
-        font-size: 17px;
-        color: rgb(92, 92, 92);
-        font-weight: bold;
-        margin-bottom: 20px;
-    }
+.qr h2 {
+    text-align: left;
+    font-size: 17px;
+    color: rgb(92, 92, 92);
+    font-weight: bold;
+    margin-bottom: 20px;
+}
 
 /**360 Account Page (Identity Verification)*/
 .identity-verification {
