@@ -993,7 +993,7 @@ namespace OCBC_Joint_Account_Application.Controllers
                 // Setting applicationID with JAC
                 foreach (Application a in mainApplication)
                 {
-                    custApp.ApplicationID = a.ApplicationID;
+                    custApp.ApplicationID = applicationContext.GetApplicationIDByNRIC(a360.NRIC);
                     newApplication.JointApplicantID = a.ApplicationID;
                     a.JointApplicantID = applicationContext.Add(newApplication);
                     applicationContext.Update(a);
