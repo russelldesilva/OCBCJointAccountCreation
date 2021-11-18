@@ -47,10 +47,6 @@ namespace OCBC_Joint_Account_Application.Controllers
         private List<TaxResidency> TaxResidencyList = new List<TaxResidency>();
         private List<string> singaporean = new List<string> { "I am a Singaporean Citizen/Permanent Resident", "I am a Foreigner working/studying or residing in Singapore" };
 
-        // From your Face subscription in the Azure portal, get your subscription key and endpoint.
-        const string SUBSCRIPTION_KEY = "PASTE_YOUR_FACE_SUBSCRIPTION_KEY_HERE";
-        const string ENDPOINT = "PASTE_YOUR_FACE_ENDPOINT_HERE";
-
         public Account360Controller()
         {
             //Populate Salutation
@@ -561,26 +557,6 @@ namespace OCBC_Joint_Account_Application.Controllers
                     break;
                 }
             }
-
-            //Face recognition API
-            // Authenticate.
-            IFaceClient fclient = Authenticate(ENDPOINT, SUBSCRIPTION_KEY);
-
-            // Detect - get features from faces.
-            // DetectFaceExtract(fclient, IMAGE_BASE_URL, RECOGNITION_MODEL4).Wait();
-            // Find Similar - find a similar face from a list of faces.
-            //FindSimilar(client, IMAGE_BASE_URL, RECOGNITION_MODEL4).Wait();
-            // Verify - compare two images if the same person or not.
-            //Verify(fclient, IMAGE_BASE_URL, RECOGNITION_MODEL4).Wait();
-
-            // Identify - recognize a face(s) in a person group (a person group is created in this example).
-            //IdentifyInPersonGroup(client, IMAGE_BASE_URL, RECOGNITION_MODEL4).Wait();
-            // LargePersonGroup - create, then get data.
-            //LargePersonGroup(client, IMAGE_BASE_URL, RECOGNITION_MODEL4).Wait();
-            // Group faces - automatically group similar faces.
-            //Group(client, IMAGE_BASE_URL, RECOGNITION_MODEL4).Wait();
-            // FaceList - create a face list, then get data
-
             ////Set clientOCR object to the "Scan" string to be used in Form.cshtml to parse the data from the OCR read
             HttpContext.Session.SetObjectAsJson("Scan", clientOCR);
             return RedirectToAction("Form");
@@ -1255,51 +1231,6 @@ namespace OCBC_Joint_Account_Application.Controllers
                 return true;
             }
             return false;
-        }
-        /*
-         *	AUTHENTICATE
-         *	Uses subscription key and region to create a client.
-         */
-        public static IFaceClient Authenticate(string endpoint, string key)
-        {
-            return new FaceClient(new ApiKeyServiceClientCredentials(key)) { Endpoint = endpoint };
-        }
-        /* 
-         * DETECT FACES
-         * Detects features from faces and IDs them.
-         */
-        public static async Task DetectFaceExtract(IFaceClient client, string url, string recognitionModel)
-        {
-            Console.WriteLine("========DETECT FACES========");
-            Console.WriteLine();
-
-            // Create a list of images
-            List<string> imageFileNames = new List<string>
-                    {
-                        "detection1.jpg",    // single female with glasses
-                        // "detection2.jpg", // (optional: single man)
-                        // "detection3.jpg", // (optional: single male construction worker)
-                        // "detection4.jpg", // (optional: 3 people at cafe, 1 is blurred)
-                        "detection5.jpg",    // family, woman child man
-                        "detection6.jpg"     // elderly couple, male female
-                    };
-
-            foreach (var imageFileName in imageFileNames)
-            {
-                IList<DetectedFace> detectedFaces;
-
-                // Detect faces with all attributes from image url.
-                detectedFaces = await client.Face.DetectWithUrlAsync($"{url}{imageFileName}",
-                        returnFaceAttributes: new List<FaceAttributeType> { FaceAttributeType.Accessories, FaceAttributeType.Age,
-                FaceAttributeType.Blur, FaceAttributeType.Emotion, FaceAttributeType.Exposure, FaceAttributeType.FacialHair,
-                FaceAttributeType.Gender, FaceAttributeType.Glasses, FaceAttributeType.Hair, FaceAttributeType.HeadPose,
-                FaceAttributeType.Makeup, FaceAttributeType.Noise, FaceAttributeType.Occlusion, FaceAttributeType.Smile },
-                        // We specify detection model 1 because we are retrieving attributes.
-                        detectionModel: DetectionModel.Detection01,
-                        recognitionModel: recognitionModel);
-
-                Console.WriteLine($"{detectedFaces.Count} face(s) detected from image `{imageFileName}`.");
-            }
         }
     }
 }
