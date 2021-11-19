@@ -164,6 +164,11 @@ namespace OCBC_Joint_Account_Application.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
+            if(isCorrectApplicantLogin() == false)
+            {
+                return RedirectToAction("Denied", "Account360");
+            }
+
             checkJAC(HttpContext.Session.GetString("JAC"));
             HttpContext.Session.SetString("PageType", "Account360");
 
@@ -189,21 +194,19 @@ namespace OCBC_Joint_Account_Application.Controllers
             Random rnd = new Random();
             int OTP = rnd.Next(100000, 999999);
 
-            /**
-              //OTP API by Twilio
-              var accountSid = "AC900a65cf35b142ba9d231968f7975595";
-              var authToken = "900f7cf484248daa85bccb918be28908";
-              TwilioClient.Init(accountSid, authToken);
-              var messageOptions = new CreateMessageOptions(new PhoneNumber("+65" + mobileNum));
-              messageOptions.MessagingServiceSid = "MG9dc1a6ffbac9048864eaadfda51637fc";
-              messageOptions.Body = "Your OCBC OTP is " + OTP;
-              var message = MessageResource.Create(messageOptions);
-              Console.WriteLine(message.Body);
-            **/
+            //OTP API by Twilio
+            var accountSid = "AC900a65cf35b142ba9d231968f7975595";
+            var authToken = "900f7cf484248daa85bccb918be28908";
+            TwilioClient.Init(accountSid, authToken);
+            var messageOptions = new CreateMessageOptions(new PhoneNumber("+65" + mobileNum));
+            messageOptions.MessagingServiceSid = "MG9dc1a6ffbac9048864eaadfda51637fc";
+            messageOptions.Body = "OCBC: Your One-Time Password is " + OTP + ".\nUse it to continue with the application.";
+            var message = MessageResource.Create(messageOptions);
+            Console.WriteLine(message.Body);
+          
             HttpContext.Session.SetInt32("OTP", OTP);
             ViewData["MobileNum"] = mobileNum;
 
-            ViewData["A"] = OTP;
             return View();
         }
 
@@ -993,24 +996,27 @@ namespace OCBC_Joint_Account_Application.Controllers
 
                 TempData["JAC"] = JAC;
 
-                /**
-                 
                 // Email API
-                //RunAsync(a360.Salutation, a360.FullName, a360.Email, JAC, a360.SalutationJoint, a360.JointApplicantName).Wait();
+                RunAsync(a360.Salutation, a360.FullName, a360.Email, JAC, a360.SalutationJoint, a360.JointApplicantName).Wait();
 
                 //Send Unique Link via SMS
-                var accountSid = "AC900a65cf35b142ba9d231968f7975595";
-                var authToken = "900f7cf484248daa85bccb918be28908";
-                TwilioClient.Init(accountSid, authToken);
-                var messageOptions = new CreateMessageOptions(new PhoneNumber("+65" + a360.ContactNo));
-                messageOptions.MessagingServiceSid = "MG9dc1a6ffbac9048864eaadfda51637fc";
-                messageOptions.Body = "OCBC: 360 Account Joint-Application\n\nDear " + a360.JointApplicantName + "\n\nMr " + a360.FullName + " has initiated a Joint-Account application and is requesting you to complete it.\nYou may complete your application via https://localhost:44381/Account360/ApplyOnline?AT=2&JAC=" + JAC + "\n\nIf you don't know this person, call 1800 363 333 at once." ;
-                var message = MessageResource.Create(messageOptions);
-                Console.WriteLine(message.Body);
+                try
+                {
+                    var accountSid = "AC900a65cf35b142ba9d231968f7975595";
+                    var authToken = "900f7cf484248daa85bccb918be28908";
+                    TwilioClient.Init(accountSid, authToken);
+                    var messageOptions = new CreateMessageOptions(new PhoneNumber("+65" + a360.ContactNo));
+                    messageOptions.MessagingServiceSid = "MG9dc1a6ffbac9048864eaadfda51637fc";
+                    messageOptions.Body = "OCBC: 360 Account Joint-Application\n\nDear " + a360.JointApplicantName + "\n\nMr " + a360.FullName + " has initiated a Joint-Account application and is requesting you to complete it.\nYou may complete your application via https://localhost:44381/Account360/ApplyOnline?AT=2&JAC=" + JAC + "\n\nIf you don't know this person, call 1800 363 333 at once.";
+                    var message = MessageResource.Create(messageOptions);
+                    Console.WriteLine(message.Body);
+                }
+                catch (Twilio.Exceptions.ApiException)
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+           
 
-                **/
-
-                TempData["EmailAPI"] = "https://localhost:44381/Account360/ApplyOnline?AT=2&JAC=" + JAC;
                 newApplication.JointApplicantCode = JAC;
                 custApp.JointApplicantName = a360.JointApplicantName;
                 custApp.JointApplicantNRIC = a360.JointApplicantNRIC;
@@ -1121,6 +1127,12 @@ namespace OCBC_Joint_Account_Application.Controllers
             return View();
         }
 
+        public ActionResult Denied()
+        {
+            HttpContext.Session.SetString("PageType", "Account360");
+            return View();
+        }
+
         /**==========================
                     METHODS
         ==========================**/
@@ -1151,20 +1163,42 @@ namespace OCBC_Joint_Account_Application.Controllers
                 Console.ReadLine();
             }
         }
+
+        public bool isCorrectApplicantLogin()
+        {    
+            if (HttpContext.Session.GetString("JAC") != null)
+            {
+                foreach (Application a in applicationContext.GetApplicationByJointApplicantionCode(HttpContext.Session.GetString("JAC")))
+                {
+                    foreach(CustApplication ca in custApplicationContext.GetCustApplicationByNRIC(a.CustNRIC))
+                    {
+                        if (HttpContext.Session.GetString("Applicant") == ca.JointApplicantNRIC)
+                        {
+                            return true;
+                        }
+                    }          
+                    return false;
+                }  
+            }
+            return true;
+        }
+
         public void checkJAC(string JAC)
         {
             if (HttpContext.Session.GetString("JAC") != null)
             {
                 foreach (Application a in applicationContext.GetApplicationByJointApplicantionCode(JAC))
                 {
+                    
                     foreach (Customer c in customerContext.GetCustomerByNRIC(a.CustNRIC))
                     {
                         ViewData["MainSalutation"] = c.Salutation;
                         ViewData["MainName"] = c.CustName;
-                    }
-                }
+                    }                 
+                }            
             }
         }
+
         public void ResetQR()
         {
             //QR: Reset QR settings

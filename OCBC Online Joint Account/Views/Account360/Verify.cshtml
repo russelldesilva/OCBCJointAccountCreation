@@ -16,20 +16,20 @@
 
 <div class="container-fluid applicant">
     <div class="completion-bar">
-        @if (Convert.ToString(TempData["CustSingpass"]) == "existingCustomer" && Context.Session.GetString("JAC") != null)
-        {
-            <div class="completion-bar-3">
-                <progress value="1" max="3"></progress>
+        @if ((Convert.ToString(TempData["CustSingpass"]) == "existingCustomer" || Context.Session.GetString("CustSingpass") == "existingCustomer") && Context.Session.GetString("JAC") != null)
+            {
+            <div class="completion-bar-2">
+                <progress value="2" max="2"></progress>
                 <h1 class="text-1"><b>Identity Verification</b></h1>
                 <h1 class="text-2"><b>Verify Information</b></h1>
                 <h2 class="circle circle-1"></h2>
                 <h2 class="circle circle-2"></h2>
             </div>
         }
-        else if (Convert.ToString(TempData["CustSingpass"]) == "existingCustomer")
+        else if (Convert.ToString(TempData["CustSingpass"]) == "existingCustomer" || Context.Session.GetString("CustSingpass") == "existingCustomer")
         {
             <div class="completion-bar-3">
-                <progress value="1" max="3"></progress>
+                <progress value="3" max="3"></progress>
                 <h1 class="text-1"><b>Identity Verification</b></h1>
                 <h1 class="text-2"><b>Joint-Applicant Information</b></h1>
                 <h1 class="text-3"><b>Verify Information</b></h1>
@@ -64,10 +64,12 @@
         }
         else if ((Context.Session.GetString("ApplyMethod") == "QR" || Context.Session.GetString("ApplyMethod") == "iBanking") && Context.Session.GetString("JAC") != null)
         {
-            <div class="completion-bar-1">
-                <progress value="1" max="1"></progress>
-                <h1 class="text-1"><b>Verify Information</b></h1>
+               <div class="completion-bar-2">
+                <progress value="2" max="2"></progress>
+                <h1 class="text-1"><b>Identity Verification</b></h1>
+                <h1 class="text-2"><b>Verify Information</b></h1>
                 <h2 class="circle circle-1"></h2>
+                <h2 class="circle circle-2"></h2>
             </div>
         }
         else if (Context.Session.GetString("ApplyMethod") == "Singpass")
@@ -146,7 +148,7 @@
                     {
                         <label>Address on NRIC is also mailing address </label>
                     }
-                    @if (Context.Session.GetString("ApplyMethod") != "QR" && Context.Session.GetString("ApplyMethod") != "iBanking")
+                    @if (Context.Session.GetString("ApplyMethod") != "QR" && Context.Session.GetString("ApplyMethod") != "iBanking" && Convert.ToString(TempData["CustSingpass"]) != "existingCustomer" && Context.Session.GetString("CustSingpass") != "existingCustomer")
                     {
                         <label>Country(s) of tax residency: </label>
                         <h1><input asp-for="TaxResidence" class="form-text" readonly /></h1>
@@ -167,7 +169,7 @@
                     {
                         <h1><input asp-for="Employer" class="form-text" type="text" readonly></h1>
                     }
-                    @if (Context.Session.GetString("ApplyMethod") != "QR" && Context.Session.GetString("ApplyMethod") != "iBanking")
+                    @if (Context.Session.GetString("ApplyMethod") != "QR" && Context.Session.GetString("ApplyMethod") != "iBanking" && Convert.ToString(TempData["CustSingpass"]) != "existingCustomer" && Context.Session.GetString("CustSingpass") != "existingCustomer")
                     {
                         <label>Years in Employment</label>
                         <h1><input asp-for="YearsInEmployment" class="form-text" type="text" readonly></h1>

@@ -1,0 +1,35 @@
+﻿
+@{ ViewData["Title"] = "Denied"; }
+
+
+<div class="container-fluid" style="margin-top: -60px; padding-bottom: -600px;">
+    <div style="margin: 0 20% 0 20%; text-align: center;">
+        <div class="row">
+            <div class="col-md-4">
+                <lottie-player src="https://assets9.lottiefiles.com/packages/lf20_slGFhN.json" mode="bounce" background="transparent" speed="1" style="width: 400px; height: 400px; margin-top: 120px; margin-left: -60px;" autoplay></lottie-player>
+            </div>
+            <div class="col-md-8">
+                <div style="margin: 200px 0 0 100px;">
+                    <div style="margin: 100px 0px 15px; text-align: left;">
+                        <h1 style="font-size: 36px; font-weight: bold;">ACCESS DENIED</h1>
+                    </div>
+                    <div style="text-align: left;">
+                        <h1 style="font-size: 25px; font-weight: normal;">
+                            Your NRIC do not match the NRIC indicated
+                            by the main-applicant
+                        </h1>
+                    </div>
+                    <div style="text-align: left; margin-top: 50px;">
+                        <h1 style="font-size: 22px; font-weight: lighter;">
+                        </h1>
+                    </div>
+                    <form>
+                        <div style="margin-top: 60px; text-align: left; z-index: 0; position: relative;">
+                            <input class="resend" type="submit" value="Close" asp-controller="Home" asp-action="Index">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
